@@ -1,0 +1,5 @@
+node_modules/
+_workspace/
+.env
+.antigravitycli/
+.gemini/

@@ -1,0 +1,16 @@
+{
+  "name": "pitl-planning-in-the-loop",
+  "version": "1.0.0",
+  "description": "Fully functional PITL Product Planning Automation Workspace",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

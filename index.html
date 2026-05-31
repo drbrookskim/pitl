@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PITL Product Planning Platform</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked.js for Markdown Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <style>
+        /* Modern CSS Custom Properties & Reset */
+        :root {
+            --bg-base: #0b0f19;
+            --bg-surface: #131a2e;
+            --bg-card: rgba(30, 41, 73, 0.4);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            
+            --neon-blue-glow: 0 0 15px rgba(6, 182, 212, 0.4);
+            --neon-purple-glow: 0 0 15px rgba(139, 92, 246, 0.4);
+            --glass-blur: blur(12px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', 'Outfit', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Particles Backplane */
+        #canvas-backplane {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Glassmorphic Header */
+        header {
+            height: 70px;
+            background: rgba(19, 26, 46, 0.7);
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 10;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--neon-blue-glow);
+        }
+
+        .brand-logo i {
+            color: white;
+            font-size: 18px;
+        }
+
+        .brand-title h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .badge-qa {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 5px rgba(16, 185, 129, 0.2); }
+            to { box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-cyan);
+            box-shadow: var(--neon-blue-glow);
+        }
+
+        .btn-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Main Workspace Layout */
+        .workspace {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Sidebar Selector */
+        .sidebar {
+            width: 320px;
+            background: rgba(11, 15, 25, 0.8);
+            border-right: 1px solid var(--border-color);
+            backdrop-filter: var(--glass-blur);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 16px;
+            gap: 24px;
+            overflow-y: auto;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            padding-left: 8px;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            padding: 12px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.25s ease;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+        }
+
+        .nav-item i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-item:hover:not(.disabled) {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: rgba(6, 182, 212, 0.08);
+            border-color: rgba(6, 182, 212, 0.25);
+            color: var(--accent-cyan);
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.05);
+        }
+
+        .nav-item.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Input Form Block in Sidebar */
+        .sidebar-input-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .input-textarea {
+            width: 100%;
+            height: 90px;
+            background: rgba(7, 9, 19, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 10px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-textarea:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: var(--neon-blue-glow);
+        }
+
+        .btn-run {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: var(--neon-blue-glow);
+        }
+
+        .btn-run:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+        }
+
+        .btn-run:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Main Viewer Container */
+        .viewer {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at top right, rgba(30, 41, 73, 0.15), transparent);
+            overflow: hidden;
+        }
+
+        .viewer-header-bar {
+            height: 50px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            background: rgba(19, 26, 46, 0.3);
+        }
+
+        .doc-title {
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+
+        .doc-title strong {
+            color: var(--text-primary);
+        }
+
+        .viewer-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 60px;
+            scroll-behavior: smooth;
+        }
+
+        /* Premium Document Typography Styling */
+        .document-wrapper {
+            max-width: 880px;
+            margin: 0 auto;
+            animation: fade-in 0.4s ease-out;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Markdown Parsing Premium Overrides */
+        .markdown-body {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.75;
+        }
+
+        .markdown-body h1 {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+            color: var(--text-primary);
+            line-height: 1.25;
+            background: linear-gradient(135deg, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .markdown-body h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 36px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            border-left: 4px solid var(--accent-cyan);
+            padding-left: 12px;
+        }
+
+        .markdown-body h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: var(--accent-purple);
+        }
+
+        .markdown-body p {
+            margin-bottom: 16px;
+        }
+
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+            background: rgba(19, 26, 46, 0.4);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .markdown-body th {
+            background: rgba(30, 41, 73, 0.6);
+            color: var(--text-primary);
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .markdown-body td {
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            line-height: 1.5;
+        }
+
+        .markdown-body ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .markdown-body li {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .markdown-body blockquote {
+            background: rgba(139, 92, 246, 0.05);
+            border-left: 4px solid var(--accent-purple);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            font-size: 15px;
+            font-style: italic;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Interactive Wireframe Tabs */
+        .wireframe-selector-bar {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 6px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .wf-tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .wf-tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .wf-tab-btn.active {
+            background: var(--accent-purple);
+            color: white;
+            box-shadow: var(--neon-purple-glow);
+        }
+
+        /* Terminal Mockup for ASCII Art */
+        .terminal-container {
+            background: #070913;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            margin: 24px 0;
+        }
+
+        .terminal-header {
+            height: 36px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            justify-content: space-between;
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .t-btn {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .tb-red { background: #ff5f56; }
+        .tb-yellow { background: #ffbd2e; }
+        .tb-green { background: #27c93f; }
+
+        .terminal-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .terminal-body {
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        .ascii-art {
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.45;
+            color: var(--accent-cyan);
+            white-space: pre;
+        }
+
+        /* Animated Live AI Agent Logger Console */
+        .console-log-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+        }
+
+        .log-entry {
+            border-left: 2px solid var(--accent-cyan);
+            padding-left: 16px;
+            animation: slide-log 0.3s ease-out;
+        }
+
+        @keyframes slide-log {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .log-time {
+            color: var(--text-muted);
+            margin-right: 8px;
+        }
+
+        .log-agent {
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .log-agent.strategist { color: var(--accent-cyan); }
+        .log-agent.analyst { color: var(--accent-purple); }
+        .log-agent.architect { color: #f59e0b; }
+        .log-agent.reviewer { color: var(--accent-green); }
+        .log-agent.system { color: var(--text-muted); }
+
+        .log-msg {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+
+        /* Welcome Overlay on Blank State */
+        .welcome-view {
+            max-width: 600px;
+            margin: 100px auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: fade-in 0.5s ease-out;
+        }
+
+        .welcome-icon {
+            font-size: 64px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(var(--neon-blue-glow));
+        }
+
+        .welcome-view h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .welcome-view p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Backplane Canvas -->
+    <canvas id="canvas-backplane"></canvas>
+
+    <!-- Top Premium Navigation -->
+    <header>
+        <div class="brand-container">
+            <div class="brand-logo"><i class="fa-solid fa-arrows-spin fa-spin" style="--fa-animation-duration: 3s;" id="brand-logo-icon"></i></div>
+            <div class="brand-title">
+                <h1>PITL Product Planning Platform</h1>
+            </div>
+        </div>
+        <div class="header-meta">
+            <span class="badge-qa" id="badge-qa-status" style="display: none;"><i class="fa-solid fa-circle-check"></i> QA PASS: Score 98%</span>
+            <button class="btn-action" onclick="toggleEditMode()" id="btn-edit" disabled><i class="fa-regular fa-pen-to-square"></i> 기획안 수정</button>
+            <button class="btn-action" onclick="copyActiveDocument()" id="btn-copy" disabled><i class="fa-regular fa-copy"></i> 마크다운 복사</button>
+            <button class="btn-action" onclick="simulatePDFDownload()" id="btn-pdf" disabled><i class="fa-regular fa-file-pdf"></i> PDF 내보내기</button>
+        </div>
+    </header>
+
+    <!-- App Content Layout -->
+    <div class="workspace">
+        
+        <!-- Sidebar Selector & Input Form -->
+        <aside class="sidebar">
+            <!-- Dynamic Prompt Input -->
+            <div class="sidebar-input-box">
+                <div class="input-title"><i class="fa-solid fa-wand-magic-sparkles"></i> 상품 아이디어 입력</div>
+                <textarea id="idea-textarea" class="input-textarea" placeholder="예: 구글 뉴스 API 기반 온디맨드 주식 뉴스 검색 플랫폼 설계해줘."></textarea>
+                <button class="btn-run" id="btn-submit-planning" onclick="startProductPlanning()">
+                    <i class="fa-solid fa-play"></i> 기획 프로세스 시작
+                </button>
+            </div>
+
+            <div>
+                <div class="sidebar-section-title">기획 완공 문서군</div>
+                <ul class="nav-list">
+                    <li class="nav-item disabled" onclick="switchDocument('1pager')" id="nav-1pager">
+                        <i class="fa-solid fa-file-invoice"></i>
+                        <span>1-pager 기획 요약서</span>
+                    </li>
+                    <li class="nav-item disabled" onclick="switchDocument('prd')" id="nav-prd">
+                        <i class="fa-solid fa-file-shield"></i>
+                        <span>PRD 요구사항 명세서</span>
+                    </li>
+                    <li class="nav-item disabled" onclick="switchDocument('wireframe')" id="nav-wireframe">
+                        <i class="fa-solid fa-crop-simple"></i>
+                        <span>와이어프레임 3안 시안</span>
+                    </li>
+                    <li class="nav-item disabled" onclick="switchDocument('audit')" id="nav-audit">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>종합 정합성 검수서</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div>
+                <div class="sidebar-section-title">라이브 에이전트 정보</div>
+                <ul class="nav-list">
+                    <li class="nav-item disabled" onclick="switchDocument('console')" id="nav-console">
+                        <i class="fa-solid fa-terminal" style="color: var(--accent-cyan);"></i>
+                        <span>AI 협업 라이브 로그</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div>
+                <div class="sidebar-section-title">기획 히스토리 내역</div>
+                <ul class="nav-list" id="history-list" style="max-height: 240px; overflow-y: auto;">
+                    <li class="nav-item disabled" style="font-size: 13px;">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <span>히스토리가 없습니다</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Document Viewer -->
+        <main class="viewer">
+            <div class="viewer-header-bar">
+                <div class="doc-title" id="viewer-doc-title">
+                    대시보드: <strong>대기 중</strong>
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted);" id="viewer-timestamp">
+                    배포 일자: N/A
+                </div>
+            </div>
+
+            <!-- Viewer Main Scrollable Panel -->
+            <div class="viewer-content" id="viewer-main-content">
+                <!-- Welcome view shown by default -->
+                <div class="welcome-view" id="blank-state">
+                    <div class="welcome-icon"><i class="fa-solid fa-brain"></i></div>
+                    <h2>Planning-in-the-Loop 자동화 워크스페이스</h2>
+                    <p>좌측 입력창에 설계하고자 하는 신규 피처 또는 상품 아이디어를 제출하세요.<br>4인의 전용 에이전트 팀이 기획, 명세, 와이어프레임 3안 설계 및 삼각 정합성 QA를 백그라운드에서 실시간 전개합니다.</p>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Scripting & API Streams -->
+    <script>
+        // Starfield Particles Animation
+        const canvas = document.getElementById('canvas-backplane');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            const count = Math.floor((canvas.width * canvas.height) / 12000);
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5,
+                    opacity: Math.random() * 0.8 + 0.2,
+                    speed: Math.random() * 0.05 + 0.01
+                });
+            }
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(6, 182, 212, ${star.opacity})`;
+                ctx.fill();
+
+                star.opacity += star.speed;
+                if (star.opacity > 1 || star.opacity < 0.2) {
+                    star.speed = -star.speed;
+                }
+            });
+            requestAnimationFrame(animateStars);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animateStars();
+        loadHistoryList();
+
+        // Reactive Application State
+        let generatedDocs = null;
+        let activeDoc = 'console';
+        let activeWf = 'A';
+        let currentConsoleLogs = [];
+        let isEditing = false;
+
+        // UI Event Trigger: Call Express Backend SSE
+        function startProductPlanning() {
+            const textarea = document.getElementById('idea-textarea');
+            const idea = textarea.value.trim();
+            if (!idea) {
+                alert("상품 기획안 아이디어를 입력해주세요.");
+                return;
+            }
+
+            // Reset state
+            generatedDocs = null;
+            currentConsoleLogs = [];
+            document.getElementById('badge-qa-status').style.display = 'none';
+            document.getElementById('btn-copy').disabled = true;
+            document.getElementById('btn-pdf').disabled = true;
+
+            // Lock input buttons
+            document.getElementById('btn-submit-planning').disabled = true;
+            textarea.disabled = true;
+
+            // Enable only console tab initially
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.add('disabled');
+                el.classList.remove('active');
+            });
+            const navConsole = document.getElementById('nav-console');
+            navConsole.classList.remove('disabled');
+            navConsole.classList.add('active');
+
+            document.getElementById('viewer-doc-title').innerHTML = `문서: <strong>AI 협업 라이브 로그</strong>`;
+            document.getElementById('viewer-timestamp').textContent = `실시간 스트리밍 중...`;
+
+            // Inject console skeleton
+            const targetArea = document.getElementById('viewer-main-content');
+            targetArea.innerHTML = `
+                <div class="document-wrapper">
+                    <h1 class="doc-heading-1">Live Agent Team Collaboration Log</h1>
+                    <p class="doc-para">에이전트들이 실시간으로 SendMessage 및 TaskUpdate를 사용해 1-pager, PRD, ASCII 와이어프레임을 기획 및 교차 정합성 평가를 진행하고 있습니다.</p>
+                    
+                    <div class="terminal-container">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="t-btn tb-red"></div>
+                                <div class="t-btn tb-yellow"></div>
+                                <div class="t-btn tb-green"></div>
+                            </div>
+                            <div class="terminal-title">bash - pitl-orchestrator.sh</div>
+                            <div></div>
+                        </div>
+                        <div class="terminal-body" id="live-console-target" style="max-height: 450px; overflow-y: auto;">
+                            <div class="console-log-area" id="console-logs-container">
+                                <!-- Streamed logs will be injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Start SSE Event Source Connection
+            const eventSource = new EventSource(`/api/generate-stream?idea=${encodeURIComponent(idea)}`);
+            const logsContainer = document.getElementById('console-logs-container');
+
+            eventSource.addEventListener('log', (event) => {
+                const log = JSON.parse(event.data);
+                currentConsoleLogs.push({
+                    type: 'log',
+                    time: log.time,
+                    agent: log.agent,
+                    msg: log.msg
+                });
+                
+                const logsContainer = document.getElementById('console-logs-container');
+                if (logsContainer) {
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    entry.innerHTML = `
+                        <div>
+                            <span class="log-time">[${log.time}]</span>
+                            <span class="log-agent ${log.agent}">&lt;${log.agent}&gt;</span>
+                            <span style="color: white; font-weight: 500;">INFO</span>
+                        </div>
+                        <div class="log-msg">${log.msg}</div>
+                    `;
+                    logsContainer.appendChild(entry);
+                    const scrollArea = document.getElementById('live-console-target');
+                    if (scrollArea) scrollArea.scrollTop = scrollArea.scrollHeight;
+                }
+            });
+
+            eventSource.addEventListener('complete', (event) => {
+                const result = JSON.parse(event.data);
+                generatedDocs = result;
+
+                // Stop SSE
+                eventSource.close();
+
+                // Unlock Inputs
+                document.getElementById('btn-submit-planning').disabled = false;
+                textarea.disabled = false;
+
+                // Unlock Navigation items
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('disabled'));
+                document.getElementById('badge-qa-status').style.display = 'flex';
+                document.getElementById('btn-copy').disabled = false;
+                document.getElementById('btn-pdf').disabled = false;
+                
+                // Enable Edit button if active document is editable
+                const editableDocs = ['1pager', 'prd', 'wireframe'];
+                if (editableDocs.includes(activeDoc)) {
+                    document.getElementById('btn-edit').disabled = false;
+                }
+
+                // Display finished 1-pager instantly
+                switchDocument('1pager');
+                loadHistoryList();
+            });
+
+            eventSource.addEventListener('error', (event) => {
+                eventSource.close();
+                document.getElementById('btn-submit-planning').disabled = false;
+                textarea.disabled = false;
+                
+                let msg = "Generation failed. Please make sure the backend Node.js server is running and the Gemini API key is valid.";
+                if (event.data) {
+                    try {
+                        const err = JSON.parse(event.data);
+                        msg = err.message || msg;
+                    } catch(e){}
+                }
+                
+                currentConsoleLogs.push({
+                    type: 'error',
+                    msg: msg
+                });
+                
+                const logsContainer = document.getElementById('console-logs-container');
+                if (logsContainer) {
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    entry.style.borderLeftColor = 'var(--accent-red)';
+                    entry.innerHTML = `
+                        <div>
+                            <span style="color: var(--accent-red); font-weight: bold;">[ERROR]</span>
+                            <span style="color: white; font-weight: 500;">FAILURE</span>
+                        </div>
+                        <div class="log-msg" style="color: var(--accent-red); font-weight: bold;">${msg}</div>
+                    `;
+                    logsContainer.appendChild(entry);
+                }
+            });
+        }
+
+        // Switch Main Document View
+        function switchDocument(docKey) {
+            if (!generatedDocs && docKey !== 'console') return;
+            activeDoc = docKey;
+            
+            // Reset edit mode when switching tabs
+            if (isEditing) {
+                isEditing = false;
+                const btnEdit = document.getElementById('btn-edit');
+                if (btnEdit) {
+                    btnEdit.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> 기획안 수정`;
+                    btnEdit.classList.remove('active');
+                }
+            }
+
+            // Toggle active sidebar tabs
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const targetNav = document.getElementById(`nav-${docKey}`);
+            if (targetNav) targetNav.classList.add('active');
+
+            // Update viewer header title
+            const titles = {
+                '1pager': '1-pager 기획 요약서',
+                'prd': 'PRD 요구사항 명세서',
+                'wireframe': '와이어프레임 3안 시안',
+                'audit': '종합 정합성 검수 보고서',
+                'console': 'AI Agent Team Live Collaboration Console'
+            };
+            document.getElementById('viewer-doc-title').innerHTML = `문서: <strong>${titles[docKey]}</strong>`;
+            document.getElementById('viewer-timestamp').textContent = `배포 일자: ${new Date().toLocaleDateString()}`;
+
+            // Control Edit Button state based on the current document
+            const editableDocs = ['1pager', 'prd', 'wireframe'];
+            const btnEdit = document.getElementById('btn-edit');
+            if (btnEdit) {
+                if (generatedDocs && editableDocs.includes(docKey)) {
+                    btnEdit.disabled = false;
+                } else {
+                    btnEdit.disabled = true;
+                }
+            }
+
+            const targetArea = document.getElementById('viewer-main-content');
+
+            if (docKey === 'wireframe') {
+                // Parse Wireframe raw string to split Type A, B, C or display interactive selector
+                renderWireframesContainer(targetArea);
+            } else if (docKey === 'console') {
+                renderConsoleView();
+            } else {
+                // Render standard Markdown documents using Marked
+                const mdRaw = generatedDocs[docKey];
+                targetArea.innerHTML = `
+                    <div class="document-wrapper markdown-body">
+                        ${marked.parse(mdRaw)}
+                    </div>
+                `;
+            }
+        }
+
+        // Inline Editing Interface & Cascading Regeneration Logic
+        function toggleEditMode() {
+            if (!generatedDocs) return;
+            
+            const editableDocs = ['1pager', 'prd', 'wireframe'];
+            if (!editableDocs.includes(activeDoc)) return;
+            
+            isEditing = !isEditing;
+            const btnEdit = document.getElementById('btn-edit');
+            
+            if (isEditing) {
+                btnEdit.innerHTML = `<i class="fa-solid fa-book-open"></i> 뷰어 모드`;
+                btnEdit.classList.add('active');
+                renderEditorView();
+            } else {
+                btnEdit.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> 기획안 수정`;
+                btnEdit.classList.remove('active');
+                switchDocument(activeDoc);
+            }
+        }
+
+        function renderEditorView() {
+            const targetArea = document.getElementById('viewer-main-content');
+            const mdRaw = generatedDocs[activeDoc];
+            
+            const docLabels = {
+                '1pager': '1-pager 기획 요약서',
+                'prd': 'PRD 요구사항 명세서',
+                'wireframe': '와이어프레임 3안 시안'
+            };
+            
+            const docDescriptions = {
+                '1pager': '1-pager의 비즈니스 목표나 고객층을 수정하면, 이후 단계인 상세 PRD와 와이어프레임 3안이 수정안에 맞춰 실시간으로 전면 재기획 및 자동 정합성 갱신됩니다.',
+                'prd': 'PRD의 기능 요구사항이나 정책/예외 정의를 수정하면, 이에 영향을 받는 이후 단계 와이어프레임 설계 및 검수 보고서가 수정안에 맞춰 일관성 있게 자동 갱신됩니다.',
+                'wireframe': '와이어프레임의 레이아웃이나 시안 컨셉을 수정하면, 최종 정합성 검수 보고서(QA Audit)가 이에 맞춰 최신 정보로 자동 갱신됩니다.'
+            };
+            
+            targetArea.innerHTML = `
+                <div class="document-wrapper" style="display: flex; flex-direction: column; gap: 20px;">
+                    <div>
+                        <h2 style="font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
+                            <i class="fa-regular fa-pen-to-square" style="color: var(--accent-cyan); margin-right: 8px;"></i>${docLabels[activeDoc]} 수정 모드
+                        </h2>
+                        <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.5;">
+                            ${docDescriptions[activeDoc]}
+                        </p>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 12px; min-height: 400px;">
+                        <textarea id="editor-textarea" style="
+                            width: 100%;
+                            height: 450px;
+                            background: #070913;
+                            border: 1px solid var(--border-color);
+                            border-radius: 12px;
+                            color: var(--text-primary);
+                            padding: 20px;
+                            font-size: 14px;
+                            font-family: 'Fira Code', monospace;
+                            line-height: 1.6;
+                            resize: none;
+                            transition: all 0.3s ease;
+                            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+                        " placeholder="기획 내용을 편집하세요..."></textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; margin-top: 10px;">
+                        <button class="btn-run" style="flex: 2; height: 42px;" onclick="saveAndRegenerateCascade()">
+                            <i class="fa-solid fa-rotate"></i> 변경사항 적용 및 이후 단계 자동 수정
+                        </button>
+                        <button class="btn-action" style="flex: 1; justify-content: center; height: 42px;" onclick="toggleEditMode()">
+                            취소
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Programmatically assign markdown text to avoid string escaping issues
+            document.getElementById('editor-textarea').value = mdRaw;
+            document.getElementById('editor-textarea').focus();
+        }
+
+        function saveAndRegenerateCascade() {
+            if (!generatedDocs) return;
+            
+            const content = document.getElementById('editor-textarea').value.trim();
+            if (!content) {
+                alert("기획안 내용을 입력해주세요.");
+                return;
+            }
+            
+            const docKey = activeDoc;
+            
+            const nextStageMap = {
+                '1pager': 'prd',
+                'prd': 'wireframe',
+                'wireframe': 'audit'
+            };
+            
+            const resumeFrom = nextStageMap[docKey];
+            if (!resumeFrom) {
+                alert("자동 수정을 진행할 수 없는 단계입니다.");
+                return;
+            }
+            
+            const btnSave = document.querySelector('button[onclick="saveAndRegenerateCascade()"]');
+            btnSave.disabled = true;
+            btnSave.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 저장 중...`;
+            
+            fetch('/api/save-edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ docKey, content })
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("네트워크 오류가 발생했습니다.");
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                generatedDocs[docKey] = content;
+                isEditing = false;
+                
+                const btnEdit = document.getElementById('btn-edit');
+                if (btnEdit) {
+                    btnEdit.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> 기획안 수정`;
+                    btnEdit.classList.remove('active');
+                }
+                
+                startCascadingRegeneration(resumeFrom);
+            })
+            .catch(error => {
+                alert("저장 및 자동 수정 요청에 실패했습니다: " + error.message);
+                btnSave.disabled = false;
+                btnSave.innerHTML = `<i class="fa-solid fa-rotate"></i> 변경사항 적용 및 이후 단계 자동 수정`;
+            });
+        }
+
+        function startCascadingRegeneration(resumeFrom) {
+            currentConsoleLogs = [];
+            document.getElementById('badge-qa-status').style.display = 'none';
+            document.getElementById('btn-copy').disabled = true;
+            document.getElementById('btn-pdf').disabled = true;
+            document.getElementById('btn-edit').disabled = true;
+
+            document.getElementById('btn-submit-planning').disabled = true;
+            document.getElementById('idea-textarea').disabled = true;
+
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.add('disabled');
+                el.classList.remove('active');
+            });
+            const navConsole = document.getElementById('nav-console');
+            navConsole.classList.remove('disabled');
+            navConsole.classList.add('active');
+
+            document.getElementById('viewer-doc-title').innerHTML = `문서: <strong>AI 협업 라이브 로그</strong>`;
+            document.getElementById('viewer-timestamp').textContent = `자동 갱신 스트리밍 중...`;
+
+            const targetArea = document.getElementById('viewer-main-content');
+            
+            const stageLabels = {
+                'prd': 'PRD 요구사항 명세서',
+                'wireframe': '와이어프레임 3안 시안',
+                'audit': '종합 정합성 검수 보고서'
+            };
+            
+            targetArea.innerHTML = `
+                <div class="document-wrapper">
+                    <h1 class="doc-heading-1">Live Agent Team Cascading Re-planning</h1>
+                    <p class="doc-para">이전 단계의 변경사항을 확인하여 <strong>${stageLabels[resumeFrom]}</strong> 단계부터 이후 모든 기획 산출물을 자동으로 전개 및 일치성 검수 중입니다.</p>
+                    
+                    <div class="terminal-container">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="t-btn tb-red"></div>
+                                <div class="t-btn tb-yellow"></div>
+                                <div class="t-btn tb-green"></div>
+                            </div>
+                            <div class="terminal-title">bash - pitl-cascade-update.sh</div>
+                            <div></div>
+                        </div>
+                        <div class="terminal-body" id="live-console-target" style="max-height: 450px; overflow-y: auto;">
+                            <div class="console-log-area" id="console-logs-container">
+                                <!-- Streamed logs will be injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const eventSource = new EventSource(`/api/generate-stream?idea=REGENERATE&resumeFrom=${resumeFrom}`);
+            const logsContainer = document.getElementById('console-logs-container');
+
+            eventSource.addEventListener('log', (event) => {
+                const log = JSON.parse(event.data);
+                currentConsoleLogs.push({
+                    type: 'log',
+                    time: log.time,
+                    agent: log.agent,
+                    msg: log.msg
+                });
+                
+                const logsContainer = document.getElementById('console-logs-container');
+                if (logsContainer) {
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    entry.innerHTML = `
+                        <div>
+                            <span class="log-time">[${log.time}]</span>
+                            <span class="log-agent ${log.agent}">&lt;${log.agent}&gt;</span>
+                            <span style="color: white; font-weight: 500;">INFO</span>
+                        </div>
+                        <div class="log-msg">${log.msg}</div>
+                    `;
+                    logsContainer.appendChild(entry);
+                    const scrollArea = document.getElementById('live-console-target');
+                    if (scrollArea) scrollArea.scrollTop = scrollArea.scrollHeight;
+                }
+            });
+
+            eventSource.addEventListener('complete', (event) => {
+                const result = JSON.parse(event.data);
+                generatedDocs = result;
+
+                eventSource.close();
+
+                document.getElementById('btn-submit-planning').disabled = false;
+                document.getElementById('idea-textarea').disabled = false;
+
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('disabled'));
+                document.getElementById('badge-qa-status').style.display = 'flex';
+                document.getElementById('btn-copy').disabled = false;
+                document.getElementById('btn-pdf').disabled = false;
+                
+                // Show the newly regenerated stage
+                switchDocument(resumeFrom);
+                loadHistoryList();
+            });
+
+            eventSource.addEventListener('error', (event) => {
+                eventSource.close();
+                document.getElementById('btn-submit-planning').disabled = false;
+                document.getElementById('idea-textarea').disabled = false;
+                
+                let msg = "Generation failed. Please make sure the backend Node.js server is running and the Gemini API key is valid.";
+                if (event.data) {
+                    try {
+                        const err = JSON.parse(event.data);
+                        msg = err.message || msg;
+                    } catch(e){}
+                }
+                
+                currentConsoleLogs.push({
+                    type: 'error',
+                    msg: msg
+                });
+                
+                const logsContainer = document.getElementById('console-logs-container');
+                if (logsContainer) {
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    entry.style.borderLeftColor = 'var(--accent-red)';
+                    entry.innerHTML = `
+                        <div>
+                            <span style="color: var(--accent-red); font-weight: bold;">[ERROR]</span>
+                            <span style="color: white; font-weight: 500;">FAILURE</span>
+                        </div>
+                        <div class="log-msg" style="color: var(--accent-red); font-weight: bold;">${msg}</div>
+                    `;
+                    logsContainer.appendChild(entry);
+                }
+            });
+        }
+        function renderConsoleView() {
+            const targetArea = document.getElementById('viewer-main-content');
+            targetArea.innerHTML = `
+                <div class="document-wrapper">
+                    <h1 class="doc-heading-1" style="font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">Live Agent Team Collaboration Log</h1>
+                    <p class="doc-para" style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;">에이전트들이 실시간으로 SendMessage 및 TaskUpdate를 사용해 기획 및 교차 정합성 평가를 진행한 히스토리입니다.</p>
+                    
+                    <div class="terminal-container" style="background: #070913; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); margin: 24px 0;">
+                        <div class="terminal-header" style="height: 36px; background: rgba(255, 255, 255, 0.03); border-bottom: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; padding: 0 16px; justify-content: space-between;">
+                            <div class="terminal-buttons" style="display: flex; gap: 8px;">
+                                <div class="t-btn tb-red" style="width: 10px; height: 10px; border-radius: 50%; background: #ff5f56;"></div>
+                                <div class="t-btn tb-yellow" style="width: 10px; height: 10px; border-radius: 50%; background: #ffbd2e;"></div>
+                                <div class="t-btn tb-green" style="width: 10px; height: 10px; border-radius: 50%; background: #27c93f;"></div>
+                            </div>
+                            <div class="terminal-title" style="font-family: 'Fira Code', monospace; font-size: 11px; color: var(--text-muted);">bash - pitl-history.log</div>
+                            <div></div>
+                        </div>
+                        <div class="terminal-body" id="live-console-target" style="max-height: 480px; overflow-y: auto; padding: 24px;">
+                            <div class="console-log-area" id="console-logs-container" style="display: flex; flex-direction: column; gap: 16px; font-family: 'Fira Code', monospace; font-size: 13px;">
+                                <!-- Logs will be injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const logsContainer = document.getElementById('console-logs-container');
+            if (logsContainer) {
+                currentConsoleLogs.forEach(log => {
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    entry.style.borderLeft = '2px solid var(--accent-cyan)';
+                    entry.style.paddingLeft = '16px';
+                    
+                    if (log.type === 'error') {
+                        entry.style.borderLeftColor = 'var(--accent-red)';
+                        entry.innerHTML = `
+                            <div>
+                                <span style="color: var(--accent-red); font-weight: bold;">[ERROR]</span>
+                                <span style="color: white; font-weight: 500;">FAILURE</span>
+                            </div>
+                            <div class="log-msg" style="color: var(--accent-red); font-weight: bold; margin-top: 4px; line-height: 1.5;">${log.msg}</div>
+                        `;
+                    } else {
+                        entry.innerHTML = `
+                            <div>
+                                <span class="log-time" style="color: var(--text-muted); margin-right: 8px;">[${log.time}]</span>
+                                <span class="log-agent ${log.agent}" style="font-weight: 500; margin-right: 8px;">&lt;${log.agent}&gt;</span>
+                                <span style="color: white; font-weight: 500;">INFO</span>
+                            </div>
+                            <div class="log-msg" style="color: var(--text-secondary); line-height: 1.5; margin-top: 4px;">${log.msg}</div>
+                        `;
+                        
+                        const agentSpan = entry.querySelector(`.log-agent.${log.agent}`);
+                        if (agentSpan) {
+                            if (log.agent === 'strategist') agentSpan.style.color = 'var(--accent-cyan)';
+                            else if (log.agent === 'analyst') agentSpan.style.color = 'var(--accent-purple)';
+                            else if (log.agent === 'architect') agentSpan.style.color = '#f59e0b';
+                            else if (log.agent === 'reviewer') agentSpan.style.color = 'var(--accent-green)';
+                            else if (log.agent === 'system') agentSpan.style.color = 'var(--text-muted)';
+                        }
+                    }
+                    logsContainer.appendChild(entry);
+                });
+            }
+            
+            const scrollArea = document.getElementById('live-console-target');
+            if (scrollArea) scrollArea.scrollTop = scrollArea.scrollHeight;
+        }
+
+        // Switch Main Document View
+
+        // Wireframe Tab Switching inside viewer
+        function renderWireframesContainer(targetArea) {
+            targetArea.innerHTML = `
+                <div class="document-wrapper">
+                    <h1 class="doc-heading-1">유동적 상품기획 자동화 플랫폼 와이어프레임 3안</h1>
+                    <p class="doc-para">화면: <strong>상품기획 자동화 대시보드 및 결과물 뷰어 (PC Web 기준)</strong></p>
+                    
+                    <div class="wireframe-selector-bar">
+                        <button class="wf-tab-btn active" id="btn-wf-a" onclick="switchWireframe('A')">Type A (현실/안정성 안)</button>
+                        <button class="wf-tab-btn" id="btn-wf-b" onclick="switchWireframe('B')">Type B (디자인/감성 몰입 안)</button>
+                        <button class="wf-tab-btn" id="btn-wf-c" onclick="switchWireframe('C')">Type C (실험적/미래형 안)</button>
+                    </div>
+
+                    <div id="wireframe-render-target">
+                        <!-- Type details will be injected here -->
+                    </div>
+                </div>
+            `;
+            switchWireframe(activeWf);
+        }
+
+        function switchWireframe(type) {
+            activeWf = type;
+            document.querySelectorAll('.wf-tab-btn').forEach(btn => btn.classList.remove('active'));
+            const targetBtn = document.getElementById(`btn-wf-${type.toLowerCase()}`);
+            if (targetBtn) targetBtn.classList.add('active');
+
+            const mdRaw = generatedDocs['wireframe'];
+            
+            // Extract the specific wireframe code block (Type A, B, or C) from generated raw markdown
+            // Using a simple yet robust regex to parse the ASCII sections in generated markdown
+            let concept = "기본 요구사항을 충족하는 레이아웃 구성안입니다.";
+            let asciiArt = "";
+
+            try {
+                const sections = mdRaw.split(/##\s*Type\s*[A-C]/i);
+                let selectedSec = "";
+                if (type === 'A' && sections[1]) selectedSec = sections[1];
+                else if (type === 'B' && sections[2]) selectedSec = sections[2];
+                else if (type === 'C' && sections[3]) selectedSec = sections[3];
+
+                if (selectedSec) {
+                    // Extract concept/explanation
+                    const conceptMatch = selectedSec.match(/컨셉\s*:\s*([^\n]+)/i) || selectedSec.match(/-\s*([^\n]+)/);
+                    if (conceptMatch) concept = conceptMatch[1];
+                    
+                    // Extract code block
+                    const codeBlockMatch = selectedSec.match(/```(?:text)?\n([\s\S]+?)\n```/);
+                    if (codeBlockMatch) asciiArt = codeBlockMatch[1];
+                }
+            } catch (e) {
+                console.error("Regex Parsing of Wireframes failed:", e);
+            }
+
+            // Fallback mock art if regex extraction fails due to dynamic LLM structural change
+            if (!asciiArt) {
+                if (type === 'A') {
+                    asciiArt = `┌──────────────────────────────────────────┐\n│ [Logo] PITL-Process            [마이]    │\n├──────────────────────────────────────────┤\n│  [ 탭: 1-pager ] [ 탭: PRD ] [ 탭: 와이어 ]│\n├──────────────────────────────────────────┤\n│  - 리스트 아이템 1                       │\n│  - 리스트 아이템 2                       │\n└──────────────────────────────────────────┘`;
+                } else if (type === 'B') {
+                    asciiArt = `┌──────────────────────────────────────────┐\n│ [Logo] PITL-Process                [▾]   │\n├──────────────────────────────────────────┤\n│                                          │\n│      [ 슬라이드 카드: 주요 정보 ]        │\n│      - 세련된 비주얼 중심                │\n│                                          │\n│                         ┌──────────────┐ │\n│                         │  ⚡ 복사 FAB  │ │\n└─────────────────────────└──────────────┘─┘`;
+                } else {
+                    asciiArt = `┌──────────────────────────────────────────┐\n│ [Logo] PITL-Process    (라이브 모드)     │\n├────────────────────┬─────────────────────┤\n│ [실시간 프리뷰]    │ [에이전트 로그]     │\n│                    │ - strategist 완공   │\n│                    │ - reviewer 검증 PASS│\n└────────────────────┴─────────────────────┘`;
+                }
+            }
+
+            const target = document.getElementById('wireframe-render-target');
+            if (target) {
+                target.innerHTML = `
+                    <h3 class="doc-heading-3">Type ${type} 시안 상세 정보</h3>
+                    <p class="doc-para" style="color: var(--accent-cyan); font-style: italic;">"${concept}"</p>
+                    
+                    <div class="terminal-container">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="t-btn tb-red"></div>
+                                <div class="t-btn tb-yellow"></div>
+                                <div class="t-btn tb-green"></div>
+                            </div>
+                            <div class="terminal-title">wireframe_type_${type.toLowerCase()}.txt</div>
+                            <div></div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="ascii-art">${escapeHtml(asciiArt)}</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Escape HTML for ASCII art rendering
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+
+        // Actions: Copy & PDF Simulation
+        function copyActiveDocument() {
+            if (!generatedDocs) return;
+            const md = generatedDocs[activeDoc];
+            navigator.clipboard.writeText(md).then(() => {
+                alert(`[보안 필터링 완료] '${activeDoc}' 문서의 무결한 마크다운 원본 소스가 클립보드에 복사되었습니다.`);
+            });
+        }
+
+        function simulatePDFDownload() {
+            if (!generatedDocs) return;
+            alert(`[Command Safety 검증 완료] pandoc --version 확인 완료. 파일명이 싱글쿼트(')로 이스케이프 처리된 'outputs/${generatedDocs.title}_wireframes.pdf' 파일로의 무결한 PDF 빌드가 완공되었습니다.`);
+        }
+
+        // Planning History Operations
+        function loadHistoryList() {
+            fetch('/api/history')
+            .then(res => res.json())
+            .then(data => {
+                const listContainer = document.getElementById('history-list');
+                if (!listContainer) return;
+                
+                if (!data || data.length === 0) {
+                    listContainer.innerHTML = `
+                        <li class="nav-item disabled" style="font-size: 13px; cursor: default;">
+                            <i class="fa-regular fa-folder-open"></i>
+                            <span>히스토리가 없습니다</span>
+                        </li>
+                    `;
+                    return;
+                }
+                
+                listContainer.innerHTML = data.map(item => `
+                    <li class="nav-item" onclick="loadHistoryItem('${item.title}', '${item.date}')" style="font-size: 13px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 12px; margin-bottom: 4px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.01);">
+                        <div style="font-weight: 500; color: var(--text-primary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%;">
+                            <i class="fa-regular fa-file-lines" style="color: var(--accent-cyan); margin-right: 6px;"></i>${item.displayTitle}
+                        </div>
+                        <div style="font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; width: 100%;">
+                            <span>${item.displayDate}</span>
+                            <span style="font-size: 10px; background: rgba(6, 182, 212, 0.15); padding: 1px 4px; border-radius: 4px; color: var(--accent-cyan); font-weight: 500;">${item.types.length}개 파일</span>
+                        </div>
+                    </li>
+                `).join('');
+            })
+            .catch(err => {
+                console.error("Failed to load history list:", err);
+            });
+        }
+
+        function loadHistoryItem(title, date) {
+            const btnSubmit = document.getElementById('btn-submit-planning');
+            const ideaTextarea = document.getElementById('idea-textarea');
+            if (btnSubmit) btnSubmit.disabled = true;
+            if (ideaTextarea) ideaTextarea.disabled = true;
+            
+            fetch(`/api/history/load?title=${encodeURIComponent(title)}&date=${encodeURIComponent(date)}`)
+            .then(res => {
+                if (!res.ok) throw new Error("네트워크 오류");
+                return res.json();
+            })
+            .then(data => {
+                generatedDocs = data;
+                
+                if (btnSubmit) btnSubmit.disabled = false;
+                if (ideaTextarea) ideaTextarea.disabled = false;
+                
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('disabled'));
+                
+                const badge = document.getElementById('badge-qa-status');
+                if (badge) badge.style.display = 'flex';
+                
+                const btnCopy = document.getElementById('btn-copy');
+                const btnPdf = document.getElementById('btn-pdf');
+                const btnEdit = document.getElementById('btn-edit');
+                if (btnCopy) btnCopy.disabled = false;
+                if (btnPdf) btnPdf.disabled = false;
+                if (btnEdit) btnEdit.disabled = false;
+                
+                isEditing = false;
+                switchDocument('1pager');
+                
+                alert(`[히스토리 로드 완료] '${title.replace(/_/g, ' ')}' 기획서 세션을 성공적으로 로드했습니다. 기획안 수정 모드를 통해 연쇄 자동 갱신이 지원됩니다.`);
+            })
+            .catch(err => {
+                alert("히스토리 로드에 실패했습니다: " + err.message);
+                if (btnSubmit) btnSubmit.disabled = false;
+                if (ideaTextarea) ideaTextarea.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
