@@ -27,16 +27,20 @@ if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir);
 if (!fs.existsSync(outputsDir)) fs.mkdirSync(outputsDir);
 
 // Helper to call Gemini API
+let preferredModelIndex = 0;
+const modelsToTry = [
+    'gemini-3.5-flash',
+    'gemini-3.1-flash-lite',
+    'gemini-2.5-flash',
+    'gemini-1.5-flash'
+];
+
 async function callGemini(systemInstruction, userPrompt, logCallback = null) {
-    const modelsToTry = [
-        'gemini-3.5-flash',
-        'gemini-3.1-flash-lite',
-        'gemini-2.5-flash',
-        'gemini-2.0-flash'
-    ];
-    
     let lastError = null;
-    for (const model of modelsToTry) {
+    
+    for (let offset = 0; offset < modelsToTry.length; offset++) {
+        const modelIdx = (preferredModelIndex + offset) % modelsToTry.length;
+        const model = modelsToTry[modelIdx];
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
         
         const requestBody = {
@@ -62,6 +66,7 @@ async function callGemini(systemInstruction, userPrompt, logCallback = null) {
             if (!text) {
                 throw new Error("No response text from Gemini API");
             }
+            preferredModelIndex = modelIdx; // Update preferred index on success!
             return text;
         } catch (error) {
             const errMsg = error.response?.data?.error?.message || error.message;
@@ -371,7 +376,12 @@ app.get('/api/generate-stream', async (req, res) => {
         sendSSE('log', { time, agent, msg });
     };
 
+    let heartbeat;
     try {
+        req.socket.setTimeout(0);
+        heartbeat = setInterval(() => {
+            res.write(': heartbeat\n\n');
+        }, 15000);
         let originalIdea = idea;
         const isRegen = (resumeFrom === 'prd' || resumeFrom === 'wireframe' || resumeFrom === 'audit');
 
@@ -702,6 +712,7 @@ app.get('/api/generate-stream', async (req, res) => {
         logAgent('system', `에러 발생: ${error.message}`);
         sendSSE('error', { message: error.message });
     } finally {
+        if (heartbeat) clearInterval(heartbeat);
         res.end();
     }
 });
