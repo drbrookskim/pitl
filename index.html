@@ -2118,18 +2118,22 @@
                 <div class="password-logo">
                     <i class="fa-solid fa-key"></i>
                 </div>
-                <h2 class="password-title">비밀번호를 입력하세요</h2>
+                <h2 class="password-title">Decrypt Access</h2>
+                <p class="password-subtitle">
+                    Planning-in-the-Loop Agentic Workspace가 암호화되어 있습니다.<br>
+                    암호를 입력하세요.
+                </p>
             </div>
             
             <div class="password-input-group">
                 <div class="password-input-wrapper">
                     <i class="fa-solid fa-lock input-icon"></i>
-                    <input type="password" id="pitl-password-input" placeholder="비밀번호" onkeydown="handlePasswordKeydown(event)">
+                    <input type="password" id="pitl-password-input" placeholder="암호입력" onkeydown="handlePasswordKeydown(event)">
                     <button class="password-toggle-btn" onclick="togglePasswordVisibility()">
                         <i class="fa-regular fa-eye" id="password-eye-icon"></i>
                     </button>
                 </div>
-                <div id="password-error-message" class="password-error">올바르지 않은 비밀번호입니다. 다시 시도해 주세요.</div>
+                <div id="password-error-message" class="password-error">올바르지 않은 암호입니다. 다시 시도해 주세요.</div>
             </div>
             
             <button class="password-submit-btn" onclick="checkMasterPassword()">
