@@ -3,3 +3,4 @@ _workspace/
 .env
 .antigravitycli/
 .gemini/
+.DS_Store

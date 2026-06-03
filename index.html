@@ -58,6 +58,8 @@
             flex-direction: column;
             user-select: none;
             position: relative;
+            word-break: keep-all;
+            word-wrap: break-word;
         }
 
         /* 3D Interactive Cursor Spotlight (Neon.tech style) */
@@ -882,7 +884,8 @@
             font-size: 13px;
             line-height: 1.5;
             color: var(--text-secondary);
-            word-break: break-all;
+            word-break: keep-all;
+            word-wrap: break-word;
         }
 
         .system-notification {
@@ -974,7 +977,7 @@
             gap: 4px;
             flex: 1;
             justify-content: center;
-            max-width: 680px;
+            max-width: 960px;
         }
 
         .chrome-tab {
@@ -982,7 +985,7 @@
             border: 1px solid transparent;
             border-bottom: none;
             color: var(--text-secondary);
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 6px 6px 0 0;
             font-size: 12px;
             font-weight: 500;
@@ -993,6 +996,7 @@
             transition: all 0.2s ease;
             height: 30px;
             margin-top: 12px;
+            white-space: nowrap;
         }
 
         .chrome-tab:hover:not(.disabled) {
@@ -1578,6 +1582,361 @@
             color: var(--text-primary);
             background: rgba(0, 0, 0, 0.03);
         }
+
+        /* ==========================================================================
+           4. RESPONSIVE DESIGN (TABLET & MOBILE)
+           ========================================================================== */
+        .stepper-header-row {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .sidebar-toggle-btn {
+            display: none; /* hidden on desktop */
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            margin-right: 8px;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .sidebar-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent-neon);
+        }
+
+        body.light-theme .sidebar-toggle-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar-panel {
+                position: fixed !important;
+                left: -240px !important;
+                top: 0 !important;
+                bottom: 0 !important;
+                width: 240px !important;
+                z-index: 1000 !important;
+                transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+                height: 100vh !important;
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.8) !important;
+            }
+
+            .workspace-view-container.sidebar-open .sidebar-panel {
+                left: 0 !important;
+            }
+
+            .sidebar-toggle-btn {
+                display: inline-flex !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chat-panel {
+                width: 64px !important; /* Shrunk from 300px to exactly fit the vertical icons column */
+                flex-direction: column !important; /* Stack stepper and timeline vertically */
+                position: relative !important;
+                flex-shrink: 0 !important;
+            }
+
+            .stepper-container {
+                flex-direction: column !important;
+                align-items: center !important;
+                width: 100% !important;
+                height: auto !important;
+                border-bottom: 1px solid var(--border-color) !important;
+                border-right: none !important;
+                padding: 12px 4px !important;
+                gap: 12px !important;
+                background: rgba(25, 25, 24, 0.2) !important;
+            }
+
+            .chat-messages-container {
+                width: 100% !important;
+                flex: 1 !important;
+                overflow-y: auto !important;
+                padding: 12px 4px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+            }
+
+            .chat-follow-up-bar {
+                display: none !important;
+            }
+
+            /* Collapse system notifications to icons-only centered */
+            .system-notification {
+                font-size: 0 !important;
+                padding: 8px !important;
+                width: 32px !important;
+                height: 32px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                border-radius: 50% !important;
+                margin: 6px auto !important;
+            }
+
+            .system-notification i {
+                font-size: 13px !important;
+                margin: 0 !important;
+            }
+
+            /* Collapse all chat bubbles to show only the icon, centered in the narrow column */
+            .chat-bubble {
+                justify-content: center !important;
+                margin: 6px 0 !important;
+                width: 100% !important;
+            }
+
+            .chat-bubble .bubble-content {
+                display: none !important;
+            }
+
+            .chat-bubble .bubble-avatar {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 13px !important;
+                margin: 0 auto !important;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+            }
+
+            .stepper-header-row {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 100% !important;
+            }
+
+            .sidebar-toggle-btn {
+                margin: 0 0 4px 0 !important;
+            }
+
+            .stepper-title {
+                display: none !important;
+            }
+
+            .step-item {
+                padding: 6px !important;
+                gap: 0 !important;
+                border: none !important;
+                background: transparent !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 100% !important;
+            }
+
+            .step-item.active {
+                background: transparent !important;
+                border-color: transparent !important;
+            }
+
+            .step-item.completed {
+                background: transparent !important;
+                border-color: transparent !important;
+            }
+
+            .step-label, .step-status {
+                display: none !important;
+            }
+
+            .step-icon {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 14px !important;
+                margin: 0 !important;
+                border-radius: 50% !important;
+            }
+
+            /* Computer Panel detailed view optimizations for tight spaces */
+            .chrome-dots, .chrome-title-bar > div:last-child {
+                display: none !important;
+            }
+
+            .chrome-tab-container {
+                max-width: 100% !important;
+                padding: 0 4px !important;
+                gap: 2px !important;
+            }
+
+            .chrome-tab {
+                padding: 6px 8px !important;
+                font-size: 11px !important;
+                gap: 4px !important;
+            }
+
+            .chrome-tab i {
+                font-size: 11px !important;
+            }
+
+            .chrome-nav-buttons {
+                display: none !important;
+            }
+
+            .chrome-actions {
+                gap: 4px !important;
+            }
+
+            .chrome-actions .btn-minimal {
+                font-size: 0 !important;
+                padding: 8px !important;
+                width: 32px !important;
+                height: 32px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 0 !important;
+            }
+
+            .chrome-actions .btn-minimal i {
+                font-size: 14px !important;
+                margin: 0 !important;
+            }
+
+            .badge-qa {
+                font-size: 0 !important;
+                padding: 6px !important;
+                border-radius: 50% !important;
+                width: 24px !important;
+                height: 24px !important;
+                justify-content: center !important;
+                border-color: rgba(16, 185, 129, 0.3) !important;
+            }
+
+            .badge-qa i {
+                margin: 0 !important;
+                font-size: 12px !important;
+            }
+
+            .viewer-canvas {
+                padding: 20px 16px !important;
+            }
+
+            .markdown-body {
+                font-size: 13px !important;
+            }
+
+            .markdown-body h1 {
+                font-size: 20px !important;
+                margin-bottom: 16px !important;
+                padding-bottom: 12px !important;
+            }
+
+            .markdown-body h2 {
+                font-size: 16px !important;
+                margin-top: 24px !important;
+                margin-bottom: 12px !important;
+            }
+
+            .markdown-body table {
+                display: block !important;
+                width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+
+            .markdown-body pre {
+                overflow-x: auto !important;
+                white-space: pre !important;
+                word-wrap: normal !important;
+                max-width: 100% !important;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .chrome-tab {
+                font-size: 0 !important;
+                padding: 8px !important;
+                width: 32px !important;
+                height: 32px !important;
+                border-radius: 50% !important;
+                margin-top: 8px !important;
+                justify-content: center !important;
+            }
+
+            .chrome-tab i {
+                font-size: 13px !important;
+                margin: 0 !important;
+            }
+        }
+
+        /* Custom Toast Notification */
+        .pitl-toast-container {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(11, 11, 10, 0.85);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid rgba(0, 229, 153, 0.25);
+            border-radius: 12px;
+            padding: 16px 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 153, 0.15);
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: -0.01em;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .pitl-toast-container.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .pitl-toast-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(0, 229, 153, 0.12);
+            color: var(--accent-neon);
+            font-size: 13px;
+            box-shadow: 0 0 10px rgba(0, 229, 153, 0.2);
+            animation: pulse-neon 2s infinite;
+        }
+        @keyframes pulse-neon {
+            0% { box-shadow: 0 0 0 0 rgba(0, 229, 153, 0.5); }
+            70% { box-shadow: 0 0 0 8px rgba(0, 229, 153, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 229, 153, 0); }
+        }
     </style>
 </head>
 <body class="state-landing">
@@ -1670,6 +2029,8 @@
        2. 3-PANEL WORKSPACE STATE VIEW
        ========================================================================== -->
     <div class="workspace-view-container">
+        <!-- Sidebar Backdrop Overlay -->
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
         
         <!-- PANEL 1: LEFT SIDEBAR (History, Actions, Reset) -->
         <aside class="sidebar-panel">
@@ -1702,7 +2063,12 @@
             
             <!-- Dynamic workflow progressive checklist -->
             <div class="stepper-container">
-                <div class="stepper-title">에이전트 워크플로우 진행 정보</div>
+                <div class="stepper-header-row">
+                    <button class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="메뉴 열기">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="stepper-title">에이전트 워크플로우 진행 정보</div>
+                </div>
                 
                 <div class="step-item" id="step-strategist">
                     <div class="step-icon"><i class="fa-solid fa-compass"></i></div>
@@ -1762,6 +2128,12 @@
                         </button>
                         <button class="chrome-tab disabled nav-item" id="nav-1pager" onclick="switchDocument('1pager')">
                             <i class="fa-solid fa-file-invoice"></i> 1-Pager 요약
+                        </button>
+                        <button class="chrome-tab disabled nav-item" id="nav-threec" onclick="switchDocument('threec')">
+                            <i class="fa-solid fa-chart-pie"></i> 3C 기반 분석
+                        </button>
+                        <button class="chrome-tab disabled nav-item" id="nav-mece" onclick="switchDocument('mece')">
+                            <i class="fa-solid fa-network-wired"></i> MECE 전략 분석
                         </button>
                         <button class="chrome-tab disabled nav-item" id="nav-prd" onclick="switchDocument('prd')">
                             <i class="fa-solid fa-file-shield"></i> 상세 PRD
@@ -2189,8 +2561,30 @@
             startProductPlanning();
         }
 
+        // Toggle Mobile Sidebar
+        function toggleSidebar() {
+            const container = document.querySelector('.workspace-view-container');
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (container) {
+                const isOpen = container.classList.toggle('sidebar-open');
+                if (overlay) {
+                    if (isOpen) {
+                        overlay.classList.add('active');
+                    } else {
+                        overlay.classList.remove('active');
+                    }
+                }
+            }
+        }
+
         // Return to landing page
         function resetToLanding() {
+            // Close mobile sidebar if open
+            const container = document.querySelector('.workspace-view-container');
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (container) container.classList.remove('sidebar-open');
+            if (overlay) overlay.classList.remove('active');
+
             document.body.className = 'state-landing';
             const textarea = document.getElementById('idea-textarea');
             if (textarea) {
@@ -2358,6 +2752,30 @@
             setComplete(stepPRD);
             setComplete(stepWireframe);
             setComplete(stepAudit);
+        }
+
+        // Show a temporary beautiful completion toast notification
+        function showCompletionToast(message) {
+            let container = document.getElementById('pitl-toast-notif');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'pitl-toast-notif';
+                container.className = 'pitl-toast-container';
+                container.innerHTML = `
+                    <div class="pitl-toast-icon">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <span id="pitl-toast-message"></span>
+                `;
+                document.body.appendChild(container);
+            }
+            
+            document.getElementById('pitl-toast-message').innerText = message || "기획안 생성이 성공적으로 완료되었습니다!";
+            container.classList.add('show');
+            
+            setTimeout(() => {
+                container.classList.remove('show');
+            }, 4000);
         }
 
         // Append beautiful chat bubble to Middle Panel conversational timeline
@@ -2550,6 +2968,9 @@
                     chatContainer.scrollTop = chatContainer.scrollHeight;
                 }
 
+                // Show toast notification
+                showCompletionToast("기획안 생성이 성공적으로 완공되었습니다!");
+
                 // Switch to 1-pager document tab instantly
                 switchDocument('1pager');
                 loadHistoryList();
@@ -2639,6 +3060,8 @@
             const urlPathMap = {
                 'console': 'pitl.ai/workspace/live-terminal',
                 '1pager': 'pitl.ai/workspace/strategist-1pager',
+                'threec': 'pitl.ai/workspace/strategist-3c-analysis',
+                'mece': 'pitl.ai/workspace/strategist-mece-analysis',
                 'prd': 'pitl.ai/workspace/architect-prd-spec',
                 'wireframe': 'pitl.ai/workspace/architect-wireframes',
                 'audit': 'pitl.ai/workspace/reviewer-qa-audit'
@@ -2649,7 +3072,7 @@
             }
 
             // Enable/disable Edit button in browser chrome based on document type
-            const editableDocs = ['1pager', 'prd', 'wireframe'];
+            const editableDocs = ['1pager', 'threec', 'mece', 'prd', 'wireframe'];
             const btnEdit = document.getElementById('btn-edit');
             if (btnEdit) {
                 if (generatedDocs && editableDocs.includes(docKey)) {
@@ -2671,7 +3094,7 @@
             } else if (docKey === 'console') {
                 renderConsoleView();
             } else {
-                const mdRaw = generatedDocs[docKey];
+                const mdRaw = generatedDocs[docKey] || '';
                 targetArea.innerHTML = `
                     <div class="document-wrapper markdown-body">
                         ${marked.parse(mdRaw)}
@@ -2684,7 +3107,7 @@
         function toggleEditMode() {
             if (!generatedDocs) return;
             
-            const editableDocs = ['1pager', 'prd', 'wireframe'];
+            const editableDocs = ['1pager', 'threec', 'mece', 'prd', 'wireframe'];
             if (!editableDocs.includes(activeDoc)) return;
             
             isEditing = !isEditing;
@@ -2708,12 +3131,16 @@
             
             const docLabels = {
                 '1pager': '1-pager 기획 요약서',
+                'threec': '3C 환경 분석 보고서',
+                'mece': 'MECE 구조화 분석 보고서',
                 'prd': 'PRD 요구사항 명세서',
                 'wireframe': '와이어프레임 3안 시안'
             };
             
             const docDescriptions = {
                 '1pager': '1-pager의 비즈니스 목표나 고객층을 수정하면, 이후 단계인 상세 PRD와 와이어프레임 3안이 수정안에 맞춰 실시간으로 전면 재기획 및 자동 정합성 갱신됩니다.',
+                'threec': '3C 분석의 시장 기회나 차별화 포인트(KSF)를 수정하면, 이를 반영하여 상세 PRD와 와이어프레임 3안이 실시간으로 자동 재기획 및 갱신됩니다.',
+                'mece': 'MECE 분석의 리스크나 기능 우선순위를 수정하면, 이에 영향을 받는 상세 PRD와 와이어프레임 3안이 실시간으로 자동 재기획 및 갱신됩니다.',
                 'prd': 'PRD의 기능 요구사항이나 정책/예외 정의를 수정하면, 이에 영향을 받는 이후 단계 와이어프레임 설계 및 검수 보고서가 수정안에 맞춰 일관성 있게 자동 갱신됩니다.',
                 'wireframe': '와이어프레임의 레이아웃이나 시안 컨셉을 수정하면, 최종 정합성 검수 보고서(QA Audit)가 이에 맞춰 최신 정보로 자동 갱신됩니다.'
             };
@@ -2763,6 +3190,8 @@
             
             const nextStageMap = {
                 '1pager': 'prd',
+                'threec': 'prd',
+                'mece': 'prd',
                 'prd': 'wireframe',
                 'wireframe': 'audit'
             };
@@ -2943,6 +3372,9 @@
                     chatContainer.appendChild(successNotif);
                     chatContainer.scrollTop = chatContainer.scrollHeight;
                 }
+
+                // Show toast notification
+                showCompletionToast("기획안 연쇄 재기획 및 갱신이 완료되었습니다!");
 
                 // Show the newly updated/regenerated stage
                 switchDocument(resumeFrom);
@@ -3264,6 +3696,12 @@
             
             // Transition view directly to workspace
             document.body.className = 'state-workspace';
+
+            // Close mobile sidebar if open
+            const container = document.querySelector('.workspace-view-container');
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (container) container.classList.remove('sidebar-open');
+            if (overlay) overlay.classList.remove('active');
 
             // Populate system loaded message card in timeline
             const chatContainer = document.getElementById('chat-messages-container');
