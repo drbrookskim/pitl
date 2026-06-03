@@ -2177,6 +2177,9 @@
                 <button class="btn-minimal" onclick="goToWorkspaceDashboard()">
                     <i class="fa-solid fa-desktop"></i> 워크스페이스 대시보드
                 </button>
+                <button class="btn-minimal" onclick="logout()" title="로그아웃">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
             </div>
         </div>
 
@@ -2373,6 +2376,10 @@
                             <i class="fa-solid fa-moon"></i>
                         </button>
                         
+                        <button class="btn-minimal" onclick="logout()" title="로그아웃">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        </button>
+                        
                         <button class="btn-minimal" onclick="toggleEditMode()" id="btn-edit" disabled style="opacity: 0.5; cursor: not-allowed;">
                             <i class="fa-regular fa-pen-to-square"></i> 기획 수정
                         </button>
@@ -2412,6 +2419,12 @@
                 document.head.appendChild(style);
             }
         })();
+
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem('pitl_auth');
+            location.reload();
+        }
 
         // Helper to compute today's YYYYMMDD password
         function getTodayPassword() {
