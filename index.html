@@ -1937,9 +1937,211 @@
             70% { box-shadow: 0 0 0 8px rgba(0, 229, 153, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 229, 153, 0); }
         }
+
+        /* Password Overlay Styling */
+        .password-overlay-wrapper {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #060605;
+            font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 1;
+        }
+        
+        .password-card {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            background: rgba(18, 18, 17, 0.7);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 229, 153, 0.05);
+            text-align: center;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .password-card-glow {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(0, 229, 153, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .password-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(0, 229, 153, 0.1);
+            color: var(--accent-neon);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin: 0 auto 16px auto;
+            box-shadow: 0 0 20px rgba(0, 229, 153, 0.15);
+            border: 1px solid rgba(0, 229, 153, 0.2);
+        }
+        
+        .password-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+        
+        .password-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .password-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+        
+        .password-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(2, 2, 2, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 0 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .password-input-wrapper:focus-within {
+            border-color: var(--accent-neon);
+            box-shadow: var(--glow-neon);
+        }
+        
+        .password-input-wrapper input {
+            width: 100%;
+            height: 48px;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            padding: 0 12px;
+        }
+        
+        .password-input-wrapper .input-icon {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .password-toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+            transition: color 0.2s ease;
+        }
+        
+        .password-toggle-btn:hover {
+            color: var(--text-primary);
+        }
+        
+        .password-error {
+            display: none;
+            color: var(--accent-red);
+            font-size: 12px;
+            font-weight: 500;
+            padding-left: 4px;
+            margin-top: 4px;
+            animation: shake 0.3s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .password-submit-btn {
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-neon), var(--accent-blue));
+            border: none;
+            border-radius: 12px;
+            color: #060605;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 229, 153, 0.15);
+        }
+        
+        .password-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 229, 153, 0.3);
+        }
+        
+        .password-submit-btn:active {
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="state-landing">
+
+    <!-- Password Lock Screen Overlay -->
+    <div id="pitl-password-overlay" class="password-overlay-wrapper" style="display: none;">
+        <div class="password-card">
+            <div class="password-card-glow"></div>
+            <div class="password-header">
+                <div class="password-logo">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <h2 class="password-title">Decrypt Access</h2>
+                <p class="password-subtitle">
+                    Planning-in-the-Loop Agentic Workspace가 암호화되어 있습니다.<br>
+                    접근 권한 획득을 위해 오늘 날짜 마스터 암호를 입력하세요.
+                </p>
+            </div>
+            
+            <div class="password-input-group">
+                <div class="password-input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="pitl-password-input" placeholder="암호 입력 (예: 20260603)" onkeydown="handlePasswordKeydown(event)">
+                    <button class="password-toggle-btn" onclick="togglePasswordVisibility()">
+                        <i class="fa-regular fa-eye" id="password-eye-icon"></i>
+                    </button>
+                </div>
+                <div id="password-error-message" class="password-error">올바르지 않은 암호입니다. 다시 시도해 주세요.</div>
+            </div>
+            
+            <button class="password-submit-btn" onclick="checkMasterPassword()">
+                <span>접근 해제</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
 
     <!-- 3D PERSPECTIVE BACKGROUND STACK -->
     <div class="perspective-container">
@@ -2193,6 +2395,119 @@
 
     <!-- Scripting & API Streams -->
     <script>
+        // Check if already authenticated on load
+        (function checkAuthOnLoad() {
+            const isAuth = sessionStorage.getItem('pitl_auth') === 'true';
+            
+            // Add a styling rule or handle rendering dynamically
+            const style = document.createElement('style');
+            style.id = 'pitl-auth-initial-hide';
+            if (!isAuth) {
+                // Hide body content structure visually until authenticated to prevent layout flash
+                style.innerHTML = `
+                    .landing-view-container, .workspace-view-container {
+                        display: none !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        })();
+
+        // Helper to compute today's YYYYMMDD password
+        function getTodayPassword() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            return `${yyyy}${mm}${dd}`;
+        }
+
+        // Toggle password character visibility
+        function togglePasswordVisibility() {
+            const input = document.getElementById('pitl-password-input');
+            const icon = document.getElementById('password-eye-icon');
+            if (input && icon) {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.className = 'fa-regular fa-eye-slash';
+                } else {
+                    input.type = 'password';
+                    icon.className = 'fa-regular fa-eye';
+                }
+            }
+        }
+
+        // Verify password entered
+        function checkMasterPassword() {
+            const input = document.getElementById('pitl-password-input');
+            const errorMsg = document.getElementById('password-error-message');
+            const overlay = document.getElementById('pitl-password-overlay');
+            
+            if (!input || !errorMsg || !overlay) return;
+            
+            const rawPass = input.value;
+            const correctPass = getTodayPassword();
+            if (rawPass === correctPass) {
+                sessionStorage.setItem('pitl_auth', 'true');
+                errorMsg.style.display = 'none';
+                
+                // Animate lock screen out beautifully
+                overlay.style.opacity = '0';
+                overlay.style.transform = 'scale(1.05)';
+                
+                // Show core dashboard panels
+                const hideStyle = document.getElementById('pitl-auth-initial-hide');
+                if (hideStyle) hideStyle.remove();
+                
+                setTimeout(() => {
+                    overlay.remove();
+                }, 500);
+            } else {
+                errorMsg.style.display = 'block';
+                input.value = '';
+                input.focus();
+                
+                // Subtle shake animation on the card
+                const card = document.querySelector('.password-card');
+                if (card) {
+                    card.style.animation = 'none';
+                    card.offsetHeight; /* trigger reflow */
+                    card.style.animation = 'shake 0.4s ease-in-out';
+                }
+            }
+        }
+
+        // Handle Enter keypress inside password field
+        function handlePasswordKeydown(event) {
+            if (event.key === 'Enter') {
+                checkMasterPassword();
+            }
+        }
+
+        // Run authentication screen initialization
+        function initLockScreen() {
+            const isAuth = sessionStorage.getItem('pitl_auth') === 'true';
+            if (isAuth) {
+                const overlay = document.getElementById('pitl-password-overlay');
+                if (overlay) overlay.remove();
+                
+                const hideStyle = document.getElementById('pitl-auth-initial-hide');
+                if (hideStyle) hideStyle.remove();
+            } else {
+                const overlay = document.getElementById('pitl-password-overlay');
+                if (overlay) {
+                    overlay.style.display = 'flex';
+                }
+                const input = document.getElementById('pitl-password-input');
+                if (input) {
+                    setTimeout(() => input.focus(), 300);
+                }
+            }
+        }
+
+        // Init lock screen immediately
+        initLockScreen();
+
         // Starfield / Sparkle Particles Canvas Animation
         const canvas = document.getElementById('canvas-backplane');
         const ctx = canvas.getContext('2d');
