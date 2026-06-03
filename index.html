@@ -2804,12 +2804,6 @@
 
         // Initialize 3D dynamic card tilts
         function init3dTiltEffects() {
-            const promptContainer = document.querySelector('.manus-prompt-container');
-            if (promptContainer) {
-                promptContainer.addEventListener('mousemove', (e) => handleTilt(e, promptContainer, 8));
-                promptContainer.addEventListener('mouseleave', () => resetTilt(promptContainer));
-            }
-            
             // Suggestion pills
             document.querySelectorAll('.suggestion-pill').forEach(pill => {
                 pill.addEventListener('mousemove', (e) => handleTilt(e, pill, 10));
