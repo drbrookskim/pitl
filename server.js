@@ -357,10 +357,6 @@ app.get('/api/generate-stream', async (req, res) => {
         return res.status(400).json({ error: "Idea is required" });
     }
 
-    if (!GEMINI_API_KEY) {
-        return res.status(500).json({ error: "GEMINI_API_KEY is not configured" });
-    }
-
     // Set SSE headers
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -382,6 +378,10 @@ app.get('/api/generate-stream', async (req, res) => {
         heartbeat = setInterval(() => {
             res.write(': heartbeat\n\n');
         }, 15000);
+
+        if (!GEMINI_API_KEY) {
+            throw new Error("GEMINI_API_KEY is not configured in the .env file");
+        }
         let originalIdea = idea;
         const isRegen = (resumeFrom === 'prd' || resumeFrom === 'wireframe' || resumeFrom === 'audit');
 
