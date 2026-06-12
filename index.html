@@ -5394,7 +5394,7 @@
         }
 
         // Fetch selected historical item
-        function loadHistoryItem(title, date) {
+        async function loadHistoryItem(title, date) {
             const btnSubmit = document.getElementById('btn-submit-planning');
             const ideaTextarea = document.getElementById('idea-textarea');
             if (btnSubmit) btnSubmit.disabled = true;
