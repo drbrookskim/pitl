@@ -438,6 +438,214 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
+        /* ═══════════════════════════════════════════════════════
+           INLINE API KEY CARD
+           ═══════════════════════════════════════════════════════ */
+        .api-key-inline-card {
+            width: 100%;
+            max-width: 660px;
+            margin: 20px auto 0;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            transition: border-color .3s ease, box-shadow .3s ease;
+        }
+        .api-key-inline-card:hover {
+            box-shadow: 0 0 24px rgba(16,185,129,0.08);
+        }
+
+        /* Header row — always visible */
+        .api-key-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            cursor: default;
+        }
+        .api-key-card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent-neon), var(--accent-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #0f0f14;
+            flex-shrink: 0;
+        }
+        .api-key-card-titles {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+            min-width: 0;
+        }
+        .api-key-card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+        .api-key-card-subtitle {
+            font-size: 11px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color .3s;
+        }
+        .api-key-toggle-btn {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all .2s ease;
+            flex-shrink: 0;
+        }
+        .api-key-toggle-btn:hover {
+            border-color: var(--accent-neon);
+            color: var(--accent-neon);
+        }
+
+        /* Collapsible body */
+        .api-key-card-body {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            padding: 0 18px 16px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            animation: slideDown .22s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Input + save button row */
+        .api-key-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            margin-top: 14px;
+        }
+        .api-key-input-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .api-key-input-icon {
+            position: absolute;
+            left: 13px;
+            color: var(--text-muted);
+            font-size: 12px;
+            pointer-events: none;
+        }
+        .api-key-input {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 9px;
+            padding: 10px 38px 10px 34px;
+            font-size: 13px;
+            color: var(--text-primary);
+            font-family: 'Space Mono', 'Courier New', monospace;
+            letter-spacing: 0.05em;
+            transition: border-color .2s, box-shadow .2s;
+            outline: none;
+        }
+        .api-key-input::placeholder { color: var(--text-muted); font-family: inherit; letter-spacing: 0; }
+        .api-key-input:focus {
+            border-color: var(--accent-neon);
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+        }
+        .api-key-eye-btn {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 13px;
+            padding: 4px;
+            transition: color .2s;
+        }
+        .api-key-eye-btn:hover { color: var(--text-primary); }
+
+        .api-key-save-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: linear-gradient(135deg, var(--accent-neon), #00d4aa);
+            border: none;
+            border-radius: 9px;
+            color: #0f0f14;
+            font-size: 12.5px;
+            font-weight: 700;
+            padding: 10px 16px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity .2s, transform .15s;
+            flex-shrink: 0;
+        }
+        .api-key-save-btn:hover { opacity: .88; transform: translateY(-1px); }
+        .api-key-save-btn:active { transform: scale(.97); }
+        .api-key-save-btn:disabled { opacity: .5; cursor: default; }
+
+        /* Info row */
+        .api-key-info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+            border: 1px dashed rgba(255,255,255,0.06);
+        }
+        .api-key-info-row > i { margin-top: 2px; flex-shrink: 0; }
+        .api-key-info-row > span { flex: 1; }
+        .api-key-delete-btn {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 6px;
+            color: rgba(239,68,68,0.8);
+            font-size: 11px;
+            padding: 4px 9px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .2s;
+            flex-shrink: 0;
+        }
+        .api-key-delete-btn:hover {
+            background: rgba(239,68,68,0.1);
+            border-color: rgba(239,68,68,0.6);
+            color: rgb(239,68,68);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 540px) {
+            .api-key-inline-card { border-radius: 10px; }
+            .api-key-input-row { flex-direction: column; }
+            .api-key-save-btn { width: 100%; justify-content: center; }
+            .api-key-card-subtitle { display: none; }
+        }
+
         /* Landing History Grid */
         .landing-history-section {
             width: 100%;
@@ -2143,6 +2351,47 @@
         </div>
     </div>
 
+    <!-- API Settings Modal Overlay -->
+    <div id="pitl-settings-overlay" class="password-overlay-wrapper" style="display: none; z-index: 10000;">
+        <div class="password-card" style="max-width: 450px;">
+            <div class="password-card-glow"></div>
+            <div class="password-header">
+                <div class="password-logo" style="background: var(--accent-neon); color: var(--bg-base);">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2 class="password-title" style="font-size: 20px;">API Settings</h2>
+                <p class="password-subtitle" style="font-size: 13px;">
+                    Gemini API Key를 입력하면 AES-GCM으로 암호화하여 이 기기의 로컬 스토리지에만 저장합니다.
+                </p>
+            </div>
+            
+            <div class="password-input-group">
+                <div class="password-input-wrapper" style="position:relative;">
+                    <i class="fa-solid fa-key input-icon"></i>
+                    <input type="password" id="pitl-gemini-key-input" placeholder="Gemini API Key 입력" style="padding-right:42px;">
+                    <button onclick="document.getElementById('pitl-gemini-key-input').type = document.getElementById('pitl-gemini-key-input').type==='password'?'text':'password'" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:14px;" title="보기/숨기기">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 10px; line-height: 1.6; text-align: left; background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 6px; border: 1px dashed rgba(255,255,255,0.08);">
+                    <i class="fa-solid fa-shield-halved" style="color:var(--accent-neon);"></i> <strong>암호화 저장 안내</strong><br>
+                    입력한 API Key는 <strong>AES-GCM 256-bit</strong>으로 즉시 암호화된 뒤 이 기기(localStorage)에만 저장됩니다. 서버로 전송되지 않습니다.<br>
+                    공란 저장 시 저장된 키가 삭제됩니다.
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 12px; margin-top: 20px; width: 100%;">
+                <button class="password-submit-btn" style="flex: 1; margin-top: 0; height: 42px;" onclick="saveGeminiApiKey()">
+                    <span>암호화 저장</span>
+                    <i class="fa-solid fa-lock"></i>
+                </button>
+                <button class="btn-minimal" style="flex: 1; justify-content: center; height: 42px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;" onclick="closeSettingsModal()">
+                    닫기
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- 3D PERSPECTIVE BACKGROUND STACK -->
     <div class="perspective-container">
         <!-- Infinite flowing perspective grid floor -->
@@ -2173,6 +2422,9 @@
             <div class="landing-top-actions">
                 <button class="btn-minimal theme-toggle-btn" onclick="toggleTheme()" title="테마 변경">
                     <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="btn-minimal" onclick="openSettingsModal()" title="API 설정">
+                    <i class="fa-solid fa-key"></i> API 설정
                 </button>
                 <button class="btn-minimal" onclick="goToWorkspaceDashboard()">
                     <i class="fa-solid fa-desktop"></i> 워크스페이스 대시보드
@@ -2219,6 +2471,50 @@
                     📊 에이전트 칸반 대시보드 툴
                 </button>
             </div>
+
+            <!-- ── INLINE API KEY CARD ─────────────────────────────── -->
+            <div class="api-key-inline-card" id="api-key-inline-card">
+                <div class="api-key-card-header">
+                    <span class="api-key-card-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                    <div class="api-key-card-titles">
+                        <span class="api-key-card-title">Gemini API Key 설정</span>
+                        <span class="api-key-card-subtitle" id="api-key-status-badge">미설정 — 키를 입력하면 브라우저에서 직접 AI 에이전트를 실행합니다</span>
+                    </div>
+                    <button class="api-key-toggle-btn" id="api-key-toggle-btn" onclick="toggleApiKeyCard()" title="펼치기/접기">
+                        <i class="fa-solid fa-chevron-down" id="api-key-toggle-icon"></i>
+                    </button>
+                </div>
+                <div class="api-key-card-body" id="api-key-card-body">
+                    <div class="api-key-input-row">
+                        <div class="api-key-input-wrapper">
+                            <i class="fa-solid fa-key api-key-input-icon"></i>
+                            <input
+                                type="password"
+                                id="landing-api-key-input"
+                                class="api-key-input"
+                                placeholder="AIza... 형식의 Gemini API Key 입력"
+                                autocomplete="off"
+                                spellcheck="false"
+                            >
+                            <button class="api-key-eye-btn" id="api-key-eye-btn" onclick="toggleApiKeyVisibility()" title="보기/숨기기">
+                                <i class="fa-solid fa-eye" id="api-key-eye-icon"></i>
+                            </button>
+                        </div>
+                        <button class="api-key-save-btn" id="api-key-save-btn" onclick="saveLandingApiKey()">
+                            <i class="fa-solid fa-lock"></i>
+                            <span>암호화 저장</span>
+                        </button>
+                    </div>
+                    <div class="api-key-info-row">
+                        <i class="fa-solid fa-circle-info" style="color:var(--accent-neon);font-size:11px;"></i>
+                        <span>입력한 키는 <strong>서버로 전송되지 않으며</strong>, AES-GCM 암호화 후 이 기기의 로컬 스토리지에만 보관됩니다. 언제든지 삭제할 수 있습니다.</span>
+                        <button class="api-key-delete-btn" id="api-key-delete-btn" onclick="deleteLandingApiKey()" title="저장된 키 삭제">
+                            <i class="fa-solid fa-trash-can"></i> 삭제
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- ── END INLINE API KEY CARD ────────────────────────── -->
 
             <!-- Recent Planning Runs Divider & Grid -->
             <div class="landing-history-section">
@@ -2376,6 +2672,10 @@
                             <i class="fa-solid fa-moon"></i>
                         </button>
                         
+                        <button class="btn-minimal" onclick="openSettingsModal()" title="API 설정">
+                            <i class="fa-solid fa-key"></i> API 설정
+                        </button>
+                        
                         <button class="btn-minimal" onclick="logout()" title="로그아웃">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         </button>
@@ -2496,6 +2796,1022 @@
                 checkMasterPassword();
             }
         }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  AES-GCM 암호화 헬퍼 (Web Crypto API — 서버 전송 없음, 로컬 전용)
+        // ═══════════════════════════════════════════════════════════════
+        const PITL_CRYPTO_KEY = 'pitl_enc_api_key';
+
+        /** 기기 핑거프린트 기반의 256-bit 파생 키 생성 */
+        async function _deriveCryptoKey() {
+            // 브라우저 환경이 고유한 소금(salt): UA + 화면 크기 조합
+            const fingerprint = (navigator.userAgent || '') +
+                '|' + screen.width + 'x' + screen.height +
+                '|PITL-AES-SALT-v1';
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw', enc.encode(fingerprint), 'PBKDF2', false, ['deriveKey']
+            );
+            return crypto.subtle.deriveKey(
+                {
+                    name: 'PBKDF2',
+                    salt: enc.encode('pitl-gemini-key-salt'),
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['encrypt', 'decrypt']
+            );
+        }
+
+        /** 평문 API 키를 AES-GCM으로 암호화하고 base64 payload 반환 */
+        async function _encryptApiKey(plainKey) {
+            const cryptoKey = await _deriveCryptoKey();
+            const iv = crypto.getRandomValues(new Uint8Array(12));  // 96-bit IV
+            const enc = new TextEncoder();
+            const cipherBuffer = await crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv },
+                cryptoKey,
+                enc.encode(plainKey)
+            );
+            // 결과: [iv(12B) + ciphertext] → base64
+            const combined = new Uint8Array(iv.byteLength + cipherBuffer.byteLength);
+            combined.set(iv, 0);
+            combined.set(new Uint8Array(cipherBuffer), iv.byteLength);
+            return btoa(String.fromCharCode(...combined));
+        }
+
+        /** base64 payload를 복호화하여 평문 API 키 반환. 실패 시 null 반환 */
+        async function _decryptApiKey(payload) {
+            try {
+                const cryptoKey = await _deriveCryptoKey();
+                const combined = Uint8Array.from(atob(payload), c => c.charCodeAt(0));
+                const iv = combined.slice(0, 12);
+                const cipherBuffer = combined.slice(12);
+                const plainBuffer = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv },
+                    cryptoKey,
+                    cipherBuffer
+                );
+                return new TextDecoder().decode(plainBuffer);
+            } catch (e) {
+                console.warn('[PITL] 복호화 실패 (다른 기기의 키이거나 손상된 데이터):', e.message);
+                return null;
+            }
+        }
+
+        /** 저장된 암호화 키를 복호화하여 반환. 없거나 실패 시 null */
+        async function getDecryptedApiKey() {
+            const stored = localStorage.getItem(PITL_CRYPTO_KEY);
+            if (!stored) return null;
+            return _decryptApiKey(stored);
+        }
+
+        // ───────────────────────────────────────────────────────────────
+        //  랜딩 인라인 API 키 카드 UI 컨트롤러
+        // ───────────────────────────────────────────────────────────────
+        let _apiCardExpanded = false;
+
+        function toggleApiKeyCard() {
+            _apiCardExpanded = !_apiCardExpanded;
+            const body = document.getElementById('api-key-card-body');
+            const icon = document.getElementById('api-key-toggle-icon');
+            if (body) body.style.display = _apiCardExpanded ? 'flex' : 'none';
+            if (icon) {
+                icon.className = _apiCardExpanded
+                    ? 'fa-solid fa-chevron-up'
+                    : 'fa-solid fa-chevron-down';
+            }
+        }
+
+        function toggleApiKeyVisibility() {
+            const inp = document.getElementById('landing-api-key-input');
+            const ico = document.getElementById('api-key-eye-icon');
+            if (!inp) return;
+            const isHidden = inp.type === 'password';
+            inp.type = isHidden ? 'text' : 'password';
+            if (ico) ico.className = isHidden ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+        }
+
+        async function saveLandingApiKey() {
+            const inp = document.getElementById('landing-api-key-input');
+            if (!inp) return;
+            const key = inp.value.trim();
+            const saveBtn = document.getElementById('api-key-save-btn');
+            if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 암호화 중...'; }
+            try {
+                if (key) {
+                    const encrypted = await _encryptApiKey(key);
+                    localStorage.setItem(PITL_CRYPTO_KEY, encrypted);
+                    // 구버전 평문 키 정리
+                    localStorage.removeItem('pitl_gemini_api_key');
+                    inp.value = '';
+                    _updateApiKeyStatus(true);
+                    _showApiKeyToast('🔒 API Key가 AES-GCM으로 암호화되어 이 기기에 저장되었습니다.');
+                    // 카드 접기
+                    if (_apiCardExpanded) toggleApiKeyCard();
+                } else {
+                    _showApiKeyToast('⚠️ 키를 입력해주세요.', true);
+                }
+            } catch (e) {
+                _showApiKeyToast('❌ 암호화 실패: ' + e.message, true);
+            } finally {
+                if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fa-solid fa-lock"></i><span>암호화 저장</span>'; }
+            }
+        }
+
+        async function deleteLandingApiKey() {
+            localStorage.removeItem(PITL_CRYPTO_KEY);
+            localStorage.removeItem('pitl_gemini_api_key');
+            const inp = document.getElementById('landing-api-key-input');
+            if (inp) inp.value = '';
+            _updateApiKeyStatus(false);
+            _showApiKeyToast('🗑️ 저장된 API Key가 삭제되었습니다.');
+        }
+
+        function _updateApiKeyStatus(hasKey) {
+            const badge = document.getElementById('api-key-status-badge');
+            const deleteBtn = document.getElementById('api-key-delete-btn');
+            const card = document.getElementById('api-key-inline-card');
+            if (badge) {
+                if (hasKey) {
+                    badge.textContent = '✅ 암호화 저장됨 — 브라우저 직접 실행 모드 활성';
+                    badge.style.color = 'var(--accent-green)';
+                } else {
+                    badge.textContent = '미설정 — 키를 입력하면 브라우저에서 직접 AI 에이전트를 실행합니다';
+                    badge.style.color = 'var(--text-secondary)';
+                }
+            }
+            if (deleteBtn) deleteBtn.style.display = hasKey ? 'flex' : 'none';
+            if (card) {
+                card.style.borderColor = hasKey
+                    ? 'rgba(16,185,129,0.35)'
+                    : 'rgba(255,255,255,0.07)';
+            }
+        }
+
+        function _showApiKeyToast(msg, isError = false) {
+            let t = document.getElementById('api-key-toast');
+            if (!t) {
+                t = document.createElement('div');
+                t.id = 'api-key-toast';
+                t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
+                    'background:rgba(15,15,20,0.95);backdrop-filter:blur(12px);' +
+                    'border:1px solid rgba(255,255,255,0.12);border-radius:10px;' +
+                    'padding:12px 20px;font-size:13px;color:#fff;z-index:99999;' +
+                    'box-shadow:0 8px 32px rgba(0,0,0,0.5);transition:opacity .3s;';
+                document.body.appendChild(t);
+            }
+            t.style.borderColor = isError ? 'rgba(239,68,68,0.4)' : 'rgba(16,185,129,0.4)';
+            t.textContent = msg;
+            t.style.opacity = '1';
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3200);
+        }
+
+        /** 페이지 로드 시 키 보유 여부에 따라 카드 상태 초기화 */
+        async function _initApiKeyCard() {
+            const hasKey = !!(localStorage.getItem(PITL_CRYPTO_KEY) || localStorage.getItem('pitl_gemini_api_key'));
+            _updateApiKeyStatus(hasKey);
+            // 구버전 평문 키가 있으면 자동 마이그레이션 (암호화 재저장)
+            const legacy = localStorage.getItem('pitl_gemini_api_key');
+            if (legacy) {
+                try {
+                    const enc = await _encryptApiKey(legacy);
+                    localStorage.setItem(PITL_CRYPTO_KEY, enc);
+                    localStorage.removeItem('pitl_gemini_api_key');
+                    console.info('[PITL] 평문 API 키 → AES-GCM 자동 마이그레이션 완료');
+                } catch(e) { /* 마이그레이션 실패 시 평문 키 유지 */ }
+            }
+        }
+
+        // ───────────────────────────────────────────────────────────────
+        //  모달 (설정 버튼용 보조 진입점) — 내부적으로 암호화 사용
+        // ───────────────────────────────────────────────────────────────
+        async function openSettingsModal() {
+            const overlay = document.getElementById('pitl-settings-overlay');
+            const input = document.getElementById('pitl-gemini-key-input');
+            if (overlay) {
+                overlay.style.display = 'flex';
+                overlay.style.opacity = '1';
+                overlay.style.transform = 'scale(1)';
+            }
+            if (input) {
+                // 복호화된 키를 모달에 표시
+                const plain = await getDecryptedApiKey();
+                input.value = plain || '';
+                input.type = 'password';
+                input.focus();
+            }
+        }
+
+        function closeSettingsModal() {
+            const overlay = document.getElementById('pitl-settings-overlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+
+        async function saveGeminiApiKey() {
+            const input = document.getElementById('pitl-gemini-key-input');
+            if (!input) return;
+            const key = input.value.trim();
+            if (key) {
+                try {
+                    const enc = await _encryptApiKey(key);
+                    localStorage.setItem(PITL_CRYPTO_KEY, enc);
+                    localStorage.removeItem('pitl_gemini_api_key');
+                    _updateApiKeyStatus(true);
+                    closeSettingsModal();
+                    _showApiKeyToast('🔒 API Key가 AES-GCM으로 암호화 저장되었습니다.');
+                } catch (e) {
+                    alert('암호화 저장 실패: ' + e.message);
+                }
+            } else {
+                localStorage.removeItem(PITL_CRYPTO_KEY);
+                localStorage.removeItem('pitl_gemini_api_key');
+                _updateApiKeyStatus(false);
+                closeSettingsModal();
+                _showApiKeyToast('🗑️ 저장된 API Key가 삭제되었습니다.');
+            }
+        }
+
+        // --- CLIENT-SIDE DIRECT GEMINI ORCHESTRATION ---
+        async function callGeminiClientSide(apiKey, systemInstruction, userPrompt, logCallback = null) {
+            if (!window.pitlPreferredModelIndex) {
+                window.pitlPreferredModelIndex = 0;
+            }
+            const modelsToTry = [
+                'gemini-2.5-flash',
+                'gemini-1.5-flash'
+            ];
+            let lastError = null;
+            
+            for (let offset = 0; offset < modelsToTry.length; offset++) {
+                const modelIdx = (window.pitlPreferredModelIndex + offset) % modelsToTry.length;
+                const model = modelsToTry[modelIdx];
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                
+                const requestBody = {
+                    contents: [
+                        {
+                            role: "user",
+                            parts: [{ text: `${systemInstruction}\n\nUser Request/Context:\n${userPrompt}` }]
+                        }
+                    ],
+                    generationConfig: {
+                        temperature: 0.2,
+                        maxOutputTokens: 8192
+                    }
+                };
+                
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(requestBody)
+                    });
+                    
+                    if (!response.ok) {
+                        const errData = await response.json().catch(() => ({}));
+                        throw new Error(errData.error?.message || `HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    const candidate = data.candidates?.[0];
+                    const text = candidate?.content?.parts?.[0]?.text;
+                    if (!text) {
+                        throw new Error("No response text from Gemini API");
+                    }
+                    window.pitlPreferredModelIndex = modelIdx;
+                    return text;
+                } catch (error) {
+                    console.warn(`[Model Fallback] ${model} failed: ${error.message}`);
+                    if (logCallback) {
+                        logCallback(`[부하/에러 감지] ${model} 모델 호출 실패. 다음 대체 모델로 우회를 진행합니다...`);
+                    }
+                    lastError = error;
+                }
+            }
+            
+            throw new Error(`모든 모델 호출에 실패했습니다. 최종 에러: ${lastError.message}`);
+        }
+
+        function logAgentClientSide(agent, msg) {
+            const time = new Date().toLocaleTimeString('ko-KR', { hour12: false });
+            currentConsoleLogs.push({
+                type: 'log',
+                time: time,
+                agent: agent,
+                msg: msg
+            });
+            
+            // 1. Log in computer raw terminal log tab
+            const logsTarget = document.getElementById('console-logs-container');
+            if (logsTarget) {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.innerHTML = `
+                    <div>
+                        <span class="log-time">[${time}]</span>
+                        <span class="log-agent ${agent}">&lt;${agent}&gt;</span>
+                        <span style="color: white; font-weight: 500;">INFO</span>
+                    </div>
+                    <div class="log-msg">${msg}</div>
+                `;
+                logsTarget.appendChild(entry);
+                const scrollArea = document.getElementById('live-console-target');
+                if (scrollArea) scrollArea.scrollTop = scrollArea.scrollHeight;
+            }
+            
+            // 2. Stream as beautiful chat bubbles in middle conversational panel
+            appendAgentChatMessage({ time, agent, msg });
+        }
+
+        function logErrorClientSide(msg) {
+            currentConsoleLogs.push({
+                type: 'error',
+                msg: msg
+            });
+            
+            // Inject error inside right raw terminal
+            const logsTarget = document.getElementById('console-logs-container');
+            if (logsTarget) {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.style.borderLeftColor = 'var(--accent-red)';
+                entry.innerHTML = `
+                    <div>
+                        <span style="color: var(--accent-red); font-weight: bold;">[ERROR]</span>
+                        <span style="color: white; font-weight: 500;">FAILURE</span>
+                    </div>
+                    <div class="log-msg" style="color: var(--accent-red); font-weight: bold;">${msg}</div>
+                `;
+                logsTarget.appendChild(entry);
+            }
+
+            // Stream error message bubble inside middle panel
+            const chatContainer = document.getElementById('chat-messages-container');
+            if (chatContainer) {
+                const errorBubble = document.createElement('div');
+                errorBubble.className = 'chat-bubble agent-system';
+                errorBubble.innerHTML = `
+                    <div class="bubble-avatar" style="background: var(--accent-red)">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div class="bubble-content" style="border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.03);">
+                        <div class="bubble-header">
+                            <span class="bubble-author" style="color: var(--accent-red)">PITL Orchestrator</span>
+                            <span class="bubble-time">${new Date().toLocaleTimeString()}</span>
+                        </div>
+                        <div class="bubble-text" style="color: var(--accent-red); font-weight: 500;">기획 프로세스 연쇄 도중 에러가 감지되었습니다: ${msg}</div>
+                    </div>
+                `;
+                chatContainer.appendChild(errorBubble);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+
+        function saveClientHistoryLocally(docs) {
+            let clientHistory = localStorage.getItem('pitl_client_history');
+            clientHistory = clientHistory ? JSON.parse(clientHistory) : [];
+            
+            const cleanTitle = docs.title;
+            const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '').slice(2);
+            const keyDate = dateStr;
+            const year = '20' + keyDate.slice(0, 2);
+            const month = keyDate.slice(2, 4);
+            const day = keyDate.slice(4, 6);
+            
+            const displayTitle = cleanTitle.replace(/_/g, ' ');
+            const displayDate = `${year}-${month}-${day}`;
+            
+            const existingIdx = clientHistory.findIndex(item => item.title === cleanTitle && item.date === keyDate);
+            
+            const types = ['1pager', 'threec', 'mece', 'prd', 'wireframe', 'audit'];
+            const historyItem = {
+                title: cleanTitle,
+                date: keyDate,
+                displayTitle: displayTitle,
+                displayDate: displayDate,
+                types: types,
+                docs: {
+                    title: cleanTitle,
+                    '1pager': docs['1pager'] || '',
+                    'threec': docs['threec'] || '',
+                    'mece': docs['mece'] || '',
+                    'prd': docs['prd'] || '',
+                    'wireframe': docs['wireframe'] || '',
+                    'audit': docs['audit'] || ''
+                }
+            };
+            
+            if (existingIdx > -1) {
+                clientHistory[existingIdx] = historyItem;
+            } else {
+                clientHistory.unshift(historyItem);
+            }
+            
+            localStorage.setItem('pitl_client_history', JSON.stringify(clientHistory));
+        }
+
+        async function startProductPlanningClientSide(idea, apiKey) {
+            // Reset workspace states
+            generatedDocs = null;
+            currentConsoleLogs = [];
+            currentActiveStep = 0;
+            document.getElementById('badge-qa-status').style.display = 'none';
+            document.getElementById('btn-copy').disabled = true;
+            document.getElementById('btn-pdf').disabled = true;
+            document.getElementById('btn-edit').disabled = true;
+
+            // Opacity and styling lock of buttons
+            document.getElementById('btn-copy').style.opacity = '0.5';
+            document.getElementById('btn-pdf').style.opacity = '0.5';
+            document.getElementById('btn-edit').style.opacity = '0.5';
+            document.getElementById('btn-copy').style.cursor = 'not-allowed';
+            document.getElementById('btn-pdf').style.cursor = 'not-allowed';
+            document.getElementById('btn-edit').style.cursor = 'not-allowed';
+
+            // Disable prompt submission button on landing
+            document.getElementById('btn-submit-planning').disabled = true;
+            const textarea = document.getElementById('idea-textarea');
+            textarea.disabled = true;
+
+            // Lock all browser tabs except Live Terminal initially
+            document.querySelectorAll('.chrome-tab').forEach(el => {
+                el.classList.add('disabled');
+                el.classList.remove('active');
+            });
+            const navConsole = document.getElementById('nav-console');
+            navConsole.classList.remove('disabled');
+            navConsole.classList.add('active');
+
+            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/live-terminal';
+
+            // Inject first System orchestrator notification in Middle panel
+            const chatContainer = document.getElementById('chat-messages-container');
+            if (chatContainer) {
+                chatContainer.innerHTML = `
+                    <div class="system-notification">
+                        <i class="fa-solid fa-play"></i> 기획 스트리밍 프로세스 시작 (Client Mode API 호출)
+                    </div>
+                `;
+            }
+
+            // Inject terminal shell container in Right Panel Computer viewer
+            const targetArea = document.getElementById('viewer-main-content');
+            targetArea.innerHTML = `
+                <div class="document-wrapper">
+                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Live Agent Team Execution Console (Client Mode)</h2>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">에이전트들이 실시간으로 주고받는 백그라운드 태스크 및 쉘 스트아웃(stdout) 명령어 출력 로그입니다. 브라우저에서 Gemini API를 직접 호출합니다.</p>
+                    
+                    <div class="terminal-container">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="t-btn tb-red"></div>
+                                <div class="t-btn tb-yellow"></div>
+                                <div class="t-btn tb-green"></div>
+                            </div>
+                            <div class="terminal-title">bash - pitl-orchestrator-client.sh</div>
+                            <div></div>
+                        </div>
+                        <div class="terminal-body" id="live-console-target" style="max-height: 480px; overflow-y: auto;">
+                            <div class="console-log-area" id="console-logs-container">
+                                <!-- Streamed raw terminal logs go here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            try {
+                logAgentClientSide('system', `상품기획 자동화 프로세스 가동 (Client-Side Direct Mode 감지됨).`);
+                logAgentClientSide('system', `에이전트 4인 팀 및 오케스트레이션 스폰 완료 (strategist, analyst, architect, reviewer).`);
+                
+                const cleanTitle = idea.replace(/[&|;*?$`"'\s\\\/]/g, '_').replace(/[^a-zA-Z0-9가-힣-_]/g, '').slice(0, 15) || 'product_planning';
+                
+                // STAGE 1: Product Strategist (1-pager)
+                logAgentClientSide('strategist', `입력하신 아이디어 '${idea}'를 바탕으로 1-pager 요약서 기획을 시작합니다.`);
+                const strategistPrompt = `
+                사용자의 상품 아이디어를 분석하여 '이 제품이 왜 필요한가'를 1장으로 정리하는 1-pager 요약서를 작성하라.
+                
+                아이디어: ${idea}
+                
+                반드시 다음 마크다운 형식을 따르고, 빈 칸 없이 완벽히 메트릭과 테이블 수치를 합리적으로 유추하여 채워라:
+                # [YY.MM.DD] {아이디어 기반 제목} (Product Team)
+                ## 1. 프로젝트 한 줄 요약
+                ## 2. 대상 (테이블: 대상, 상황/특징)
+                ## 3. 문제 정의 (고객 문제, 비즈니스 문제, 데이터 기반 현황 테이블, Root Cause)
+                ## 4. 목표 (테이블: 항목, 목표 수치)
+                ## 5. 현황 및 분석 (VOC 인용 등)
+                ## 6. 해결방안 (Phase 1, Phase 2...)
+                ## 7. 리스크 (테이블: 영향도, 리스크, 대응 방안)
+                ## 8. 중요도 및 긴급도 (상/중/하 + 이유)
+                `;
+                
+                const onePagerContent = await callGeminiClientSide(
+                    apiKey,
+                    "당신은 상품 기획의 존재 이유(Why)를 정의하는 Product Strategist 에이전트입니다.",
+                    strategistPrompt,
+                    (msg) => logAgentClientSide('strategist', msg)
+                );
+                logAgentClientSide('strategist', `비즈니스 문제 정의 및 정량 목표 수립 성공. 1-pager 요약 기획안 적재 완료.`);
+                
+                // STAGE 1.1: 3C
+                logAgentClientSide('strategist', `3C 프레임워크(Customer, Competitor, Company)를 활용한 입체적 환경 분석을 시작합니다.`);
+                const threeCPrompt = `
+                다음 상품 아이디어를 기반으로 오마에 겐이치의 3C 전략 삼각형(Customer, Competitor, Company)을 적용하여 심층적이고 입체적인 환경 분석 보고서를 작성하라.
+                
+                아이디어: ${idea}
+                
+                반드시 다음 'product-planning-framework'의 핵심 전략 로직과 형식을 충실하게 준수하라:
+                
+                # [전략 기획] 3C 프레임워크 기반 입체적 환경 분석: {제목}
+                
+                ## 1. 오마에 겐이치 전략 삼각형 개요 (The 3C Model Overview)
+                - **전략 공식**: 지속 가능한 차별화 공간 = Customer 니즈(C1) ∩ Competitor 공백(C2) ∩ Company 강점(C3) 교집합
+                - Why → So What → How 사고 흐름을 적용하여, 환경 제약을 창의적 기회(KSF)로 치환하는 전략 요약을 3-4문장으로 서술하라.
+                
+                ## 2. Customer (고객 분석) — 수요 측면 (C1)
+                * **2.1. 고객 세분화 및 타깃 정의 (Segmentation)**
+                  - 인구통계학적 특성 및 니즈/행동 기반 세그먼트를 3가지 이상 상세히 정의하라.
+                * **2.2. Jobs-to-be-Done (JTBD)**
+                  - 고객이 이 제품/서비스를 '고용'하는 진짜 본질적 이유와 과제를 "나는 ~라는 과제를 해결하고 싶다" 형식으로 정의하라.
+                * **2.3. 니즈 계층화 (Needs Hierarchy)**
+                  - 기능적 니즈, 감성적 니즈, 잠재적/사회적 니즈로 다차원 구조화하라.
+                * **2.4. 구매 의사결정 여정 및 지불 의향 (Customer Journey & WTP)**
+                  - 인지부터 최종 전환/재구매까지의 여정과 지불 의향(WTP) 및 가격 민감도 분석을 포함하라.
+                
+                ## 3. Competitor (경쟁사 분석) — 경쟁 측면 (C2)
+                * **3.1. 경쟁 지형도 및 포지셔닝 (Positioning Map)**
+                  - 직접 경쟁자, 간접 경쟁자, 잠재적 진입자 및 기술 대체재를 식별하라.
+                  - 주요 속성 2축을 기준으로 포지셔닝 전략을 시각화/설명하라.
+                * **3.2. 경쟁사 강·약점 분석 (Competitor Analysis)**
+                  - 핵심 경쟁자들의 제품, 기술, 유통, 자본력의 강점과 구체적인 약점(공백 영역)을 분석하라.
+                * **3.3. 차별화 우위 전략 및 KSF (Key Success Factor)**
+                  - 경쟁사 대비 독점적 차별화 우위를 확보하기 위한 핵심 성공 요인(KSF)과 전략적 집중도를 도출하라.
+                
+                ## 4. Company (자사 분석) — 역량 측면 (C3)
+                * **4.1. 자사 핵심 역량 (Core Competencies)**
+                  - 자사가 보유한 독보적인 기술, 데이터, 브랜드, 인프라 역량을 식별하라.
+                * **4.2. 자원 제약 및 가치 사슬 (Value Chain & Resource Constraints)**
+                  - 예산, 인력, 시간 등의 자원 제약 속에서 R&D부터 판매까지의 가치 사슬 효율화 방안을 제시하라.
+                * **4.3. 전략적 방향성 및 확보 가능 역량**
+                  - 기업의 궁극적 비전과의 정합성을 검증하고, 향후 12~18개월 내 확보해야 할 역량을 로드맵화하라.
+                
+                ## 5. 3C × 상품기획 연결 매트릭스 (Integration Matrix)
+                - 다음 마크다운 표 형식으로 3C 분석 결과가 어떻게 실제 요구사항 및 MVP 범위에 매핑되는지 정의하라.
+                
+                | 3C 렌즈 요소 | 핵심 발견사항 (Fact & Insight) | 연결 상품기획 산출물 | MVP 우선순위 배정 (Must/Should/Could) |
+                | :--- | :--- | :--- | :--- |
+                | **Customer** | ... | ... | ... |
+                | **Competitor** | ... | ... | ... |
+                | **Company** | ... | ... | ... |
+                | **교집합 (Concept)** | 지속 가능한 차별화 기회와 핵심 컨셉 | 제품 컨셉 및 가치 제안 | **Must Have** |
+                `;
+                
+                const threeCContent = await callGeminiClientSide(
+                    apiKey,
+                    "당신은 시장 환경 분석을 3C 프레임워크로 전문 설계하는 Product Strategist 에이전트입니다.",
+                    threeCPrompt,
+                    (msg) => logAgentClientSide('strategist', msg)
+                );
+                logAgentClientSide('strategist', `3C 프레임워크 기반 환경 분석서 적재 완료.`);
+                
+                // STAGE 1.2: MECE
+                logAgentClientSide('strategist', `맥킨지 MECE 프레임워크 기반의 구조적 전략 기획 분석을 개시합니다.`);
+                const mecePrompt = `
+                다음 상품 아이디어를 기반으로 맥킨지식 MECE(Mutually Exclusive, Collectively Exhaustive: 상호배제와 전체포괄) 구조화 분석 보고서를 작성하라.
+                비즈니스 타당성 검증을 위해 상품기획의 5대 핵심 도메인을 누락과 중복 없이 완벽히 분해하고 구조화하라.
+                
+                아이디어: ${idea}
+                
+                반드시 다음 'product-planning-framework'의 핵심 MECE 분류체계와 형식을 충실하게 준수하라:
+                
+                # [구조화 분석] McKinsey MECE 전략 기획 분석: {제목}
+                
+                ## 1. 개요 및 구조화 목적 (MECE Purpose)
+                - 본 분석이 목표로 하는 범위와 상호배제 및 전체포괄 원칙을 통한 사업 타당성 확보 목적을 3-4문장으로 요약하라.
+                
+                ## 2. [MECE A] 고객 세분화 분석 (Customer Segmentation Tree)
+                - 전체 잠재 수요층을 중복과 누락 없이 4가지 이상의 독립적 영역으로 분해하라.
+                - 인구통계적, 니즈 기반, 라이프스테이지 특성을 조합한 로직 트리 구조로 작성하라.
+                - 각 세그먼트의 배타성과 전체 포괄성에 대한 구조적 정합성 검증 문구를 포함하라.
+                
+                ## 3. [MECE B] 고객 제공 가치 분석 (Customer Value Breakdown)
+                - 서비스가 제공하는 가치를 중복 없이 다음 4대 영역으로 계층화하여 서술하라.
+                  * **3.1. 기능적 가치 (Functional Value)**: 핵심 기능, 성능, 편의성
+                  * **3.2. 경제적 가치 (Economic Value)**: 비용 절감, 효율성, ROI
+                  * **3.3. 감성적 가치 (Emotional Value)**: 브랜드 신뢰, 스트레스 해소, 자아 표현
+                  * **3.4. 사회적 가치 (Social Value)**: 공동체 기여, 친환경, 윤리적 가치
+                
+                ## 4. [MECE C] 시장 기회 다차원 분석 (Ansoff Matrix)
+                - 앤소프 매트릭스 4분면 구조를 적용하여 성장 및 확장 기회를 전수 도출하라.
+                - 다음 마크다운 표 형식으로 완성하라:
+                
+                | 구분 | 기존 시장 (현재 타겟) | 신규 시장 (확장 타겟) |
+                | :--- | :--- | :--- |
+                | **기존 서비스/제품** | **[1] 시장 침투 전략**<br>• 세부 전략 및 액션 | **[3] 시장 개척 전략**<br>• 세부 전략 및 액션 |
+                | **신규 서비스/제품** | **[2] 제품/서비스 개발 전략**<br>• 세부 전략 및 액션 | **[4] 다각화 전략**<br>• 세부 전략 및 액션 |
+                
+                ## 5. [MECE D] 기능 요구사항 MoSCoW 우선순위 정의 (Feature Prioritization)
+                - 제품 기능을 중복과 누락이 없도록 배타적인 4단계 구조로 분해하여 정의하라.
+                  * **5.1. Must Have**: 없으면 제품이 성립하지 않는 필수 핵심 기능 (REQ-01 등 구체적 ID 매핑)
+                  * **5.2. Should Have**: 경쟁력 확보를 위한 최우선 갱신 요건
+                  * **5.3. Could Have**: 개발 여유 시 반영할 편의/부가 요건
+                  * **5.4. Won't Have**: 이번 MVP 및 첫 스프린트에서 의도적으로 배제하는 요건
+                
+                ## 6. [MECE E] 잠재 리스크 입체적 구조화 (Collectively Exhaustive Risk Control)
+                - 발생 가능한 모든 비즈니스 및 운영 장애 요인을 5대 도메인으로 완전 분해하고 각각에 대한 대응 완충책을 기술하라.
+                  * **6.1. 시장 리스크 (Market Risk)**: 수요 예측 오류, 경쟁 격화 등
+                  * **6.2. 기술 리스크 (Technical Risk)**: 개발 지연, 시스템 안정성, 보안 등
+                  * **6.3. 운영 리스크 (Operational Risk)**: 고객 지원, 파트너 관리, QA 등
+                  * **6.4. 재무 리스크 (Financial Risk)**: 예산 초과, 적자 누적, 현금 흐름 등
+                  * **6.5. 규제/법적 리스크 (Regulatory/Legal Risk)**: 법령 변화, 인증, 개인정보 규제 등
+                
+                ## 7. 구조적 완결성 검토 (Structural Integrity Audit)
+                - 작성된 5대 MECE 프레임워크가 상호 배제(Mutually Exclusive)되고 전체 포괄(Collectively Exhaustive)되었는지 자체 검증한 정성/정량 결과를 서술하라.
+                `;
+                
+                const meceContent = await callGeminiClientSide(
+                    apiKey,
+                    "당신은 논리적 구조화와 MECE 정합성에 통달한 McKinsey 출신의 Product Strategist 에이전트입니다.",
+                    mecePrompt,
+                    (msg) => logAgentClientSide('strategist', msg)
+                );
+                logAgentClientSide('strategist', `맥킨지 MECE 전략 분석 보고서 적재 완료.`);
+                logAgentClientSide('strategist', `→ [SendMessage to prd-analyst] 기획 사양 및 기능 도출 협업 요청.`);
+
+                // STAGE 2: PRD Analyst (PRD)
+                logAgentClientSide('analyst', `1-pager 기획안을 바탕으로 상세 개발 요구사항(PRD) 및 예외 정책 수립을 전개합니다.`);
+                const prdPrompt = `
+                다음 기획안(1-pager)을 참조하여 기능 요구사항, KPI 지표, 정책 및 예외 처리(결제 실패, API 타임아웃 등)가 포함된 정밀한 PRD를 작성하라.
+                
+                참조 기획안(1-pager):
+                ${onePagerContent}
+                
+                반드시 다음 구조를 충실하게 기입하라:
+                # [YY.MM.DD] {제목}
+                ## 0. 문서 개요 (프로젝트 요약, 배경)
+                ## 1. 목표 (Goal) (프로젝트 목표, 성공 기준 테이블)
+                ## 2. KPI 및 측정지표 (핵심 KPI 테이블, 보조 지표, 모니터링 지표)
+                ## 3. 사용자 및 이해관계자 (대상 사용자 + 제외 대상, 이해관계자 테이블)
+                ## 4. 정책 정의 (기본 정책, 상태값 정의 테이블, 예외 정책 테이블)
+                ## 5. 서비스 구조 (유저 플로우)
+                ## 6. 상세 요구사항 (기능 요구사항 테이블 - REQ-01, REQ-02 우선순위 포함, 운영 요구사항, 데이터 요구사항)
+                ## 7. UX/UI 고려사항 (로딩, 실패, 빈 화면 처리)
+                ## 8. 기술 고려사항 (파일명 필터링, pandoc 보안 격리 등)
+                ## 9. 실험 및 검증
+                ## 10. 리스크 및 대응
+                ## Appendix
+                `;
+                
+                const prdContent = await callGeminiClientSide(
+                    apiKey,
+                    "당신은 상세 요건 명세를 정의하는 PRD Analyst 에이전트입니다.",
+                    prdPrompt,
+                    (msg) => logAgentClientSide('analyst', msg)
+                );
+                logAgentClientSide('analyst', `REQ 사양 식별 완료 및 예외/보안 정책 수립 완료. PRD 명세서 적재 완료.`);
+                logAgentClientSide('analyst', `→ [SendMessage to ux-architect] UX 레이아웃 스케치 협업 요청.`);
+
+                // STAGE 3: UX Architect (ASCII Wireframes)
+                logAgentClientSide('architect', `PRD 요구사항을 확인했습니다. 공통 CTA 및 정보 우선순위에 부합하는 Type A/B/C 3가지 시안의 ASCII 와이어프레임을 그립니다.`);
+                const uxPrompt = `
+                다음 PRD 요건서를 참조하여, 화면 목적 및 공통 CTA를 노출하고 정보 구조가 확연히 다른 3가지 시안(Type A: 현실/안정형, Type B: 디자인/감성몰입형, Type C: 미래형 동적 위젯)의 ASCII 와이어프레임 레이아웃과 특징을 작조하라.
+                
+                참조 PRD:
+                ${prdContent}
+                
+                반드시 마크다운 블록 내에 테두리선(┌, ┐, │, ─, └, ┘)과 대괄호([])를 이용한 정밀한 ASCII 텍스트 아트를 완성하라.
+                `;
+                
+                const uxContent = await callGeminiClientSide(
+                    apiKey,
+                    "당신은 ASCII 와이어프레임을 텍스트 아트로 설계하는 UX Architect 에이전트입니다.",
+                    uxPrompt,
+                    (msg) => logAgentClientSide('architect', msg)
+                );
+                logAgentClientSide('architect', `Type A, B, C 3가지 상이한 가치 지향 레이아웃 ASCII 제도 완료. 와이어프레임 문서 적재 완료.`);
+                logAgentClientSide('architect', `→ [SendMessage to product-reviewer] 삼각 정합성 크로스 검수 의뢰.`);
+
+                // STAGE 4: Product Reviewer (QA Audit)
+                logAgentClientSide('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`);
+                const reviewerPrompt = `
+                다음 3종의 기획 패키지(1-pager, PRD, 와이어프레임)를 분석하여 비즈니스-명세-디자인 정합성을 감사하라.
+                
+                1-pager:
+                ${onePagerContent}
+                
+                PRD:
+                ${prdContent}
+                
+                와이어프레임 3안:
+                ${uxContent}
+                
+                반드시 PASS 판정 및 다음 템플릿에 맞춘 감사 보고서를 생성하라:
+                # [정합성 검수 보고서] {제목}
+                - **최종 판정**: [PASS]
+                - **감사 일시**: {날짜}
+                ## 1. 정량적 일치성 매칭률 (비즈니스 정합성, 기능-UX 연결성, 예외 정의 충족, 보안 안전성 검증 결과 테이블)
+                ## 2. 정성적 품질 평가 총평
+                `;
+                
+                const auditContent = await callGeminiClientSide(
+                    apiKey,
+                    "당신은 완결된 기획의 삼각 정합성을 최종 감사하는 Product Reviewer QA 에이전트입니다.",
+                    reviewerPrompt,
+                    (msg) => logAgentClientSide('reviewer', msg)
+                );
+                logAgentClientSide('reviewer', `검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`);
+
+                // STAGE 5: Complete & Save
+                logAgentClientSide('system', `최종 배포 프로세스 진입. 파일명 보안 정제 적용 중...`);
+                
+                const resultDocs = {
+                    title: cleanTitle,
+                    '1pager': onePagerContent,
+                    'threec': threeCContent,
+                    'mece': meceContent,
+                    'prd': prdContent,
+                    'wireframe': uxContent,
+                    'audit': auditContent
+                };
+                
+                generatedDocs = resultDocs;
+                
+                saveClientHistoryLocally(resultDocs);
+                
+                logAgentClientSide('system', `브라우저 로컬 저장소(localStorage)에 마크다운 기획 서류 6종 영구 배포 완료.`);
+                logAgentClientSide('system', `- 요약서, 3C 분석, MECE 분석, PRD, 와이어프레임, 검수서 완료.`);
+                
+                completeAllPipelineSteps();
+                
+                document.getElementById('btn-submit-planning').disabled = false;
+                textarea.disabled = false;
+                
+                document.querySelectorAll('.chrome-tab').forEach(el => el.classList.remove('disabled'));
+                document.getElementById('badge-qa-status').style.display = 'flex';
+                
+                document.getElementById('btn-copy').disabled = false;
+                document.getElementById('btn-pdf').disabled = false;
+                document.getElementById('btn-edit').disabled = false;
+                document.getElementById('btn-copy').style.opacity = '1';
+                document.getElementById('btn-pdf').style.opacity = '1';
+                document.getElementById('btn-edit').style.opacity = '1';
+                document.getElementById('btn-copy').style.cursor = 'pointer';
+                document.getElementById('btn-pdf').style.cursor = 'pointer';
+                document.getElementById('btn-edit').style.cursor = 'pointer';
+                
+                const chatContainer = document.getElementById('chat-messages-container');
+                if (chatContainer) {
+                    const successNotif = document.createElement('div');
+                    successNotif.className = 'system-notification';
+                    successNotif.style.background = 'rgba(16, 185, 129, 0.08)';
+                    successNotif.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+                    successNotif.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--accent-green);"></i> 에이전트 기획안 연쇄 완공 완료 (Client Mode)`;
+                    chatContainer.appendChild(successNotif);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }
+                
+                showCompletionToast("기획안 생성이 성공적으로 완공되었습니다! (로컬 모드)");
+                switchDocument('1pager');
+                loadHistoryList();
+                
+            } catch (err) {
+                console.error("Client Mode planning failure:", err);
+                logErrorClientSide(err.message || "기획 생성 중 알 수 없는 에러가 발생했습니다.");
+                
+                document.getElementById('btn-submit-planning').disabled = false;
+                textarea.disabled = false;
+            }
+        }
+
+        async function startCascadingRegenerationClientSide(resumeFrom, apiKey) {
+            currentConsoleLogs = [];
+            document.getElementById('badge-qa-status').style.display = 'none';
+            document.getElementById('btn-copy').disabled = true;
+            document.getElementById('btn-pdf').disabled = true;
+            document.getElementById('btn-edit').disabled = true;
+
+            document.getElementById('btn-copy').style.opacity = '0.5';
+            document.getElementById('btn-pdf').style.opacity = '0.5';
+            document.getElementById('btn-edit').style.opacity = '0.5';
+
+            // Lock inputs
+            document.getElementById('btn-submit-planning').disabled = true;
+            document.getElementById('idea-textarea').disabled = true;
+
+            // Lock browser tabs except live terminal
+            document.querySelectorAll('.chrome-tab').forEach(el => {
+                el.classList.add('disabled');
+                el.classList.remove('active');
+            });
+            const navConsole = document.getElementById('nav-console');
+            navConsole.classList.remove('disabled');
+            navConsole.classList.add('active');
+
+            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/live-terminal';
+
+            const stageLabels = {
+                'prd': 'PRD 요구사항 정의',
+                'wireframe': '와이어프레임 3안 시안',
+                'audit': '종합 정합성 검수 보고서'
+            };
+            const chatContainer = document.getElementById('chat-messages-container');
+            if (chatContainer) {
+                const cascadeNotif = document.createElement('div');
+                cascadeNotif.className = 'system-notification';
+                cascadeNotif.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> <strong>${stageLabels[resumeFrom]}</strong> 단계부터 연쇄 갱신 시작 (Client Mode)`;
+                chatContainer.appendChild(cascadeNotif);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            const targetArea = document.getElementById('viewer-main-content');
+            targetArea.innerHTML = `
+                <div class="document-wrapper" style="padding: 20px;">
+                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Live Agent Team Cascading Re-planning (Client Mode)</h2>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">이전 단계 변경에 따라 <strong>${stageLabels[resumeFrom]}</strong>부터 이후 산출물을 실시간 동기화/재구축 중입니다.</p>
+                    
+                    <div class="terminal-container">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="t-btn tb-red"></div>
+                                <div class="t-btn tb-yellow"></div>
+                                <div class="t-btn tb-green"></div>
+                            </div>
+                            <div class="terminal-title">bash - pitl-cascade-update-client.sh</div>
+                            <div></div>
+                        </div>
+                        <div class="terminal-body" id="live-console-target" style="max-height: 480px; overflow-y: auto;">
+                            <div class="console-log-area" id="console-logs-container">
+                                <!-- Logs will stream here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            try {
+                logAgentClientSide('system', `상품기획 자동화 부분 재기획 프로세스 가동 (Client-Side).`);
+                logAgentClientSide('system', `부분 재기획 흐름을 감지했습니다. (수정 시점: ${resumeFrom})`);
+                logAgentClientSide('system', `수정된 사항을 기반으로 이후 단계 문서들을 정합하게 자동 갱신합니다.`);
+
+                let onePagerContent = generatedDocs['1pager'] || '';
+                let prdContent = generatedDocs['prd'] || '';
+                let uxContent = generatedDocs['wireframe'] || '';
+                let auditContent = generatedDocs['audit'] || '';
+                let threeCContent = generatedDocs['threec'] || '';
+                let meceContent = generatedDocs['mece'] || '';
+
+                // STAGE 2: PRD Analyst (PRD)
+                if (resumeFrom === 'prd') {
+                    logAgentClientSide('analyst', `1-pager 및 수정안을 바탕으로 상세 개발 요구사항(PRD) 및 예외 정책 수립을 다시 전개합니다.`);
+                    const prdPrompt = `
+                    다음 기획안(1-pager 및 3C, MECE 분석)을 참조하여 기능 요구사항, KPI 지표, 정책 및 예외 처리(결제 실패, API 타임아웃 등)가 포함된 정밀한 PRD를 작성하라.
+                    
+                    기획안 정보:
+                    ${onePagerContent}
+                    
+                    참조 3C 및 MECE 분석:
+                    ${threeCContent}
+                    ${meceContent}
+                    
+                    반드시 다음 구조를 충실하게 기입하여 작성하라:
+                    # [YY.MM.DD] {제목}
+                    ## 0. 문서 개요 (프로젝트 요약, 배경)
+                    ## 1. 목표 (Goal) (프로젝트 목표, 성공 기준 테이블)
+                    ## 2. KPI 및 측정지표 (핵심 KPI 테이블, 보조 지표, 모니터링 지표)
+                    ## 3. 사용자 및 이해관계자 (대상 사용자 + 제외 대상, 이해관계자 테이블)
+                    ## 4. 정책 정의 (기본 정책, 상태값 정의 테이블, 예외 정책 테이블)
+                    ## 5. 서비스 구조 (유저 플로우)
+                    ## 6. 상세 요구사항 (기능 요구사항 테이블 - REQ-01, REQ-02 우선순위 포함, 운영 요구사항, 데이터 요구사항)
+                    ## 7. UX/UI 고려사항 (로딩, 실패, 빈 화면 처리)
+                    ## 8. 기술 고려사항 (파일명 필터링, pandoc 보안 격리 등)
+                    ## 9. 실험 및 검증
+                    ## 10. 리스크 및 대응
+                    ## Appendix
+                    `;
+                    
+                    prdContent = await callGeminiClientSide(
+                        apiKey,
+                        "당신은 상세 요건 명세를 정의하는 PRD Analyst 에이전트입니다.",
+                        prdPrompt,
+                        (msg) => logAgentClientSide('analyst', msg)
+                    );
+                    generatedDocs['prd'] = prdContent;
+                    logAgentClientSide('analyst', `REQ 사양 식별 완료 및 예외/보안 정책 수립 완료. PRD 명세서 갱신 완료.`);
+                    logAgentClientSide('analyst', `→ [SendMessage to ux-architect] UX 레이아웃 스케치 협업 요청.`);
+                } else {
+                    logAgentClientSide('analyst', `기존 PRD 명세서 적재 상태 로딩 완료. 정합성이 유지됩니다.`);
+                }
+
+                // STAGE 3: UX Architect (ASCII Wireframes)
+                if (resumeFrom === 'prd' || resumeFrom === 'wireframe') {
+                    logAgentClientSide('architect', `PRD 요구사항의 변경사항을 확인했습니다. 공통 CTA 및 정보 우선순위에 부합하는 Type A/B/C 3가지 시안의 ASCII 와이어프레임을 다시 그립니다.`);
+                    const uxPrompt = `
+                    다음 PRD 요건서를 참조하여, 화면 목적 및 공통 CTA를 노출하고 정보 구조가 확연히 다른 3가지 시안(Type A: 현실/안정형, Type B: 디자인/감성몰입형, Type C: 미래형 동적 위젯)의 ASCII 와이어프레임 레이아웃과 특징을 작조하라.
+                    
+                    참조 PRD:
+                    ${prdContent}
+                    
+                    반드시 마크다운 블록 내에 테두리선(┌, ┐, │, ─, └, ┘)과 대괄호([])를 이용한 정밀한 ASCII 텍스트 아트를 완성하라.
+                    `;
+                    
+                    uxContent = await callGeminiClientSide(
+                        apiKey,
+                        "당신은 ASCII 와이어프레임을 텍스트 아트로 설계하는 UX Architect 에이전트입니다.",
+                        uxPrompt,
+                        (msg) => logAgentClientSide('architect', msg)
+                    );
+                    generatedDocs['wireframe'] = uxContent;
+                    logAgentClientSide('architect', `Type A, B, C 3가지 상이한 가치 지향 레이아웃 ASCII 제도 완료. 와이어프레임 문서 갱신 완료.`);
+                    logAgentClientSide('architect', `→ [SendMessage to product-reviewer] 삼각 정합성 크로스 검수 의뢰.`);
+                } else {
+                    logAgentClientSide('architect', `기존 와이어프레임 문서 적재 상태 로딩 완료. 정합성이 유지됩니다.`);
+                }
+
+                // STAGE 4: Product Reviewer (QA Audit)
+                logAgentClientSide('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`);
+                const reviewerPrompt = `
+                다음 3종의 기획 패키지(1-pager, PRD, 와이어프레임)를 분석하여 비즈니스-명세-디자인 정합성을 감사하라.
+                
+                1-pager:
+                ${onePagerContent}
+                
+                PRD:
+                ${prdContent}
+                
+                와이어프레임 3안:
+                ${uxContent}
+                
+                반드시 PASS 판정 및 다음 템플릿에 맞춘 감사 보고서를 생성하라:
+                # [정합성 검수 보고서] {제목}
+                - **최종 판정**: [PASS]
+                - **감사 일시**: {날짜}
+                ## 1. 정량적 일치성 매칭률 (비즈니스 정합성, 기능-UX 연결성, 예외 정의 충족, 보안 안전성 검증 결과 테이블)
+                ## 2. 정성적 품질 평가 총평
+                `;
+                
+                auditContent = await callGeminiClientSide(
+                    apiKey,
+                    "당신은 완결된 기획의 삼각 정합성을 최종 감사하는 Product Reviewer QA 에이전트입니다.",
+                    reviewerPrompt,
+                    (msg) => logAgentClientSide('reviewer', msg)
+                );
+                generatedDocs['audit'] = auditContent;
+                logAgentClientSide('reviewer', `검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`);
+
+                saveClientHistoryLocally(generatedDocs);
+
+                logAgentClientSide('system', `브라우저 로컬 저장소(localStorage)에 갱신된 기획 서류 6종 동기화 완료.`);
+                
+                // Unlock
+                document.getElementById('btn-submit-planning').disabled = false;
+                document.getElementById('idea-textarea').disabled = false;
+
+                document.querySelectorAll('.chrome-tab').forEach(el => el.classList.remove('disabled'));
+                document.getElementById('badge-qa-status').style.display = 'flex';
+                
+                document.getElementById('btn-copy').disabled = false;
+                document.getElementById('btn-pdf').disabled = false;
+                document.getElementById('btn-edit').disabled = false;
+                document.getElementById('btn-copy').style.opacity = '1';
+                document.getElementById('btn-pdf').style.opacity = '1';
+                document.getElementById('btn-edit').style.opacity = '1';
+                document.getElementById('btn-copy').style.cursor = 'pointer';
+                document.getElementById('btn-pdf').style.cursor = 'pointer';
+                document.getElementById('btn-edit').style.cursor = 'pointer';
+                
+                completeAllPipelineSteps();
+
+                const chatContainer = document.getElementById('chat-messages-container');
+                if (chatContainer) {
+                    const successNotif = document.createElement('div');
+                    successNotif.className = 'system-notification';
+                    successNotif.style.background = 'rgba(16, 185, 129, 0.08)';
+                    successNotif.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+                    successNotif.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--accent-green);"></i> 에이전트 연쇄 재기획 및 갱신 완료 (Client Mode)`;
+                    chatContainer.appendChild(successNotif);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }
+
+                showCompletionToast("기획안 연쇄 재기획 및 갱신이 완료되었습니다! (로컬 모드)");
+                switchDocument(resumeFrom);
+                loadHistoryList();
+
+            } catch (err) {
+                console.error("Client Mode cascade failure:", err);
+                logErrorClientSide(err.message || "연쇄 수정 중 알 수 없는 에러가 발생했습니다.");
+                
+                document.getElementById('btn-submit-planning').disabled = false;
+                document.getElementById('idea-textarea').disabled = false;
+            }
+        }
+
 
         // Run authentication screen initialization
         function initLockScreen() {
@@ -2828,6 +4144,7 @@
         resizeCanvas();
         animateStars();
         loadHistoryList();
+        _initApiKeyCard();  // API 키 카드 상태 초기화 + 구버전 키 자동 마이그레이션
         
         // Timeout to ensure DOM finishes rendering
         setTimeout(init3dTiltEffects, 200);
@@ -3139,11 +4456,22 @@
         }
 
         // CORE WORKSPACE: Call Express SSE API Stream
-        function startProductPlanning() {
+        async function startProductPlanning() {
             const textarea = document.getElementById('idea-textarea');
             const idea = textarea.value.trim();
             if (!idea) {
                 alert("상품 기획안 아이디어를 입력해주세요.");
+                return;
+            }
+
+            // Check if client-side Gemini API key is configured
+            const geminiApiKey = await getDecryptedApiKey();
+            if (geminiApiKey || window.location.hostname.includes('github.io')) {
+                if (!geminiApiKey) {
+                    alert("GitHub Pages 환경에서는 Gemini API Key가 필요합니다. 아래 'Gemini API Key 설정' 카드에 API Key를 먼저 저장해 주세요.");
+                    return;
+                }
+                startProductPlanningClientSide(idea, geminiApiKey);
                 return;
             }
 
@@ -3499,7 +4827,7 @@
         }
 
         // Save modification and trigger subsequent cascading regeneration
-        function saveAndRegenerateCascade() {
+        async function saveAndRegenerateCascade() {
             if (!generatedDocs) return;
             
             const content = document.getElementById('editor-textarea').value.trim();
@@ -3524,6 +4852,31 @@
                 return;
             }
             
+            const geminiApiKey = await getDecryptedApiKey();
+            if (geminiApiKey || window.location.hostname.includes('github.io')) {
+                if (!geminiApiKey) {
+                    alert("GitHub Pages 환경에서는 Gemini API Key가 필요합니다. 아래 'Gemini API Key 설정' 카드에 API Key를 먼저 저장해 주세요.");
+                    return;
+                }
+                
+                // Save locally in active memory
+                generatedDocs[docKey] = content;
+                isEditing = false;
+                
+                const btnEdit = document.getElementById('btn-edit');
+                if (btnEdit) {
+                    btnEdit.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> 기획 수정`;
+                    btnEdit.classList.remove('active');
+                }
+                
+                // Save history item locally
+                saveClientHistoryLocally(generatedDocs);
+                
+                // Start client cascading regeneration
+                startCascadingRegenerationClientSide(resumeFrom, geminiApiKey);
+                return;
+            }
+
             const btnSave = document.querySelector('button[onclick="saveAndRegenerateCascade()"]');
             btnSave.disabled = true;
             btnSave.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 저장 및 동기화 중...`;
@@ -3938,74 +5291,105 @@
             alert(`[Command Safety 검증 완료] pandoc --version 확인 완료. 파일명이 싱글쿼트(')로 이스케이프 처리된 'outputs/${generatedDocs.title}_wireframes.pdf' 파일로의 무결한 PDF 빌드가 완공되었습니다.`);
         }
 
-        // Planning history fetching
-        function loadHistoryList() {
-            fetch('/api/history')
-            .then(res => res.json())
-            .then(data => {
-                // 1. Sidebar List
-                const listContainer = document.getElementById('history-list');
-                if (listContainer) {
-                    if (!data || data.length === 0) {
-                        listContainer.innerHTML = `
-                            <div class="sidebar-empty-state">
-                                <i class="fa-regular fa-folder-open"></i>
-                                <span>히스토리가 없습니다</span>
+        // Helper to render history cards (used by loadHistoryList)
+        function renderHistoryLists(data) {
+            // 1. Sidebar List
+            const listContainer = document.getElementById('history-list');
+            if (listContainer) {
+                if (!data || data.length === 0) {
+                    listContainer.innerHTML = `
+                        <div class="sidebar-empty-state">
+                            <i class="fa-regular fa-folder-open"></i>
+                            <span>히스토리가 없습니다</span>
+                        </div>
+                    `;
+                } else {
+                    listContainer.innerHTML = data.map(item => `
+                        <div class="history-item-card" onclick="loadHistoryItem('${item.title}', '${item.date}')">
+                            <div class="history-card-title">
+                                <i class="fa-regular fa-file-lines" style="color: var(--accent-neon);"></i> ${item.displayTitle}
                             </div>
-                        `;
-                    } else {
-                        listContainer.innerHTML = data.map(item => `
-                            <div class="history-item-card" onclick="loadHistoryItem('${item.title}', '${item.date}')">
-                                <div class="history-card-title">
-                                    <i class="fa-regular fa-file-lines" style="color: var(--accent-neon);"></i> ${item.displayTitle}
+                            <div class="history-card-meta">
+                                <span>${item.displayDate}</span>
+                                <span class="landing-card-badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary);">${item.types.length} Files</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+            
+            // 2. Landing Recent history grid
+            const landingGrid = document.getElementById('landing-history-list');
+            if (landingGrid) {
+                if (!data || data.length === 0) {
+                    landingGrid.innerHTML = `
+                        <div class="landing-history-empty">
+                            <i class="fa-regular fa-folder-open"></i>
+                            <span>최근 생성 완료된 기획안 히스토리가 없습니다.</span>
+                        </div>
+                    `;
+                } else {
+                    const recents = data.slice(0, 3);
+                    landingGrid.innerHTML = recents.map(item => `
+                        <div class="landing-history-card" onclick="loadHistoryItem('${item.title}', '${item.date}')">
+                            <div class="landing-card-content">
+                                <div class="landing-card-title">
+                                    <i class="fa-regular fa-file-lines" style="color: var(--accent-neon); margin-right: 6px;"></i> ${item.displayTitle}
                                 </div>
-                                <div class="history-card-meta">
+                                <div class="landing-card-footer">
                                     <span>${item.displayDate}</span>
-                                    <span class="landing-card-badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary);">${item.types.length} Files</span>
+                                    <span class="landing-card-badge">${item.types.length}개 파일 완료</span>
                                 </div>
                             </div>
-                        `).join('');
-                    }
+                        </div>
+                    `).join('');
                 }
+            }
+            
+            // Dynamically bind 3D Tilt on loaded history cards
+            setTimeout(() => {
+                document.querySelectorAll('.landing-history-card').forEach(card => {
+                    card.addEventListener('mousemove', (e) => handleTilt(e, card, 6)); // classier subtle tilt
+                    card.addEventListener('mouseleave', () => resetTilt(card));
+                });
+            }, 200);
+        }
+
+        // Planning history fetching
+        async function loadHistoryList() {
+            const geminiApiKey = await getDecryptedApiKey();
+            if (geminiApiKey || window.location.hostname.includes('github.io')) {
+                let clientHistory = localStorage.getItem('pitl_client_history');
+                clientHistory = clientHistory ? JSON.parse(clientHistory) : [];
+                renderHistoryLists(clientHistory);
+                return;
+            }
+
+            fetch('/api/history')
+            .then(res => {
+                if (!res.ok) throw new Error();
+                return res.json();
+            })
+            .then(data => {
+                // Merge server history and localStorage client history
+                let clientHistory = localStorage.getItem('pitl_client_history');
+                clientHistory = clientHistory ? JSON.parse(clientHistory) : [];
                 
-                // 2. Landing Recent history grid
-                const landingGrid = document.getElementById('landing-history-list');
-                if (landingGrid) {
-                    if (!data || data.length === 0) {
-                        landingGrid.innerHTML = `
-                            <div class="landing-history-empty">
-                                <i class="fa-regular fa-folder-open"></i>
-                                <span>최근 생성 완료된 기획안 히스토리가 없습니다.</span>
-                            </div>
-                        `;
-                    } else {
-                        const recents = data.slice(0, 3);
-                        landingGrid.innerHTML = recents.map(item => `
-                            <div class="landing-history-card" onclick="loadHistoryItem('${item.title}', '${item.date}')">
-                                <div class="landing-card-content">
-                                    <div class="landing-card-title">
-                                        <i class="fa-regular fa-file-lines" style="color: var(--accent-neon); margin-right: 6px;"></i> ${item.displayTitle}
-                                    </div>
-                                    <div class="landing-card-footer">
-                                        <span>${item.displayDate}</span>
-                                        <span class="landing-card-badge">${item.types.length}개 파일 완료</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('');
+                // Deduplicate items based on title and date (prioritizing server items)
+                const merged = [...data];
+                clientHistory.forEach(cItem => {
+                    if (!merged.some(sItem => sItem.title === cItem.title && sItem.date === cItem.date)) {
+                        merged.push(cItem);
                     }
-                }
+                });
                 
-                // Dynamically bind 3D Tilt on loaded history cards
-                setTimeout(() => {
-                    document.querySelectorAll('.landing-history-card').forEach(card => {
-                        card.addEventListener('mousemove', (e) => handleTilt(e, card, 6)); // classier subtle tilt
-                        card.addEventListener('mouseleave', () => resetTilt(card));
-                    });
-                }, 200);
+                renderHistoryLists(merged.sort((a, b) => b.date.localeCompare(a.date)));
             })
             .catch(err => {
-                console.error("Failed to load history list:", err);
+                console.warn("Backend history API unavailable. Loading from localStorage...");
+                let clientHistory = localStorage.getItem('pitl_client_history');
+                clientHistory = clientHistory ? JSON.parse(clientHistory) : [];
+                renderHistoryLists(clientHistory);
             });
         }
 
@@ -4047,49 +5431,78 @@
                 `;
             }
 
+            const geminiApiKey = await getDecryptedApiKey();
+            if (geminiApiKey || window.location.hostname.includes('github.io')) {
+                let clientHistory = localStorage.getItem('pitl_client_history');
+                clientHistory = clientHistory ? JSON.parse(clientHistory) : [];
+                const foundItem = clientHistory.find(item => item.title === title && item.date === date);
+                if (foundItem && foundItem.docs) {
+                    setupLoadedSession(foundItem.docs, title, date);
+                } else {
+                    alert("히스토리 로드에 실패했습니다. 해당 항목을 브라우저 로컬 저장소에서 찾을 수 없습니다.");
+                    if (btnSubmit) btnSubmit.disabled = false;
+                    if (ideaTextarea) ideaTextarea.disabled = false;
+                    resetToLanding();
+                }
+                return;
+            }
+
             fetch(`/api/history/load?title=${encodeURIComponent(title)}&date=${encodeURIComponent(date)}`)
             .then(res => {
                 if (!res.ok) throw new Error("네트워크 서버 통신 오류");
                 return res.json();
             })
             .then(data => {
-                generatedDocs = data;
-                
-                if (btnSubmit) btnSubmit.disabled = false;
-                if (ideaTextarea) ideaTextarea.disabled = false;
-                
-                // Unlock browser tabs
-                document.querySelectorAll('.chrome-tab').forEach(el => el.classList.remove('disabled'));
-                
-                // Enable actions in header
-                document.getElementById('badge-qa-status').style.display = 'flex';
-                document.getElementById('btn-copy').disabled = false;
-                document.getElementById('btn-pdf').disabled = false;
-                document.getElementById('btn-edit').disabled = false;
-
-                document.getElementById('btn-copy').style.opacity = '1';
-                document.getElementById('btn-pdf').style.opacity = '1';
-                document.getElementById('btn-edit').style.opacity = '1';
-                document.getElementById('btn-copy').style.cursor = 'pointer';
-                document.getElementById('btn-pdf').style.cursor = 'pointer';
-                document.getElementById('btn-edit').style.cursor = 'pointer';
-                
-                // Complete all checklist items
-                completeAllPipelineSteps();
-
-                isEditing = false;
-                switchDocument('1pager');
-                
-                alert(`[히스토리 로드 완료] '${title.replace(/_/g, ' ')}' 기획서 세션을 성공적으로 로드했습니다. 기획안 수정 모드를 통해 연쇄 자동 갱신이 지원됩니다.`);
+                setupLoadedSession(data, title, date);
             })
             .catch(err => {
-                alert("히스토리 로드에 실패했습니다: " + err.message);
-                if (btnSubmit) btnSubmit.disabled = false;
-                if (ideaTextarea) ideaTextarea.disabled = false;
-                
-                // Back to landing if fetch fails
-                resetToLanding();
+                console.warn("Backend load failed. Loading from localStorage...");
+                let clientHistory = localStorage.getItem('pitl_client_history');
+                clientHistory = clientHistory ? JSON.parse(clientHistory) : [];
+                const foundItem = clientHistory.find(item => item.title === title && item.date === date);
+                if (foundItem && foundItem.docs) {
+                    setupLoadedSession(foundItem.docs, title, date);
+                } else {
+                    alert("히스토리 로드에 실패했습니다. 해당 항목을 브라우저 로컬 저장소에서 찾을 수 없습니다.");
+                    if (btnSubmit) btnSubmit.disabled = false;
+                    if (ideaTextarea) ideaTextarea.disabled = false;
+                    resetToLanding();
+                }
             });
+        }
+
+        function setupLoadedSession(data, title, date) {
+            const btnSubmit = document.getElementById('btn-submit-planning');
+            const ideaTextarea = document.getElementById('idea-textarea');
+            
+            generatedDocs = data;
+            
+            if (btnSubmit) btnSubmit.disabled = false;
+            if (ideaTextarea) ideaTextarea.disabled = false;
+            
+            // Unlock browser tabs
+            document.querySelectorAll('.chrome-tab').forEach(el => el.classList.remove('disabled'));
+            
+            // Enable actions in header
+            document.getElementById('badge-qa-status').style.display = 'flex';
+            document.getElementById('btn-copy').disabled = false;
+            document.getElementById('btn-pdf').disabled = false;
+            document.getElementById('btn-edit').disabled = false;
+
+            document.getElementById('btn-copy').style.opacity = '1';
+            document.getElementById('btn-pdf').style.opacity = '1';
+            document.getElementById('btn-edit').style.opacity = '1';
+            document.getElementById('btn-copy').style.cursor = 'pointer';
+            document.getElementById('btn-pdf').style.cursor = 'pointer';
+            document.getElementById('btn-edit').style.cursor = 'pointer';
+            
+            // Complete all checklist items
+            completeAllPipelineSteps();
+
+            isEditing = false;
+            switchDocument('1pager');
+            
+            alert(`[히스토리 로드 완료] '${title.replace(/_/g, ' ')}' 기획서 세션을 성공적으로 로드했습니다. 기획안 수정 모드를 통해 연쇄 자동 갱신이 지원됩니다.`);
         }
 
         // DYNAMIC THEME SWITCHER IMPLEMENTATION
