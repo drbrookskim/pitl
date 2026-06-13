@@ -438,213 +438,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* ═══════════════════════════════════════════════════════
-           INLINE API KEY CARD
-           ═══════════════════════════════════════════════════════ */
-        .api-key-inline-card {
-            width: 100%;
-            max-width: 660px;
-            margin: 20px auto 0;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 14px;
-            overflow: hidden;
-            backdrop-filter: blur(12px);
-            transition: border-color .3s ease, box-shadow .3s ease;
-        }
-        .api-key-inline-card:hover {
-            box-shadow: 0 0 24px rgba(16,185,129,0.08);
-        }
 
-        /* Header row — always visible */
-        .api-key-card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 18px;
-            cursor: default;
-        }
-        .api-key-card-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, var(--accent-neon), var(--accent-blue));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            color: #0f0f14;
-            flex-shrink: 0;
-        }
-        .api-key-card-titles {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex: 1;
-            min-width: 0;
-        }
-        .api-key-card-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-            white-space: nowrap;
-        }
-        .api-key-card-subtitle {
-            font-size: 11px;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            transition: color .3s;
-        }
-        .api-key-toggle-btn {
-            background: none;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 6px;
-            color: var(--text-secondary);
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 11px;
-            transition: all .2s ease;
-            flex-shrink: 0;
-        }
-        .api-key-toggle-btn:hover {
-            border-color: var(--accent-neon);
-            color: var(--accent-neon);
-        }
-
-        /* Collapsible body */
-        .api-key-card-body {
-            display: none;
-            flex-direction: column;
-            gap: 12px;
-            padding: 0 18px 16px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            animation: slideDown .22s ease;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-6px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Input + save button row */
-        .api-key-input-row {
-            display: flex;
-            gap: 10px;
-            align-items: stretch;
-            margin-top: 14px;
-        }
-        .api-key-input-wrapper {
-            position: relative;
-            flex: 1;
-            display: flex;
-            align-items: center;
-        }
-        .api-key-input-icon {
-            position: absolute;
-            left: 13px;
-            color: var(--text-muted);
-            font-size: 12px;
-            pointer-events: none;
-        }
-        .api-key-input {
-            width: 100%;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 9px;
-            padding: 10px 38px 10px 34px;
-            font-size: 13px;
-            color: var(--text-primary);
-            font-family: 'Space Mono', 'Courier New', monospace;
-            letter-spacing: 0.05em;
-            transition: border-color .2s, box-shadow .2s;
-            outline: none;
-        }
-        .api-key-input::placeholder { color: var(--text-muted); font-family: inherit; letter-spacing: 0; }
-        .api-key-input:focus {
-            border-color: var(--accent-neon);
-            box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
-        }
-        .api-key-eye-btn {
-            position: absolute;
-            right: 10px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 13px;
-            padding: 4px;
-            transition: color .2s;
-        }
-        .api-key-eye-btn:hover { color: var(--text-primary); }
-
-        .api-key-save-btn {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            background: linear-gradient(135deg, var(--accent-neon), #00d4aa);
-            border: none;
-            border-radius: 9px;
-            color: #0f0f14;
-            font-size: 12.5px;
-            font-weight: 700;
-            padding: 10px 16px;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: opacity .2s, transform .15s;
-            flex-shrink: 0;
-        }
-        .api-key-save-btn:hover { opacity: .88; transform: translateY(-1px); }
-        .api-key-save-btn:active { transform: scale(.97); }
-        .api-key-save-btn:disabled { opacity: .5; cursor: default; }
-
-        /* Info row */
-        .api-key-info-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            font-size: 11.5px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            padding: 10px 12px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 8px;
-            border: 1px dashed rgba(255,255,255,0.06);
-        }
-        .api-key-info-row > i { margin-top: 2px; flex-shrink: 0; }
-        .api-key-info-row > span { flex: 1; }
-        .api-key-delete-btn {
-            display: none;
-            align-items: center;
-            gap: 5px;
-            background: none;
-            border: 1px solid rgba(239,68,68,0.3);
-            border-radius: 6px;
-            color: rgba(239,68,68,0.8);
-            font-size: 11px;
-            padding: 4px 9px;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all .2s;
-            flex-shrink: 0;
-        }
-        .api-key-delete-btn:hover {
-            background: rgba(239,68,68,0.1);
-            border-color: rgba(239,68,68,0.6);
-            color: rgb(239,68,68);
-        }
-
-        /* Mobile responsive */
-        @media (max-width: 540px) {
-            .api-key-inline-card { border-radius: 10px; }
-            .api-key-input-row { flex-direction: column; }
-            .api-key-save-btn { width: 100%; justify-content: center; }
-            .api-key-card-subtitle { display: none; }
-        }
 
         /* Landing History Grid */
         .landing-history-section {
@@ -2472,49 +2266,7 @@
                 </button>
             </div>
 
-            <!-- ── INLINE API KEY CARD ─────────────────────────────── -->
-            <div class="api-key-inline-card" id="api-key-inline-card">
-                <div class="api-key-card-header">
-                    <span class="api-key-card-icon"><i class="fa-solid fa-shield-halved"></i></span>
-                    <div class="api-key-card-titles">
-                        <span class="api-key-card-title">Gemini API Key 설정</span>
-                        <span class="api-key-card-subtitle" id="api-key-status-badge">미설정 — 키를 입력하면 브라우저에서 직접 AI 에이전트를 실행합니다</span>
-                    </div>
-                    <button class="api-key-toggle-btn" id="api-key-toggle-btn" onclick="toggleApiKeyCard()" title="펼치기/접기">
-                        <i class="fa-solid fa-chevron-down" id="api-key-toggle-icon"></i>
-                    </button>
-                </div>
-                <div class="api-key-card-body" id="api-key-card-body">
-                    <div class="api-key-input-row">
-                        <div class="api-key-input-wrapper">
-                            <i class="fa-solid fa-key api-key-input-icon"></i>
-                            <input
-                                type="password"
-                                id="landing-api-key-input"
-                                class="api-key-input"
-                                placeholder="AIza... 형식의 Gemini API Key 입력"
-                                autocomplete="off"
-                                spellcheck="false"
-                            >
-                            <button class="api-key-eye-btn" id="api-key-eye-btn" onclick="toggleApiKeyVisibility()" title="보기/숨기기">
-                                <i class="fa-solid fa-eye" id="api-key-eye-icon"></i>
-                            </button>
-                        </div>
-                        <button class="api-key-save-btn" id="api-key-save-btn" onclick="saveLandingApiKey()">
-                            <i class="fa-solid fa-lock"></i>
-                            <span>암호화 저장</span>
-                        </button>
-                    </div>
-                    <div class="api-key-info-row">
-                        <i class="fa-solid fa-circle-info" style="color:var(--accent-neon);font-size:11px;"></i>
-                        <span>입력한 키는 <strong>서버로 전송되지 않으며</strong>, AES-GCM 암호화 후 이 기기의 로컬 스토리지에만 보관됩니다. 언제든지 삭제할 수 있습니다.</span>
-                        <button class="api-key-delete-btn" id="api-key-delete-btn" onclick="deleteLandingApiKey()" title="저장된 키 삭제">
-                            <i class="fa-solid fa-trash-can"></i> 삭제
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!-- ── END INLINE API KEY CARD ────────────────────────── -->
+
 
             <!-- Recent Planning Runs Divider & Grid -->
             <div class="landing-history-section">
@@ -2869,113 +2621,8 @@
             return _decryptApiKey(stored);
         }
 
-        // ───────────────────────────────────────────────────────────────
-        //  랜딩 인라인 API 키 카드 UI 컨트롤러
-        // ───────────────────────────────────────────────────────────────
-        let _apiCardExpanded = false;
-
-        function toggleApiKeyCard() {
-            _apiCardExpanded = !_apiCardExpanded;
-            const body = document.getElementById('api-key-card-body');
-            const icon = document.getElementById('api-key-toggle-icon');
-            if (body) body.style.display = _apiCardExpanded ? 'flex' : 'none';
-            if (icon) {
-                icon.className = _apiCardExpanded
-                    ? 'fa-solid fa-chevron-up'
-                    : 'fa-solid fa-chevron-down';
-            }
-        }
-
-        function toggleApiKeyVisibility() {
-            const inp = document.getElementById('landing-api-key-input');
-            const ico = document.getElementById('api-key-eye-icon');
-            if (!inp) return;
-            const isHidden = inp.type === 'password';
-            inp.type = isHidden ? 'text' : 'password';
-            if (ico) ico.className = isHidden ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-        }
-
-        async function saveLandingApiKey() {
-            const inp = document.getElementById('landing-api-key-input');
-            if (!inp) return;
-            const key = inp.value.trim();
-            const saveBtn = document.getElementById('api-key-save-btn');
-            if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 암호화 중...'; }
-            try {
-                if (key) {
-                    const encrypted = await _encryptApiKey(key);
-                    localStorage.setItem(PITL_CRYPTO_KEY, encrypted);
-                    // 구버전 평문 키 정리
-                    localStorage.removeItem('pitl_gemini_api_key');
-                    inp.value = '';
-                    _updateApiKeyStatus(true);
-                    _showApiKeyToast('🔒 API Key가 AES-GCM으로 암호화되어 이 기기에 저장되었습니다.');
-                    // 카드 접기
-                    if (_apiCardExpanded) toggleApiKeyCard();
-                } else {
-                    _showApiKeyToast('⚠️ 키를 입력해주세요.', true);
-                }
-            } catch (e) {
-                _showApiKeyToast('❌ 암호화 실패: ' + e.message, true);
-            } finally {
-                if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fa-solid fa-lock"></i><span>암호화 저장</span>'; }
-            }
-        }
-
-        async function deleteLandingApiKey() {
-            localStorage.removeItem(PITL_CRYPTO_KEY);
-            localStorage.removeItem('pitl_gemini_api_key');
-            const inp = document.getElementById('landing-api-key-input');
-            if (inp) inp.value = '';
-            _updateApiKeyStatus(false);
-            _showApiKeyToast('🗑️ 저장된 API Key가 삭제되었습니다.');
-        }
-
-        function _updateApiKeyStatus(hasKey) {
-            const badge = document.getElementById('api-key-status-badge');
-            const deleteBtn = document.getElementById('api-key-delete-btn');
-            const card = document.getElementById('api-key-inline-card');
-            if (badge) {
-                if (hasKey) {
-                    badge.textContent = '✅ 암호화 저장됨 — 브라우저 직접 실행 모드 활성';
-                    badge.style.color = 'var(--accent-green)';
-                } else {
-                    badge.textContent = '미설정 — 키를 입력하면 브라우저에서 직접 AI 에이전트를 실행합니다';
-                    badge.style.color = 'var(--text-secondary)';
-                }
-            }
-            if (deleteBtn) deleteBtn.style.display = hasKey ? 'flex' : 'none';
-            if (card) {
-                card.style.borderColor = hasKey
-                    ? 'rgba(16,185,129,0.35)'
-                    : 'rgba(255,255,255,0.07)';
-            }
-        }
-
-        function _showApiKeyToast(msg, isError = false) {
-            let t = document.getElementById('api-key-toast');
-            if (!t) {
-                t = document.createElement('div');
-                t.id = 'api-key-toast';
-                t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
-                    'background:rgba(15,15,20,0.95);backdrop-filter:blur(12px);' +
-                    'border:1px solid rgba(255,255,255,0.12);border-radius:10px;' +
-                    'padding:12px 20px;font-size:13px;color:#fff;z-index:99999;' +
-                    'box-shadow:0 8px 32px rgba(0,0,0,0.5);transition:opacity .3s;';
-                document.body.appendChild(t);
-            }
-            t.style.borderColor = isError ? 'rgba(239,68,68,0.4)' : 'rgba(16,185,129,0.4)';
-            t.textContent = msg;
-            t.style.opacity = '1';
-            clearTimeout(t._timer);
-            t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3200);
-        }
-
-        /** 페이지 로드 시 키 보유 여부에 따라 카드 상태 초기화 */
+        /** 페이지 로드 시 구버전 평문 키가 있으면 자동 마이그레이션 (암호화 재저장) */
         async function _initApiKeyCard() {
-            const hasKey = !!(localStorage.getItem(PITL_CRYPTO_KEY) || localStorage.getItem('pitl_gemini_api_key'));
-            _updateApiKeyStatus(hasKey);
-            // 구버전 평문 키가 있으면 자동 마이그레이션 (암호화 재저장)
             const legacy = localStorage.getItem('pitl_gemini_api_key');
             if (legacy) {
                 try {
@@ -3014,6 +2661,25 @@
             }
         }
 
+        function _showApiKeyToast(msg, isError = false) {
+            let t = document.getElementById('api-key-toast');
+            if (!t) {
+                t = document.createElement('div');
+                t.id = 'api-key-toast';
+                t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
+                    'background:rgba(15,15,20,0.95);backdrop-filter:blur(12px);' +
+                    'border:1px solid rgba(255,255,255,0.12);border-radius:10px;' +
+                    'padding:12px 20px;font-size:13px;color:#fff;z-index:99999;' +
+                    'box-shadow:0 8px 32px rgba(0,0,0,0.5);transition:opacity .3s;';
+                document.body.appendChild(t);
+            }
+            t.style.borderColor = isError ? 'rgba(239,68,68,0.4)' : 'rgba(16,185,129,0.4)';
+            t.textContent = msg;
+            t.style.opacity = '1';
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3200);
+        }
+
         async function saveGeminiApiKey() {
             const input = document.getElementById('pitl-gemini-key-input');
             if (!input) return;
@@ -3023,7 +2689,6 @@
                     const enc = await _encryptApiKey(key);
                     localStorage.setItem(PITL_CRYPTO_KEY, enc);
                     localStorage.removeItem('pitl_gemini_api_key');
-                    _updateApiKeyStatus(true);
                     closeSettingsModal();
                     _showApiKeyToast('🔒 API Key가 AES-GCM으로 암호화 저장되었습니다.');
                 } catch (e) {
@@ -3032,7 +2697,6 @@
             } else {
                 localStorage.removeItem(PITL_CRYPTO_KEY);
                 localStorage.removeItem('pitl_gemini_api_key');
-                _updateApiKeyStatus(false);
                 closeSettingsModal();
                 _showApiKeyToast('🗑️ 저장된 API Key가 삭제되었습니다.');
             }
