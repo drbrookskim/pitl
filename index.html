@@ -98,42 +98,7 @@
             display: none;
         }
 
-        /* ── INTERACTIVE GRID-TOGGLE OVERLAY ── */
-        .grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: var(--maxw);
-            height: 100vh;
-            padding: 0 var(--margin);
-            display: grid;
-            grid-template-columns: repeat(var(--cols), 1fr);
-            column-gap: var(--gutter);
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0;
-            transition: opacity 0.15s ease;
-        }
-        .grid-overlay.active {
-            opacity: 1;
-        }
-        .grid-column-line {
-            height: 100%;
-            background: rgba(239, 68, 68, 0.01); /* canonical red tint */
-            border-left: 1px dashed rgba(239, 68, 68, 0.12);
-            border-right: 1px dashed rgba(239, 68, 68, 0.12);
-        }
-        /* Baseline grid horizontal lines */
-        .grid-overlay::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: linear-gradient(rgba(239, 68, 68, 0.03) 1px, transparent 1px);
-            background-size: 100% var(--bl);
-            pointer-events: none;
-        }
+
 
         /* Hide Cyberpunk / Aurora Backgrounds */
         .perspective-container,
@@ -2245,23 +2210,7 @@
         }
     </style>
 </head>
-<body class="state-landing">
-
-    <!-- Müller-Brockmann 12-Column & Baseline Grid Overlay Guide -->
-    <div class="grid-overlay" id="gridOverlay">
-        <div class="grid-column-line"></div>
-        <div class="grid-column-line"></div>
-        <div class="grid-column-line"></div>
-        <div class="grid-column-line"></div>
-        <div class="grid-column-line"></div>
-        <div class="grid-column-line"></div>
-        <div class="grid-column-line"></div>
-        <div class="grid-column-line"></div>
-        <div class="grid-column-line"></div>
-        <div class="grid-column-line"></div>
-        <div class="grid-column-line"></div>
-        <div class="grid-column-line"></div>
-    </div>
+<body class="state-landing light-theme">
 
     <!-- Password Lock Screen Overlay -->
     <div id="pitl-password-overlay" class="password-overlay-wrapper" style="display: none;">
@@ -5639,19 +5588,13 @@
             initStars();
         }
 
-        // Müller-Brockmann 12-Column & Baseline Grid Toggle
-        function toggleGrid() {
-            const overlay = document.getElementById('gridOverlay');
-            if (overlay) {
-                const isActive = overlay.classList.toggle('active');
-                localStorage.setItem('pitl-grid', isActive ? 'active' : 'inactive');
-            }
-        }
-
-        // Early Theme and Grid restorer to avoid flicker on page load
+        // Early Theme restorer to avoid flicker on page load
         (function() {
             const savedTheme = localStorage.getItem('pitl-theme');
-            if (savedTheme === 'light') {
+            // default is light
+            const isLight = (savedTheme !== 'dark');
+            
+            if (isLight) {
                 document.body.classList.add('light-theme');
                 // wait for DOM to bind the sun icon
                 window.addEventListener('DOMContentLoaded', () => {
@@ -5660,13 +5603,13 @@
                         icon.className = 'fa-solid fa-sun';
                     });
                 });
-            }
-
-            const savedGrid = localStorage.getItem('pitl-grid');
-            if (savedGrid === 'active') {
+            } else {
+                document.body.classList.remove('light-theme');
                 window.addEventListener('DOMContentLoaded', () => {
-                    const overlay = document.getElementById('gridOverlay');
-                    if (overlay) overlay.classList.add('active');
+                    const icons = document.querySelectorAll('.theme-toggle-btn i');
+                    icons.forEach(icon => {
+                        icon.className = 'fa-solid fa-moon';
+                    });
                 });
             }
         })();
