@@ -630,6 +630,34 @@
             z-index: 3;
         }
 
+        .sidebar-quick-actions {
+            display: flex;
+            gap: var(--sp-1);
+            padding: 0 4px;
+            margin-top: calc(-1 * var(--sp-1)); /* Pull closer to logo */
+        }
+        .btn-quick-action {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+        }
+        .btn-quick-action:hover {
+            border-color: var(--accent-neon);
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        body.light-theme .btn-quick-action:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
         .sidebar-logo-container {
             display: flex;
             align-items: center;
@@ -2349,9 +2377,6 @@
                 <button class="btn-minimal" onclick="goToWorkspaceDashboard()">
                     <i class="fa-solid fa-desktop"></i> 워크스페이스 대시보드
                 </button>
-                <button class="btn-minimal" onclick="toggleGrid()" title="그리드 가이드 토글" data-i18n="landing_nav_grid_toggle">
-                    <i class="fa-solid fa-table-cells"></i> 그리드 가이드
-                </button>
                 <button class="btn-minimal" onclick="logout()" title="로그아웃">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 </button>
@@ -2427,9 +2452,19 @@
                     </span>
                 </div>
             </div>
+
+            <!-- 테마 변경 및 API 설정 퀵 액션 버튼 (PITL Agent 로고 바로 밑 위치) -->
+            <div class="sidebar-quick-actions">
+                <button class="theme-toggle-btn btn-quick-action" onclick="toggleTheme()" title="테마 변경">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="btn-quick-action" onclick="openSettingsModal()" title="API 설정">
+                    <i class="fa-solid fa-key"></i>
+                </button>
+            </div>
             
-            <button class="new-plan-btn" onclick="resetToLanding()">
-                <i class="fa-solid fa-plus"></i> <span data-i18n="new_plan_btn">새로운 아이디어 기획</span>
+            <button class="new-plan-btn" onclick="resetToLanding()" data-i18n="new_plan_btn">
+                <i class="fa-solid fa-plus"></i> 새로운 아이디어 기획
             </button>
             
             <div class="sidebar-menu-section">
@@ -2526,15 +2561,6 @@
                     
                     <!-- Moved theme, api settings, logout actions to the right of the QA Report tab -->
                     <div class="chrome-title-bar-actions">
-                        <button onclick="toggleGrid()" title="그리드 가이드 토글">
-                            <i class="fa-solid fa-table-cells"></i>
-                        </button>
-                        <button class="theme-toggle-btn" onclick="toggleTheme()" title="테마 변경">
-                            <i class="fa-solid fa-moon"></i>
-                        </button>
-                        <button onclick="openSettingsModal()" title="API 설정">
-                            <i class="fa-solid fa-key"></i>
-                        </button>
                         <button onclick="logout()" title="로그아웃">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         </button>
