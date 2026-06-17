@@ -152,6 +152,7 @@ Through the Why → So What → How thinking process, we understand environmenta
 | **Company** | High-quality video production has major budget limits, but motion vector ASCII UI can be built in-house. | 3-Type ASCII Wireframe UI, lightweight rendering | **Must Have** (REQ-03) |
 | **Intersection (Concept)** | The sustainable intersection of 3C analysis is '3-Minute Office AI Posture Correcting Stretching' | Ultra-personalized AI wellness monthly subscription service concept | **Must Have** (REQ-04, 05) |
 `;
+    }
 
     return `# [전략 기획] 3C 프레임워크 기반 입체적 환경 분석: \${titleText}
 
