@@ -1034,7 +1034,8 @@
             gap: 16px;
             color: var(--text-secondary);
             font-size: 13px;
-            width: 80px;
+            width: auto;
+            flex-shrink: 0;
             justify-content: flex-end;
             align-items: center;
         }
@@ -1062,8 +1063,15 @@
             display: flex;
             gap: 4px;
             flex: 1;
-            justify-content: center;
+            min-width: 0;
+            justify-content: flex-start;
             max-width: 960px;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+        .chrome-tab-container::-webkit-scrollbar {
+            display: none;
         }
 
         .chrome-tab {
@@ -1071,18 +1079,19 @@
             border: 1px solid transparent;
             border-bottom: none;
             color: var(--text-secondary);
-            padding: 6px 12px;
-            border-radius: 6px 6px 0 0;
-            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 4px 4px 0 0;
+            font-size: 11px;
             font-weight: 500;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
+            gap: 6px;
+            transition: all 0.15s ease;
             height: 30px;
             margin-top: 12px;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .chrome-tab:hover:not(.disabled) {
