@@ -791,7 +791,7 @@
 
         /* PANEL 2: MIDDLE CHAT PANEL (4/12 columns wide) - AI Agent Brain Timeline */
         .chat-panel {
-            width: calc(4 / 12 * 100%);
+            width: calc(3 / 12 * 100%);
             background-color: var(--bg-chat);
             border-right: 1px solid var(--border-color);
             display: flex;
@@ -1001,7 +1001,7 @@
 
         /* PANEL 3: RIGHT COMPUTER PANEL (Workspace Viewer - 6/12 columns wide) */
         .computer-panel {
-            width: calc(6 / 12 * 100%);
+            width: calc(7 / 12 * 100%);
             background-color: var(--bg-base);
             display: flex;
             flex-direction: column;
@@ -2502,25 +2502,25 @@
                     <!-- Tabs mapping each document view -->
                     <div class="chrome-tab-container">
                         <button class="chrome-tab active nav-item" id="nav-console" onclick="switchDocument('console')" data-i18n="tab_terminal">
-                            <i class="fa-solid fa-terminal" style="color: var(--accent-neon);"></i> Live Terminal
+                            <i class="fa-solid fa-terminal" style="color: var(--accent-neon);"></i> Terminal
                         </button>
                         <button class="chrome-tab disabled nav-item" id="nav-1pager" onclick="switchDocument('1pager')" data-i18n="tab_1pager">
-                            <i class="fa-solid fa-file-invoice"></i> 1-Pager 요약
+                            <i class="fa-solid fa-file-invoice"></i> 1-Pager
                         </button>
                         <button class="chrome-tab disabled nav-item" id="nav-threec" onclick="switchDocument('threec')" data-i18n="tab_threec">
-                            <i class="fa-solid fa-chart-pie"></i> 3C 기반 분석
+                            <i class="fa-solid fa-chart-pie"></i> 3C 전략
                         </button>
                         <button class="chrome-tab disabled nav-item" id="nav-mece" onclick="switchDocument('mece')" data-i18n="tab_mece">
-                            <i class="fa-solid fa-network-wired"></i> MECE 전략 분석
+                            <i class="fa-solid fa-network-wired"></i> MECE 분석
                         </button>
                         <button class="chrome-tab disabled nav-item" id="nav-prd" onclick="switchDocument('prd')" data-i18n="tab_prd">
-                            <i class="fa-solid fa-file-shield"></i> 상세 PRD
+                            <i class="fa-solid fa-file-shield"></i> PRD Spec
                         </button>
                         <button class="chrome-tab disabled nav-item" id="nav-wireframe" onclick="switchDocument('wireframe')" data-i18n="tab_wireframe">
-                            <i class="fa-solid fa-crop-simple"></i> 와이어프레임
+                            <i class="fa-solid fa-crop-simple"></i> Wireframe
                         </button>
                         <button class="chrome-tab disabled nav-item" id="nav-audit" onclick="switchDocument('audit')" data-i18n="tab_audit">
-                            <i class="fa-solid fa-clipboard-check"></i> QA 리포트
+                            <i class="fa-solid fa-clipboard-check"></i> QA Audit
                         </button>
                     </div>
                     
@@ -2617,13 +2617,13 @@
                 step_3_label: '3. 와이어프레임 3안 시안 (Architect)',
                 step_4_label: '4. 삼각 정합성 QA 검수 (Reviewer)',
                 editor_guide_text: '우측 컴퓨터 뷰어의 편집기로 기획 수정이 가능합니다.',
-                tab_terminal: '<i class="fa-solid fa-terminal" style="color: var(--accent-neon);"></i> Live Terminal',
-                tab_1pager: '<i class="fa-solid fa-file-invoice"></i> 1-Pager 요약',
-                tab_threec: '<i class="fa-solid fa-chart-pie"></i> 3C 기반 분석',
-                tab_mece: '<i class="fa-solid fa-network-wired"></i> MECE 전략 분석',
-                tab_prd: '<i class="fa-solid fa-file-shield"></i> 상세 PRD',
-                tab_wireframe: '<i class="fa-solid fa-crop-simple"></i> 와이어프레임',
-                tab_audit: '<i class="fa-solid fa-clipboard-check"></i> QA 리포트',
+                tab_terminal: '<i class="fa-solid fa-terminal" style="color: var(--accent-neon);"></i> Terminal',
+                tab_1pager: '<i class="fa-solid fa-file-invoice"></i> 1-Pager',
+                tab_threec: '<i class="fa-solid fa-chart-pie"></i> 3C 전략',
+                tab_mece: '<i class="fa-solid fa-network-wired"></i> MECE 분석',
+                tab_prd: '<i class="fa-solid fa-file-shield"></i> PRD Spec',
+                tab_wireframe: '<i class="fa-solid fa-crop-simple"></i> Wireframe',
+                tab_audit: '<i class="fa-solid fa-clipboard-check"></i> QA Audit',
                 btn_edit: '<i class="fa-regular fa-pen-to-square"></i> 기획 수정',
                 btn_copy: '<i class="fa-regular fa-copy"></i> 마크다운 복사',
                 btn_pdf: '<i class="fa-regular fa-file-pdf"></i> PDF 내보내기'
@@ -2658,12 +2658,12 @@
                 step_3_label: '3. 3-Type Wireframes (Architect)',
                 step_4_label: '4. Consistency QA Audit (Reviewer)',
                 editor_guide_text: 'You can edit the planning document using the editor in the right viewer panel.',
-                tab_terminal: '<i class="fa-solid fa-terminal" style="color: var(--accent-neon);"></i> Live Terminal',
-                tab_1pager: '<i class="fa-solid fa-file-invoice"></i> 1-Pager Summary',
-                tab_threec: '<i class="fa-solid fa-chart-pie"></i> 3C Analysis',
-                tab_mece: '<i class="fa-solid fa-network-wired"></i> MECE Analysis',
+                tab_terminal: '<i class="fa-solid fa-terminal" style="color: var(--accent-neon);"></i> Terminal',
+                tab_1pager: '<i class="fa-solid fa-file-invoice"></i> 1-Pager',
+                tab_threec: '<i class="fa-solid fa-chart-pie"></i> 3C Strategy',
+                tab_mece: '<i class="fa-solid fa-network-wired"></i> MECE',
                 tab_prd: '<i class="fa-solid fa-file-shield"></i> PRD Spec',
-                tab_wireframe: '<i class="fa-solid fa-crop-simple"></i> Wireframes',
+                tab_wireframe: '<i class="fa-solid fa-crop-simple"></i> Wireframe',
                 tab_audit: '<i class="fa-solid fa-clipboard-check"></i> QA Audit',
                 btn_edit: '<i class="fa-regular fa-pen-to-square"></i> Edit Plan',
                 btn_copy: '<i class="fa-regular fa-copy"></i> Copy Markdown',
