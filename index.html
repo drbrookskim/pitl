@@ -1524,6 +1524,60 @@
             --grid-color: rgba(5, 150, 105, 0.07);
         }
 
+        /* Password Screen Light Theme Overrides */
+        body.light-theme .password-overlay-wrapper {
+            background: #f9f9fb;
+        }
+        body.light-theme .password-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.06), 0 0 40px rgba(0, 0, 0, 0.02);
+        }
+        body.light-theme .password-card-glow {
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.05) 0%, transparent 70%);
+        }
+        body.light-theme .password-logo {
+            background: rgba(239, 68, 68, 0.06);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.08);
+        }
+        body.light-theme .password-title {
+            color: var(--text-primary);
+        }
+        body.light-theme .password-subtitle {
+            color: var(--text-secondary);
+        }
+        body.light-theme .password-input-wrapper {
+            background: rgba(245, 245, 245, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        body.light-theme .password-input-wrapper:focus-within {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.1);
+        }
+        body.light-theme .password-input-wrapper input {
+            color: var(--text-primary);
+        }
+        body.light-theme .password-input-wrapper .input-icon {
+            color: var(--text-muted);
+        }
+        body.light-theme .password-toggle-btn {
+            color: var(--text-muted);
+        }
+        body.light-theme .password-toggle-btn:hover {
+            color: var(--text-primary);
+        }
+        body.light-theme .password-submit-btn {
+            background: var(--accent-red);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        }
+        body.light-theme .password-submit-btn:hover {
+            background: #d32f2f;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.35);
+        }
+
         body.light-theme::before {
             background: radial-gradient(
                 550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
