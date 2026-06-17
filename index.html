@@ -5645,28 +5645,17 @@
 
         // Early Theme restorer to avoid flicker on page load
         (function() {
-            const savedTheme = localStorage.getItem('pitl-theme');
-            // default is light
-            const isLight = (savedTheme !== 'dark');
+            // Force light theme by default, ignoring previous dark theme storage to align with Swiss Light identity
+            document.body.classList.add('light-theme');
+            localStorage.setItem('pitl-theme', 'light');
             
-            if (isLight) {
-                document.body.classList.add('light-theme');
-                // wait for DOM to bind the sun icon
-                window.addEventListener('DOMContentLoaded', () => {
-                    const icons = document.querySelectorAll('.theme-toggle-btn i');
-                    icons.forEach(icon => {
-                        icon.className = 'fa-solid fa-sun';
-                    });
+            // wait for DOM to bind the sun icon
+            window.addEventListener('DOMContentLoaded', () => {
+                const icons = document.querySelectorAll('.theme-toggle-btn i');
+                icons.forEach(icon => {
+                    icon.className = 'fa-solid fa-sun';
                 });
-            } else {
-                document.body.classList.remove('light-theme');
-                window.addEventListener('DOMContentLoaded', () => {
-                    const icons = document.querySelectorAll('.theme-toggle-btn i');
-                    icons.forEach(icon => {
-                        icon.className = 'fa-solid fa-moon';
-                    });
-                });
-            }
+            });
         })();
     </script>
 </body>
