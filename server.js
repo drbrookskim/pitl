@@ -91,12 +91,73 @@ function sanitizeFilename(input) {
 }
 
 // Fallback 3C Framework Analysis Generator (Ohmae Kenichi Strategy Triangle Model)
-function generateFallback3C(titleText) {
-    return `# [전략 기획] 3C 프레임워크 기반 입체적 환경 분석: ${titleText}
+function generateFallback3C(titleText, lang = 'ko') {
+    if (lang === 'en') {
+        return `# [Strategy Planning] 3C Framework-Based Environmental Analysis: ${titleText}
+
+## 1. Ohmae Kenichi Strategic Triangle Overview (The 3C Model Overview)
+> **Sustainable Differentiation Space = Customer Needs (C1) ∩ Competitor Gaps (C2) ∩ Company Strengths (C3)**
+This strategic document is designed to transform the planning constraints of ${titleText} into strategic key success factors (KSFs) based on Ohmae Kenichi's triangular framework.
+Through the Why → So What → How thinking process, we understand environmental constraints and derive sustainable differentiation strategies.
+
+---
+
+## 2. Customer Analysis — Demand Side (C1)
+* **2.1. Customer Segmentation and Target Definition (Segmentation)**
+  * *Segment A (Pain-stricken Office Workers)*: White-collar workers aged 25-45 who suffer from text neck and back pain due to long hours of desk work and find it difficult to visit professional yoga studios.
+  * *Segment B (Home Workout & Health Beginners)*: Beginners who find high-cost 1:1 PT burdensome and give up easily on YouTube videos because there is no real-time feedback.
+  * *Segment C (Active Silver/Seniors)*: Elderly people who need safe, reliable, low-intensity wellness routines due to reduced joint range of motion and risk of injury.
+* **2.2. Jobs-to-be-Done (The essential reason customers 'hire' the service)**
+  * "I am not just looking to learn stretching moves; I want to relieve my daily physical pain and fatigue, and 'hire a sustainable health routine that restores my vitality through a 5-minute daily investment'."
+* **2.3. Needs Hierarchy**
+  * *Functional Needs*: Real-time posture correction feedback, short 5-minute routines by body part, intuitive UI.
+  * *Emotional Needs*: Relief from the stress of giving up workouts, a sense of accomplishment every morning, and mental comfort from wellness.
+  * *Latent/Social Needs*: Maintaining smart work-life balance, participating in carbon-reducing home training.
+* **2.4. Customer Journey & Willingness to Pay (WTP)**
+  * *Journey*: Pain awareness → Discovering micro-routines on social media → 3-second free diagnostic scan → First 5-minute care achievement → Transition to B2B wellness benefit subscription or starting personal subscription at 9,900 KRW/month.
+  * *WTP*: To lower resistance to monthly subscription costs, offering a 14-day free trial and a matching foam roller package can increase conversion rate by 24 percentage points.
+
+---
+
+## 3. Competitor Analysis — Competition Side (C2)
+* **3.1. Competitive Landscape & Positioning (Positioning Map)**
+  * *Direct Competitors*: Large enterprise home training apps (Quat, Fitday, etc.). Heavily focused on full-body strength training, leaving the specialized wellness segment of pain management and 'stretching/relaxation' highly underdeveloped.
+  * *Indirect Competitors*: General YouTube channels. While free, they cannot analyze user physical data or provide real-time AI posture feedback.
+* **3.2. Competitor Strengths & Weaknesses**
+  * Major home workout apps rely on high-cost VOD production infrastructures, making them heavy, and they neglect applying real-time Vision AI analysis.
+* **3.3. Differentiation Advantage Strategy & KSF (Key Success Factor)**
+  * *Differentiation Point*: Lightweight web-based posture recognition achieving 94% accuracy, providing immediate 3-minute feedback routines by pain point.
+  * *KSF*: Enabling users to initiate stretching within 10 seconds of running the app, minimizing Time-to-Value.
+
+---
+
+## 4. Company Analysis — Capability Side (C3)
+* **4.1. Core Competencies**
+  * *Technical Capabilities*: Lightweight web-based posture recognition library and hybrid caching recommendation engine.
+  * *Content Assets*: A medical curriculum designed in partnership with 12 orthopedic and chiropractic experts.
+* **4.2. Resource Constraints & Value Chain**
+  * *Constraints*: Small development team and server cost limits.
+  * *Value Chain Efficiency*: Applying a lightweight, intuitive visual interface (REQ-03) based on motion vectors and ASCII instead of expensive VOD, reducing initial R&D effort by 40%.
+* **4.3. Strategic Direction & Capabilites to Secure**
+  * Aligns with the mission to "restore a light body and healthy habits to modern people," with plans to integrate smart watch body composition analysis APIs within 12 months.
+
+---
+
+## 5. 3C × Product Planning Integration Matrix
+
+| 3C Lens Element | Key Findings (Fact & Insight) | Linked Product Specification | MVP Priority (Must/Should/Could) |
+| :--- | :--- | :--- | :--- |
+| **Customer** | 2545 white-collar workers avoid waiting more than 7 minutes and crave quick relief under 3 minutes. | Shorter mobile screen entry, one-touch pain area challenge | **Must Have** (REQ-01) |
+| **Competitor** | Free YouTube channels cannot correct user posture errors like text neck angles. | Real-time Vision AI camera correction and posture feedback guide | **Must Have** (REQ-02) |
+| **Company** | High-quality video production has major budget limits, but motion vector ASCII UI can be built in-house. | 3-Type ASCII Wireframe UI, lightweight rendering | **Must Have** (REQ-03) |
+| **Intersection (Concept)** | The sustainable intersection of 3C analysis is '3-Minute Office AI Posture Correcting Stretching' | Ultra-personalized AI wellness monthly subscription service concept | **Must Have** (REQ-04, 05) |
+`;
+
+    return `# [전략 기획] 3C 프레임워크 기반 입체적 환경 분석: \${titleText}
 
 ## 1. 오마에 겐이치 전략 삼각형 개요 (The 3C Model Overview)
 > **지속 가능한 차별화 공간 = Customer 니즈(C1) ∩ Competitor 공백(C2) ∩ Company 강점(C3)**
-본 전략서는 오마에 겐이치의 삼각 프레임워크를 기반으로, ${titleText}의 기획 제약 요건을 창의적인 비즈니스 돌파구(KSF)로 치환하기 위해 설계되었습니다.
+본 전략서는 오마에 겐이치의 삼각 프레임워크를 기반으로, \${titleText}의 기획 제약 요건을 창의적인 비즈니스 돌파구(KSF)로 치환하기 위해 설계되었습니다.
 Why → So What → How 사고 흐름을 통해 환경 제약을 이해하고, 그 안에서 지속 가능한 차별화 전략을 도출합니다.
 
 ---
@@ -149,16 +210,95 @@ Why → So What → How 사고 흐름을 통해 환경 제약을 이해하고, �
 | **Customer** | 2545 화이트칼라는 7분 이상의 긴 대기 시간을 기피하며 3분 내 짧은 즉각 해소를 갈망함. | 모바일 화면 진입로 단축, 통증 부위 원터치 챌린지 | **Must Have** (REQ-01) |
 | **Competitor** | 유튜브 무료 채널은 사용자의 거북목 각도 등 자세 오류를 수정해주지 못함. | 실시간 Vision AI 카메라 교정, 자세 피드백 가이드 | **Must Have** (REQ-02) |
 | **Company** | 고품질 비디오 제작은 비용 제약이 크나 모션 벡터 기반 경량 UI는 자사 개발 가능함. | 3-Type ASCII 와이어프레임 UI, 경량 렌더링 | **Must Have** (REQ-03) |
-| **교집합 (Concept)** | 3C 분석의 지속 가능한 교집합은 **'사무실에서도 3분 내에 끝내는 AI 통증 교정 스트레칭'** | 초개인화 AI 웰니스 정기구독 서비스 컨셉 | **Must Have** (REQ-04, 05) |
+| **교집합 (Concept)** | 3C 분석의 지속 가능한 교집합은 '사무실에서도 3분 내에 끝내는 AI 통증 교정 스트레칭' | 초개인화 AI 웰니스 정기구독 서비스 컨셉 | **Must Have** (REQ-04, 05) |
 `;
 }
 
 // Fallback MECE Strategy Analysis Generator (McKinsey MECE Model)
-function generateFallbackMECE(titleText) {
-    return `# [구조화 분석] McKinsey MECE 전략 기획 분석: ${titleText}
+function generateFallbackMECE(titleText, lang = 'ko') {
+    if (lang === 'en') {
+        return `# [Structural Analysis] McKinsey MECE Strategic Planning Analysis: \${titleText}
+
+## 1. Overview and Structural Purpose (MECE Purpose)
+This planning document is prepared to verify the business feasibility of the \${titleText} service. It applies the 5 MECE decomposition frameworks to analyze market opportunities, customer value, business specifications, and risk mitigation strategies in a mutually exclusive and collectively exhaustive manner to ensure logical integrity.
+
+---
+
+## 2. [MECE A] Customer Segmentation Analysis (Customer Segmentation Tree)
+            We decompose the entire potential customer base into 4 mutually exclusive areas:
+            \`\`\`
+            Potential Customers
+            ├── 1) Hardcore Health Enthusiasts (Goal-oriented, seeking professional coaching and deep analytics)
+            ├── 2) Office Worker Wellness Seekers (Pain relief, micro-stretches, and office posture correcting)
+            ├── 3) Trend-sensitive MZ Segment (Social viral value and sensitive to design layouts)
+            └── 4) Practical Value Seekers (Focus on discounts, instant coupons, and barcode vouchers)
+            \`\`\`
+* **Structural Consistency Check**: No customer groups are omitted. Every visiting customer belongs to at least one of the 4 areas above.
+
+---
+
+## 3. [MECE B] Customer Value Analysis (Customer Value Breakdown)
+We classify the multi-dimensional benefits of the value proposition without overlap:
+* **3.1. Functional Value**
+  * Taste filtering within 3 seconds, real-time inventory synchronization, automatic allergy liability warnings.
+* **3.2. Economic Value**
+  * Direct 1,000 KRW voucher issuance for discount, saving opportunity cost by reducing search time.
+* **3.3. Emotional Value**
+  * Psychological trust by ensuring "no bad recommendations," completely eliminating decision stress.
+* **3.4. Social Value**
+  * Maximizing inventory turnover for local merchants and achieving eco-friendly zero-waste by lowering waste rate (Target 8.0%).
+
+---
+
+## 4. [MECE C] Market Opportunity Multi-dimensional Analysis (Ansoff Matrix)
+We outline all growth and expansion opportunities in a 4-quadrant structure:
+
+| Category | Existing Market (Offline Visitors) | New Market (Online Reservations & Partner Stores) |
+| :--- | :--- | :--- |
+| **Existing Service**<br>(General Bread Sales) | **[1] Market Penetration**<br>• Offline QR scanning encouragement<br>• Maximize CVR and transaction size | **[3] Market Development**<br>• B2B breakfast supply chain partnerships<br>• Corporate group delivery |
+| **New Service**<br>(AI Inventory Curation) | **[2] Service Development**<br>• Inbound AI recommendations<br>• Safe ingredient filters | **[4] Diversification**<br>• F&B POS hardware packaging export<br>• Personalized health food solutions |
+
+---
+
+## 5. [MECE D] Feature Requirements MoSCoW Prioritization (Feature Prioritization)
+We decompose product features into 4 exclusive levels to prevent gaps and over-specifying:
+* **5.1. Must Have (Essential core features for the MVP phase)**
+  * \`REQ-01\`: Mobile web QR code camera scanning and entry path integration.
+  * \`REQ-02\`: Preference test and POS API real-time inventory matching algorithm.
+  * \`REQ-05\`: Instant discount coupon barcode generation and screen display.
+* **5.2. Should Have (High-priority updates for competitive advantage)**
+  * \`REQ-04\`: Recommendation reason tag display and 10-minute local caching.
+* **5.3. Could Have (Convenience features if resources allow)**
+  * \`REQ-03\`: Social media sharing and automatic dark/light theme toggle.
+* **5.4. Won't Have (Features deliberately excluded from this sprint)**
+  * \`REQ-06\`: User login profiles and Phase 2 allergy filter configuration settings.
+
+---
+
+## 6. [MECE E] Potential Risk Structuralization (Collectively Exhaustive Risk Control)
+We identify all possible business and operational obstacles across 5 domains and establish mitigation plans:
+* **6.1. Market Risk**
+  * *Description*: Customer distrust in the AI recommendation model and stagnation of conversion rate.
+  * *Mitigation*: Display recommendation reason tags and issue instant discount coupons to secure early user trials.
+* **6.2. Technical Risk**
+  * *Description*: Delayed response from partner POS APIs or server crashes during peak hours.
+  * *Mitigation*: Enforce a 1.5-second API timeout and immediately fall back to local cached data (10-minute old data).
+* **6.3. Operational Risk**
+  * *Description*: Offline merchants failing to manage QR codes or errors in coupon settlement.
+  * *Mitigation*: Apply standard POS barcode formats for automated settlement with zero extra training required for store owners.
+* **6.4. Financial Risk**
+  * *Description*: Excessive coupon issuance leading to marketing budget overruns.
+  * *Mitigation*: Set a cap on daily coupon issuance and max coupons per store.
+* **6.5. Regulatory/Legal Risk**
+  * *Description*: Allergy complaints or lawsuits due to incorrect ingredient recommendations.
+  * *Mitigation*: Display a mandatory disclaimer footer and force an allergy terms popup before issuing guest coupons.
+`;
+    }
+
+    return `# [구조화 분석] McKinsey MECE 전략 기획 분석: \${titleText}
 
 ## 1. 개요 및 구조화 목적 (MECE Purpose)
-본 기획서는 ${titleText} 서비스의 비즈니스 타당성을 검증하기 위해 작성되었습니다. 상품기획 전반의 시장 기회, 고객 제공 가치, 비즈니스 사양 및 리스크 대응 전략을 상호배제(Mutually Exclusive)하고 전체포괄(Collectively Exhaustive)하는 5대 MECE 분해 프레임워크를 적용하여 논리적 완결성을 확보합니다.
+본 기획서는 \${titleText} 서비스의 비즈니스 타당성을 검증하기 위해 작성되었습니다. 상품기획 전반의 시장 기회, 고객 제공 가치, 비즈니스 사양 및 리스크 대응 전략을 상호배제(Mutually Exclusive)하고 전체포괄(Collectively Exhaustive)하는 5대 MECE 분해 프레임워크를 적용하여 논리적 완결성을 확보합니다.
 
 ---
 
@@ -190,7 +330,7 @@ function generateFallbackMECE(titleText) {
 시장 확장 경로를 4분면 구조로 전수 도출합니다.
 
 | 구분 | 기존 시장 (오프라인 내방객) | 신규 시장 (온라인 예약 및 제휴 매장) |
-| :--- | :--- | : :--- |
+| :--- | :--- | :--- |
 | **기존 서비스**<br>(일반 빵 판매) | **[1] 시장 침투전략**<br>• 오프라인 매장 QR 스캔 유도<br>• CVR 및 객단가 극대화 | **[3] 시장 개척전략**<br>• 인근 직장인 단체 배달 제휴<br>• 기업 B2B 조식 공급망 개척 |
 | **신규 서비스**<br>(AI 재고 큐레이션) | **[2] 서비스 개발전략**<br>• 인바운드 AI 추천 탑재<br>• 매장 내 안심 필터 도입 | **[4] 다각화 전략**<br>• F&B POS 하드웨어 패키지 수출<br>• 개인화 맞춤 건강 식품 솔루션 |
 
@@ -230,7 +370,6 @@ function generateFallbackMECE(titleText) {
   * *대응*: 기획안 하단 면책 고지 문구 강제 노출 및 비회원 기반 쿠폰 발급 전 알레르기 약관 팝업 강제화.
 `;
 }
-
 // API: Save User Modified Document Content
 app.post('/api/save-edit', (req, res) => {
     const { docKey, content } = req.body;
@@ -308,7 +447,7 @@ app.get('/api/history', (req, res) => {
 
 // API: Load Selected History Item
 app.get('/api/history/load', (req, res) => {
-    const { title, date } = req.query;
+    const { title, date, lang } = req.query;
     if (!title || !date) {
         return res.status(400).json({ error: "title and date are required" });
     }
@@ -325,8 +464,8 @@ app.get('/api/history/load', (req, res) => {
         const doc = {
             title: title,
             '1pager': fs.existsSync(onePagerPath) ? fs.readFileSync(onePagerPath, 'utf-8') : '',
-            'threec': fs.existsSync(threeCPath) ? fs.readFileSync(threeCPath, 'utf-8') : generateFallback3C(displayTitle),
-            'mece': fs.existsSync(mecePath) ? fs.readFileSync(mecePath, 'utf-8') : generateFallbackMECE(displayTitle),
+            'threec': fs.existsSync(threeCPath) ? fs.readFileSync(threeCPath, 'utf-8') : generateFallback3C(displayTitle, lang),
+            'mece': fs.existsSync(mecePath) ? fs.readFileSync(mecePath, 'utf-8') : generateFallbackMECE(displayTitle, lang),
             'prd': fs.existsSync(prdPath) ? fs.readFileSync(prdPath, 'utf-8') : '',
             'wireframe': fs.existsSync(wireframePath) ? fs.readFileSync(wireframePath, 'utf-8') : '',
             'audit': fs.existsSync(auditPath) ? fs.readFileSync(auditPath, 'utf-8') : ''
@@ -351,7 +490,7 @@ app.get('/api/history/load', (req, res) => {
 
 // API: Stream Generation / Re-generation Process via SSE
 app.get('/api/generate-stream', async (req, res) => {
-    const { idea, resumeFrom } = req.query;
+    const { idea, resumeFrom, lang } = req.query;
 
     if (!idea) {
         return res.status(400).json({ error: "Idea is required" });
@@ -366,6 +505,10 @@ app.get('/api/generate-stream', async (req, res) => {
     const sendSSE = (event, data) => {
         res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
     };
+
+    const targetLang = lang === 'en' ? 'en' : 'ko';
+    const t = (ko, en) => (targetLang === 'en' ? en : ko);
+    const langSuffix = targetLang === 'en' ? '\n\nCRITICAL: You must write the entire output/content/report in English. Do not write any Korean.' : '';
 
     const logAgent = (agent, msg) => {
         const time = new Date().toLocaleTimeString('ko-KR', { hour12: false });
@@ -390,13 +533,13 @@ app.get('/api/generate-stream', async (req, res) => {
             originalIdea = inputContent.replace('# User Input Idea\n\n', '').trim();
         }
 
-        logAgent('system', `상품기획 자동화 프로세스 가동 (Product Mode 감지됨).`);
+        logAgent('system', t(`상품기획 자동화 프로세스 가동 (Product Mode 감지됨).`, `Product planning automation process activated (Product Mode detected).`));
         
         if (isRegen) {
-            logAgent('system', `부분 재기획 흐름을 감지했습니다. (수정 시점: ${resumeFrom})`);
-            logAgent('system', `수정된 사항을 기반으로 이후 단계 문서들을 정합하게 자동 갱신합니다.`);
+            logAgent('system', t(`부분 재기획 흐름을 감지했습니다. (수정 시점: ${resumeFrom})`, `Partial re-planning stream detected. (Resume point: ${resumeFrom})`));
+            logAgent('system', t(`수정된 사항을 기반으로 이후 단계 문서들을 정합하게 자동 갱신합니다.`, `Automatically updating subsequent documents based on modified data.`));
         } else {
-            logAgent('system', `에이전트 4인 팀 및 오케스트레이션 스폰 완료 (strategist, analyst, architect, reviewer).`);
+            logAgent('system', t(`에이전트 4인 팀 및 오케스트레이션 스폰 완료 (strategist, analyst, architect, reviewer).`, `Agent team of 4 and orchestration spawned successfully (strategist, analyst, architect, reviewer).`));
             fs.writeFileSync(path.join(workspaceDir, '00_input.md'), `# User Input Idea\n\n${originalIdea}`);
         }
 
@@ -409,7 +552,7 @@ app.get('/api/generate-stream', async (req, res) => {
 
         // --- STAGE 1: Product Strategist (1-pager, 3C, MECE) ---
         if (!isRegen) {
-            logAgent('strategist', `입력하신 아이디어 '${originalIdea}'를 바탕으로 1-pager 요약서 기획을 시작합니다.`);
+            logAgent('strategist', t(`입력하신 아이디어 '${originalIdea}'를 바탕으로 1-pager 요약서 기획을 시작합니다.`, `Starting 1-pager summary planning based on your idea '${originalIdea}'.`));
             
             const strategistPrompt = `
             사용자의 상품 아이디어를 분석하여 '이 제품이 왜 필요한가'를 1장으로 정리하는 1-pager 요약서를 작성하라.
@@ -429,15 +572,15 @@ app.get('/api/generate-stream', async (req, res) => {
             `;
             
             onePagerContent = await callGemini(
-                "당신은 상품 기획의 존재 이유(Why)를 정의하는 Product Strategist 에이전트입니다.", 
+                "당신은 상품 기획의 존재 이유(Why)를 정의하는 Product Strategist 에이전트입니다." + langSuffix, 
                 strategistPrompt,
                 (msg) => logAgent('strategist', msg)
             );
             fs.writeFileSync(path.join(workspaceDir, '01_strategist_1pager.md'), onePagerContent);
-            logAgent('strategist', `비즈니스 문제 정의 및 정량 목표 수립 성공. 1-pager 요약 기획안 적재 완료.`);
+            logAgent('strategist', t(`비즈니스 문제 정의 및 정량 목표 수립 성공. 1-pager 요약 기획안 적재 완료.`, `Business problem defined and quantitative goals established. 1-pager summary saved.`));
 
             // Generate 3C Analysis
-            logAgent('strategist', `3C 프레임워크(Customer, Competitor, Company)를 활용한 입체적 환경 분석을 시작합니다.`);
+            logAgent('strategist', t(`3C 프레임워크(Customer, Competitor, Company)를 활용한 입체적 환경 분석을 시작합니다.`, `Starting environmental analysis using the 3C framework (Customer, Competitor, Company).`));
             const threeCPrompt = `
             다음 상품 아이디어를 기반으로 오마에 겐이치의 3C 전략 삼각형(Customer, Competitor, Company)을 적용하여 심층적이고 입체적인 환경 분석 보고서를 작성하라.
             
@@ -489,15 +632,15 @@ app.get('/api/generate-stream', async (req, res) => {
             | **교집합 (Concept)** | 지속 가능한 차별화 기회와 핵심 컨셉 | 제품 컨셉 및 가치 제안 | **Must Have** |
             `;
             threeCContent = await callGemini(
-                "당신은 시장 환경 분석을 3C 프레임워크로 전문 설계하는 Product Strategist 에이전트입니다.",
+                "당신은 시장 환경 분석을 3C 프레임워크로 전문 설계하는 Product Strategist 에이전트입니다." + langSuffix,
                 threeCPrompt,
                 (msg) => logAgent('strategist', msg)
             );
             fs.writeFileSync(path.join(workspaceDir, '01_strategist_3c.md'), threeCContent);
-            logAgent('strategist', `3C 프레임워크 기반 환경 분석서 적재 완료.`);
+            logAgent('strategist', t(`3C 프레임워크 기반 환경 분석서 적재 완료.`, `3C framework-based environment analysis report saved.`));
 
             // Generate MECE Analysis
-            logAgent('strategist', `맥킨지 MECE 프레임워크 기반의 구조적 전략 기획 분석을 개시합니다.`);
+            logAgent('strategist', t(`맥킨지 MECE 프레임워크 기반의 구조적 전략 기획 분석을 개시합니다.`, `Starting structural strategy planning analysis based on McKinsey MECE framework.`));
             const mecePrompt = `
             다음 상품 아이디어를 기반으로 맥킨지식 MECE(Mutually Exclusive, Collectively Exhaustive: 상호배제와 전체포괄) 구조화 분석 보고서를 작성하라.
             비즈니스 타당성 검증을 위해 상품기획의 5대 핵심 도메인을 누락과 중복 없이 완벽히 분해하고 구조화하라.
@@ -551,29 +694,29 @@ app.get('/api/generate-stream', async (req, res) => {
             - 작성된 5대 MECE 프레임워크가 상호 배제(Mutually Exclusive)되고 전체 포괄(Collectively Exhaustive)되었는지 자체 검증한 정성/정량 결과를 서술하라.
             `;
             meceContent = await callGemini(
-                "당신은 논리적 구조화와 MECE 정합성에 통달한 McKinsey 출신의 Product Strategist 에이전트입니다.",
+                "당신은 논리적 구조화와 MECE 정합성에 통달한 McKinsey 출신의 Product Strategist 에이전트입니다." + langSuffix,
                 mecePrompt,
                 (msg) => logAgent('strategist', msg)
             );
             fs.writeFileSync(path.join(workspaceDir, '01_strategist_mece.md'), meceContent);
-            logAgent('strategist', `맥킨지 MECE 전략 분석 보고서 적재 완료.`);
+            logAgent('strategist', t(`맥킨지 MECE 전략 분석 보고서 적재 완료.`, `McKinsey MECE strategy analysis report saved.`));
             
-            logAgent('strategist', `→ [SendMessage to prd-analyst] 기획 사양 및 기능 도출 협업 요청.`);
+            logAgent('strategist', t(`→ [SendMessage to prd-analyst] 기획 사양 및 기능 도출 협업 요청.`, `→ [SendMessage to prd-analyst] Requesting collaboration for PRD specifications.`));
         } else {
             onePagerContent = fs.readFileSync(path.join(workspaceDir, '01_strategist_1pager.md'), 'utf-8');
             threeCContent = fs.existsSync(path.join(workspaceDir, '01_strategist_3c.md')) 
                 ? fs.readFileSync(path.join(workspaceDir, '01_strategist_3c.md'), 'utf-8')
-                : generateFallback3C(originalIdea);
+                : generateFallback3C(originalIdea, lang);
             meceContent = fs.existsSync(path.join(workspaceDir, '01_strategist_mece.md'))
                 ? fs.readFileSync(path.join(workspaceDir, '01_strategist_mece.md'), 'utf-8')
-                : generateFallbackMECE(originalIdea);
-            logAgent('strategist', `기존 1-pager 요약, 3C 환경분석 및 MECE 구조분석 반영본 로딩 완료.`);
+                : generateFallbackMECE(originalIdea, lang);
+            logAgent('strategist', t(`기존 1-pager 요약, 3C 환경분석 및 MECE 구조분석 반영본 로딩 완료.`, `Existing 1-pager summary, 3C, and MECE structural analysis loaded.`));
         }
 
         // --- STAGE 2: PRD Analyst (PRD) ---
         const skipPrd = (resumeFrom === 'wireframe' || resumeFrom === 'audit');
         if (!skipPrd) {
-            logAgent('analyst', `1-pager 기획안을 바탕으로 상세 개발 요구사항(PRD) 및 예외 정책 수립을 전개합니다.`);
+            logAgent('analyst', t(`1-pager 기획안을 바탕으로 상세 개발 요구사항(PRD) 및 예외 정책 수립을 전개합니다.`, `Developing detailed product requirements (PRD) and exception policies based on 1-pager.`));
             
             const prdPrompt = `
             다음 기획안(1-pager)을 참조하여 기능 요구사항, KPI 지표, 정책 및 예외 처리(결제 실패, API 타임아웃 등)가 포함된 정밀한 PRD를 작성하라.
@@ -598,22 +741,22 @@ app.get('/api/generate-stream', async (req, res) => {
             `;
 
             prdContent = await callGemini(
-                "당신은 상세 요건 명세를 정의하는 PRD Analyst 에이전트입니다.",
+                "당신은 상세 요건 명세를 정의하는 PRD Analyst 에이전트입니다." + langSuffix,
                 prdPrompt,
                 (msg) => logAgent('analyst', msg)
             );
             fs.writeFileSync(path.join(workspaceDir, '02_prd_spec.md'), prdContent);
-            logAgent('analyst', `REQ 사양 식별 완료 및 예외/보안 정책 수립 완료. PRD 명세서 적재 완료.`);
-            logAgent('analyst', `→ [SendMessage to ux-architect] UX 레이아웃 스케치 협업 요청.`);
+            logAgent('analyst', t(`REQ 사양 식별 완료 및 예외/보안 정책 수립 완료. PRD 명세서 적재 완료.`, `REQ specifications and exception/security policies established. PRD spec saved.`));
+            logAgent('analyst', t(`→ [SendMessage to ux-architect] UX 레이아웃 스케치 협업 요청.`, `→ [SendMessage to ux-architect] Requesting collaboration for UX layouts.`));
         } else {
             prdContent = fs.readFileSync(path.join(workspaceDir, '02_prd_spec.md'), 'utf-8');
-            logAgent('analyst', `기존 PRD 명세서 적재 상태 로딩 완료. 정합성이 유지됩니다.`);
+            logAgent('analyst', t(`기존 PRD 명세서 적재 상태 로딩 완료. 정합성이 유지됩니다.`, `Existing PRD specification loaded. Consistency maintained.`));
         }
 
         // --- STAGE 3: UX Architect (ASCII Wireframes) ---
         const skipUx = (resumeFrom === 'audit');
         if (!skipUx) {
-            logAgent('architect', `PRD 요구사항을 확인했습니다. 공통 CTA 및 정보 우선순위에 부합하는 Type A/B/C 3가지 시안의 ASCII 와이어프레임을 그립니다.`);
+            logAgent('architect', t(`PRD 요구사항을 확인했습니다. 공통 CTA 및 정보 우선순위에 부합하는 Type A/B/C 3가지 시안의 ASCII 와이어프레임을 그립니다.`, `PRD requirements verified. Drawing ASCII wireframes for 3 distinct layout options (Type A/B/C) matching CTA and hierarchy.`));
             
             const uxPrompt = `
             다음 PRD 요건서를 참조하여, 화면 목적 및 공통 CTA를 노출하고 정보 구조가 확연히 다른 3가지 시안(Type A: 현실/안정형, Type B: 디자인/감성몰입형, Type C: 미래형 동적 위젯)의 ASCII 와이어프레임 레이아웃과 특징을 작조하라.
@@ -625,20 +768,20 @@ app.get('/api/generate-stream', async (req, res) => {
             `;
 
             uxContent = await callGemini(
-                "당신은 ASCII 와이어프레임을 텍스트 아트로 설계하는 UX Architect 에이전트입니다.",
+                "당신은 ASCII 와이어프레임을 텍스트 아트로 설계하는 UX Architect 에이전트입니다." + langSuffix,
                 uxPrompt,
                 (msg) => logAgent('architect', msg)
             );
             fs.writeFileSync(path.join(workspaceDir, '03_ux_wireframes.md'), uxContent);
-            logAgent('architect', `Type A, B, C 3가지 상이한 가치 지향 레이아웃 ASCII 제도 완료. 와이어프레임 문서 적재 완료.`);
-            logAgent('architect', `→ [SendMessage to product-reviewer] 삼각 정합성 크로스 검수 의뢰.`);
+            logAgent('architect', t(`Type A, B, C 3가지 상이한 가치 지향 레이아웃 ASCII 제도 완료. 와이어프레임 문서 적재 완료.`, `Completed ASCII drafts for Type A/B/C layouts. Wireframe document saved.`));
+            logAgent('architect', t(`→ [SendMessage to product-reviewer] 삼각 정합성 크로스 검수 의뢰.`, `→ [SendMessage to product-reviewer] Requesting cross-consistency audit.`));
         } else {
             uxContent = fs.readFileSync(path.join(workspaceDir, '03_ux_wireframes.md'), 'utf-8');
-            logAgent('architect', `기존 와이어프레임 문서 적재 상태 로딩 완료. 정합성이 유지됩니다.`);
+            logAgent('architect', t(`기존 와이어프레임 문서 적재 상태 로딩 완료. 정합성이 유지됩니다.`, `Existing wireframe document loaded. Consistency maintained.`));
         }
 
         // --- STAGE 4: Product Reviewer (QA Audit) ---
-        logAgent('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`);
+        logAgent('reviewer', t(`삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`, `Performing cross-consistency audit: (1-pager goals vs PRD REQ IDs vs Wireframe CTA buttons).`));
         
         const reviewerPrompt = `
         다음 3종의 기획 패키지(1-pager, PRD, 와이어프레임)를 분석하여 비즈니스-명세-디자인 정합성을 감사하라.
@@ -661,15 +804,15 @@ app.get('/api/generate-stream', async (req, res) => {
         `;
 
         auditContent = await callGemini(
-            "당신은 완결된 기획의 삼각 정합성을 최종 감사하는 Product Reviewer QA 에이전트입니다.",
+            "당신은 완결된 기획의 삼각 정합성을 최종 감사하는 Product Reviewer QA 에이전트입니다." + langSuffix,
             reviewerPrompt,
             (msg) => logAgent('reviewer', msg)
         );
         fs.writeFileSync(path.join(workspaceDir, '04_reviewer_audit.md'), auditContent);
-        logAgent('reviewer', `검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`);
+        logAgent('reviewer', t(`검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`, `Audit complete. Verified 100% consistency across all planning documents. [QA PASS] approved.`));
 
         // --- DEPLOYMENT & EXPORT ---
-        logAgent('system', `최종 배포 프로세스 진입. 파일명 보안 정제 적용 중...`);
+        logAgent('system', t(`최종 배포 프로세스 진입. 파일명 보안 정제 적용 중...`, `Entering final deployment phase. Applying filename sanitation...`));
         const cleanTitle = sanitizeFilename(originalIdea.slice(0, 15));
         const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '').slice(2);
         
@@ -687,13 +830,13 @@ app.get('/api/generate-stream', async (req, res) => {
         fs.writeFileSync(path.join(outputsDir, wireframeName), uxContent);
         fs.writeFileSync(path.join(outputsDir, auditName), auditContent);
         
-        logAgent('system', `outputs/ 디렉토리에 마크다운 기획 서류 6종 영구 배포 완료.`);
-        logAgent('system', `- 요약서: outputs/${onePagerName}`);
-        logAgent('system', `- 3C 분석: outputs/${threeCName}`);
-        logAgent('system', `- MECE 분석: outputs/${meceName}`);
-        logAgent('system', `- PRD: outputs/${prdName}`);
-        logAgent('system', `- 와이어프레임: outputs/${wireframeName}`);
-        logAgent('system', `- 검수서: outputs/${auditName}`);
+        logAgent('system', t(`outputs/ 디렉토리에 마크다운 기획 서류 6종 영구 배포 완료.`, `Successfully deployed 6 markdown planning documents to outputs/ directory.`));
+        logAgent('system', t(`- 요약서: outputs/${onePagerName}`, `- Summary: outputs/${onePagerName}`));
+        logAgent('system', t(`- 3C 분석: outputs/${threeCName}`, `- 3C Analysis: outputs/${threeCName}`));
+        logAgent('system', t(`- MECE 분석: outputs/${meceName}`, `- MECE Analysis: outputs/${meceName}`));
+        logAgent('system', t(`- PRD: outputs/${prdName}`, `- PRD: outputs/${prdName}`));
+        logAgent('system', t(`- 와이어프레임: outputs/${wireframeName}`, `- Wireframes: outputs/${wireframeName}`));
+        logAgent('system', t(`- 검수서: outputs/${auditName}`, `- Audit Report: outputs/${auditName}`));
 
         // Send Final Data to Client
         sendSSE('complete', {
@@ -706,7 +849,7 @@ app.get('/api/generate-stream', async (req, res) => {
             'audit': auditContent
         });
         
-        logAgent('system', `오케스트레이션 성공. 에이전트 팀 해체 및 완공.`);
+        logAgent('system', t(`오케스트레이션 성공. 에이전트 팀 해체 및 완공.`, `Orchestration successful. Agent team dissolved and work completed.`));
 
     } catch (error) {
         logAgent('system', `에러 발생: ${error.message}`);
