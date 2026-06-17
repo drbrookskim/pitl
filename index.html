@@ -41,31 +41,31 @@
             --type-32: 32px;
             --type-48: 48px;
 
-            /* ── SURFACE COLORS ── */
-            --bg-base: #060605;
-            --bg-sidebar: #0b0b0a;
-            --bg-chat: #0f0f0e;
-            --bg-editor: #020202;
-            --bg-card: rgba(18, 18, 17, 0.6);
-            --border-color: rgba(255, 255, 255, 0.04);
-            --border-active: rgba(255, 255, 255, 0.08);
+            /* ── SURFACE COLORS (Swiss Modern Monochrome) ── */
+            --bg-base: #0d0d0c;
+            --bg-sidebar: #141413;
+            --bg-chat: #181817;
+            --bg-editor: #090909;
+            --bg-card: rgba(20, 20, 19, 0.85);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-active: rgba(255, 255, 255, 0.12);
 
             /* ── TEXT COLORS ── */
             --text-primary: #f4f4f3;
             --text-secondary: #a3a3a0;
             --text-muted: #666663;
 
-            /* ── ACCENT PALETTE (restrained: neon green + blue, no warm cream) ── */
+            /* ── ACCENT PALETTE (Canonical Swiss Red Accent) ── */
             --accent-blue: #3b82f6;
             --accent-purple: #8b5cf6;
             --accent-cyan: #06b6d4;
             --accent-green: #10b981;
             --accent-red: #ef4444;
-            --accent-neon: #00e599;
-            --glow-neon: 0 0 15px rgba(0, 229, 153, 0.3);
-            --glow-purple: 0 0 15px rgba(139, 92, 246, 0.2);
+            --accent-neon: #ef4444; /* Force neon green replacement with Swiss Red */
+            --glow-neon: none;      /* No decorative glow */
+            --glow-purple: none;
             --glass-blur: blur(16px);
-            --grid-color: rgba(0, 229, 153, 0.08);
+            --grid-color: rgba(239, 68, 68, 0.08);
 
             /* ── BORDER RADIUS (disciplined, not decorative) ── */
             --radius-sm: 2px;
@@ -80,7 +80,7 @@
         }
 
         body {
-            font-family: 'Noto Sans KR', 'Space Grotesk', sans-serif;
+            font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif;
             background-color: var(--bg-base);
             color: var(--text-primary);
             overflow: hidden;
@@ -93,35 +93,58 @@
             word-wrap: break-word;
         }
 
-        /* 3D Interactive Cursor Spotlight (Neon.tech style) */
+        /* Swiss style: flat background, no radial gradients/spotlights */
         body::before {
+            display: none;
+        }
+
+        /* ── INTERACTIVE GRID-TOGGLE OVERLAY ── */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: var(--maxw);
+            height: 100vh;
+            padding: 0 var(--margin);
+            display: grid;
+            grid-template-columns: repeat(var(--cols), 1fr);
+            column-gap: var(--gutter);
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+        .grid-overlay.active {
+            opacity: 1;
+        }
+        .grid-column-line {
+            height: 100%;
+            background: rgba(239, 68, 68, 0.01); /* canonical red tint */
+            border-left: 1px dashed rgba(239, 68, 68, 0.12);
+            border-right: 1px dashed rgba(239, 68, 68, 0.12);
+        }
+        /* Baseline grid horizontal lines */
+        .grid-overlay::before {
             content: '';
             position: absolute;
             inset: 0;
-            z-index: -1;
-            background: radial-gradient(
-                550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(0, 229, 153, 0.08) 0%,
-                rgba(59, 130, 246, 0.03) 45%,
-                transparent 80%
-            );
+            background-image: linear-gradient(rgba(239, 68, 68, 0.03) 1px, transparent 1px);
+            background-size: 100% var(--bl);
             pointer-events: none;
-            transition: background 0.1s ease;
         }
 
-        /* 3D PERSPECTIVE ENVIRONMENT BACKGROUND */
-        .perspective-container {
-            position: absolute;
-            inset: 0;
-            z-index: -2;
-            perspective: 1200px;
-            perspective-origin: 50% 35%;
-            overflow: hidden;
-            pointer-events: none;
+        /* Hide Cyberpunk / Aurora Backgrounds */
+        .perspective-container,
+        .aurora-container,
+        #canvas-backplane {
+            display: none !important;
         }
 
         /* 1. Moving 3D Perspective Space-Grid Floor */
         .neon-grid-bg {
+            display: none !important;
             position: absolute;
             width: 250vw;
             height: 250vh;
@@ -584,21 +607,26 @@
            ========================================================================== */
         .workspace-view-container {
             width: 100%;
+            max-width: var(--maxw);
+            margin: 0 auto;
             height: 100vh;
             display: none; /* controlled by body class */
             overflow: hidden;
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            position: relative;
         }
 
-        /* PANEL 1: LEFT SIDEBAR PANEL (240px wide) */
+        /* PANEL 1: LEFT SIDEBAR PANEL (2/12 columns wide) */
         .sidebar-panel {
-            width: 240px;
+            width: calc(2 / 12 * 100%);
             background-color: var(--bg-sidebar);
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
-            padding: 20px 16px;
-            gap: 24px;
+            padding: var(--sp-2) var(--sp-2);
+            gap: var(--sp-3);
             z-index: 3;
         }
 
@@ -761,9 +789,9 @@
             align-items: center;
         }
 
-        /* PANEL 2: MIDDLE CHAT PANEL (420px wide) - AI Agent Brain Timeline */
+        /* PANEL 2: MIDDLE CHAT PANEL (4/12 columns wide) - AI Agent Brain Timeline */
         .chat-panel {
-            width: 420px;
+            width: calc(4 / 12 * 100%);
             background-color: var(--bg-chat);
             border-right: 1px solid var(--border-color);
             display: flex;
@@ -971,9 +999,9 @@
             color: var(--accent-neon);
         }
 
-        /* PANEL 3: RIGHT COMPUTER PANEL (Workspace Viewer - Flex 1) */
+        /* PANEL 3: RIGHT COMPUTER PANEL (Workspace Viewer - 6/12 columns wide) */
         .computer-panel {
-            flex: 1;
+            width: calc(6 / 12 * 100%);
             background-color: var(--bg-base);
             display: flex;
             flex-direction: column;
@@ -2182,6 +2210,22 @@
 </head>
 <body class="state-landing">
 
+    <!-- Müller-Brockmann 12-Column & Baseline Grid Overlay Guide -->
+    <div class="grid-overlay" id="gridOverlay">
+        <div class="grid-column-line"></div>
+        <div class="grid-column-line"></div>
+        <div class="grid-column-line"></div>
+        <div class="grid-column-line"></div>
+        <div class="grid-column-line"></div>
+        <div class="grid-column-line"></div>
+        <div class="grid-column-line"></div>
+        <div class="grid-column-line"></div>
+        <div class="grid-column-line"></div>
+        <div class="grid-column-line"></div>
+        <div class="grid-column-line"></div>
+        <div class="grid-column-line"></div>
+    </div>
+
     <!-- Password Lock Screen Overlay -->
     <div id="pitl-password-overlay" class="password-overlay-wrapper" style="display: none;">
         <div class="password-card">
@@ -2295,6 +2339,9 @@
                 </button>
                 <button class="btn-minimal" onclick="goToWorkspaceDashboard()">
                     <i class="fa-solid fa-desktop"></i> 워크스페이스 대시보드
+                </button>
+                <button class="btn-minimal" onclick="toggleGrid()" title="그리드 가이드 토글" data-i18n="landing_nav_grid_toggle">
+                    <i class="fa-solid fa-table-cells"></i> 그리드 가이드
                 </button>
                 <button class="btn-minimal" onclick="logout()" title="로그아웃">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
@@ -2470,6 +2517,9 @@
                     
                     <!-- Moved theme, api settings, logout actions to the right of the QA Report tab -->
                     <div class="chrome-title-bar-actions">
+                        <button onclick="toggleGrid()" title="그리드 가이드 토글">
+                            <i class="fa-solid fa-table-cells"></i>
+                        </button>
                         <button class="theme-toggle-btn" onclick="toggleTheme()" title="테마 변경">
                             <i class="fa-solid fa-moon"></i>
                         </button>
@@ -5554,7 +5604,16 @@
             initStars();
         }
 
-        // Early Theme restorer to avoid flicker on page load
+        // Müller-Brockmann 12-Column & Baseline Grid Toggle
+        function toggleGrid() {
+            const overlay = document.getElementById('gridOverlay');
+            if (overlay) {
+                const isActive = overlay.classList.toggle('active');
+                localStorage.setItem('pitl-grid', isActive ? 'active' : 'inactive');
+            }
+        }
+
+        // Early Theme and Grid restorer to avoid flicker on page load
         (function() {
             const savedTheme = localStorage.getItem('pitl-theme');
             if (savedTheme === 'light') {
@@ -5565,6 +5624,14 @@
                     icons.forEach(icon => {
                         icon.className = 'fa-solid fa-sun';
                     });
+                });
+            }
+
+            const savedGrid = localStorage.getItem('pitl-grid');
+            if (savedGrid === 'active') {
+                window.addEventListener('DOMContentLoaded', () => {
+                    const overlay = document.getElementById('gridOverlay');
+                    if (overlay) overlay.classList.add('active');
                 });
             }
         })();
