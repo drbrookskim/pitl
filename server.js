@@ -90,6 +90,31 @@ function sanitizeFilename(input) {
     return clean || 'product_planning';
 }
 
+// ── Naver News Open API Fetcher ─────────────────────────────────────────────
+async function fetchNaverNews(query, naverClientId, naverClientSecret) {
+    if (!naverClientId || !naverClientSecret) return [];
+    try {
+        const url = `https://openapi.naver.com/v1/search/news.json?query=${encodeURIComponent(query)}&display=8&sort=date`;
+        const res = await axios.get(url, {
+            headers: {
+                'X-Naver-Client-Id': naverClientId,
+                'X-Naver-Client-Secret': naverClientSecret,
+                'User-Agent': 'PITLAgent/1.0'
+            }
+        });
+        const items = res.data?.items || [];
+        return items.slice(0, 8).map(item => ({
+            title: item.title.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'"),
+            url: item.link || item.originallink || '',
+            description: (item.description || '').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'"),
+            pubDate: item.pubDate || ''
+        }));
+    } catch (e) {
+        console.error('[Naver News] Error:', e.message);
+        return [];
+    }
+}
+
 // Fallback 3C Framework Analysis Generator (Ohmae Kenichi Strategy Triangle Model)
 function generateFallback3C(titleText, lang = 'ko') {
     if (lang === 'en') {
@@ -551,6 +576,35 @@ app.get('/api/generate-stream', async (req, res) => {
         let uxContent = '';
         let auditContent = '';
 
+        // --- STAGE 0: Naver Real-time News Fetch (컨텍스트 데이터 수집) ---
+        const naverClientId = process.env.NAVER_CLIENT_ID;
+        const naverClientSecret = process.env.NAVER_CLIENT_SECRET;
+        let naverNewsContext = '';
+
+        if (!isRegen && naverClientId && naverClientSecret) {
+            logAgent('analyst', t(`네이버 실시간 뉴스 수집 시작: '${originalIdea.slice(0, 20)}...' 관련 최신 동향 분석 중`, `Fetching Naver real-time news for: '${originalIdea.slice(0, 20)}...'`));
+            try {
+                // Extract short search keyword from idea using first 20 chars or meaningful nouns
+                const searchKeyword = originalIdea.slice(0, 30).split(/[,./\n]/)[0].trim();
+                const naverNews = await fetchNaverNews(searchKeyword, naverClientId, naverClientSecret);
+                if (naverNews.length > 0) {
+                    naverNewsContext = `\n\n---\n## 📰 네이버 실시간 관련 뉴스 (${new Date().toLocaleDateString('ko-KR')} 기준)\n`;
+                    naverNews.forEach((item, i) => {
+                        naverNewsContext += `${i + 1}. **${item.title}**\n`;
+                        if (item.description) naverNewsContext += `   > ${item.description.slice(0, 120)}...\n`;
+                        naverNewsContext += `   출처: ${item.url}\n`;
+                    });
+                    naverNewsContext += `---\n위 뉴스 데이터를 시장 동향 및 경쟁 환경 분석 시 참고 컨텍스트로 활용하라.\n`;
+                    logAgent('analyst', t(`네이버 뉴스 ${naverNews.length}건 수집 완료. 기획 컨텍스트에 주입합니다.`, `Fetched ${naverNews.length} Naver news articles. Injecting into planning context.`));
+                } else {
+                    logAgent('analyst', t(`네이버 뉴스 검색 결과가 없습니다. 뉴스 없이 진행합니다.`, `No Naver news results. Proceeding without news context.`));
+                }
+            } catch (newsErr) {
+                console.error('[Naver News Stage] Error:', newsErr.message);
+                logAgent('analyst', t(`뉴스 수집 중 에러가 발생했습니다. 뉴스 없이 진행합니다.`, `News fetch error. Proceeding without news context.`));
+            }
+        }
+
         // --- STAGE 1: Product Strategist (1-pager, 3C, MECE) ---
         if (!isRegen) {
             logAgent('strategist', t(`입력하신 아이디어 '${originalIdea}'를 바탕으로 1-pager 요약서 기획을 시작합니다.`, `Starting 1-pager summary planning based on your idea '${originalIdea}'.`));
@@ -559,14 +613,14 @@ app.get('/api/generate-stream', async (req, res) => {
             사용자의 상품 아이디어를 분석하여 '이 제품이 왜 필요한가'를 1장으로 정리하는 1-pager 요약서를 작성하라.
             
             아이디어: ${originalIdea}
-            
+            ${naverNewsContext}
             반드시 다음 마크다운 형식을 따르고, 빈 칸 없이 완벽히 메트릭과 테이블 수치를 합리적으로 유추하여 채워라:
             # [YY.MM.DD] {아이디어 기반 제목} (Product Team)
             ## 1. 프로젝트 한 줄 요약
             ## 2. 대상 (테이블: 대상, 상황/특징)
             ## 3. 문제 정의 (고객 문제, 비즈니스 문제, 데이터 기반 현황 테이블, Root Cause)
             ## 4. 목표 (테이블: 항목, 목표 수치)
-            ## 5. 현황 및 분석 (VOC 인용 등)
+            ## 5. 현황 및 분석 (VOC 인용 등, 위의 네이버 뉴스 동향을 바탕으로 시장 현황을 강화하라)
             ## 6. 해결방안 (Phase 1, Phase 2...)
             ## 7. 리스크 (테이블: 영향도, 리스크, 대응 방안)
             ## 8. 중요도 및 긴급도 (상/중/하 + 이유)
@@ -586,7 +640,7 @@ app.get('/api/generate-stream', async (req, res) => {
             다음 상품 아이디어를 기반으로 오마에 겐이치의 3C 전략 삼각형(Customer, Competitor, Company)을 적용하여 심층적이고 입체적인 환경 분석 보고서를 작성하라.
             
             아이디어: ${originalIdea}
-            
+            ${naverNewsContext}
             반드시 다음 'product-planning-framework'의 핵심 전략 로직과 형식을 충실하게 준수하라:
             
             # [전략 기획] 3C 프레임워크 기반 입체적 환경 분석: {제목}

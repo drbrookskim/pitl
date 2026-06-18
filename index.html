@@ -41,7 +41,40 @@
             --type-32: 32px;
             --type-48: 48px;
 
-            /* ── SURFACE COLORS (Swiss Modern Monochrome) ── */
+            /* ── SURFACE COLORS (Light Theme — Default) ── */
+            --bg-base: #f9f9fb;
+            --bg-sidebar: #f0f0f3;
+            --bg-chat: #e6e6eb;
+            --bg-editor: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.75);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --border-active: rgba(0, 0, 0, 0.16);
+
+            /* ── TEXT COLORS ── */
+            --text-primary: #121211;
+            --text-secondary: #4a4a4d;
+            --text-muted: #8d8d92;
+
+            /* ── ACCENT PALETTE (Canonical Swiss Red Accent) ── */
+            --accent-blue: #2563eb;
+            --accent-purple: #7c3aed;
+            --accent-cyan: #0891b2;
+            --accent-green: #059669;
+            --accent-red: #dc2626;
+            --accent-neon: #059669;
+            --glow-neon: 0 0 15px rgba(5, 150, 105, 0.2);
+            --glow-purple: 0 0 15px rgba(124, 58, 237, 0.1);
+            --glass-blur: blur(16px);
+            --grid-color: rgba(5, 150, 105, 0.07);
+
+            /* ── BORDER RADIUS (disciplined, not decorative) ── */
+            --radius-sm: 2px;
+            --radius-md: 4px;
+            --radius-lg: 8px;
+        }
+
+        /* Dark Theme Override (opt-in via body.dark-theme) */
+        body.dark-theme {
             --bg-base: #0d0d0c;
             --bg-sidebar: #141413;
             --bg-chat: #181817;
@@ -49,28 +82,18 @@
             --bg-card: rgba(20, 20, 19, 0.85);
             --border-color: rgba(255, 255, 255, 0.06);
             --border-active: rgba(255, 255, 255, 0.12);
-
-            /* ── TEXT COLORS ── */
             --text-primary: #f4f4f3;
             --text-secondary: #a3a3a0;
             --text-muted: #666663;
-
-            /* ── ACCENT PALETTE (Canonical Swiss Red Accent) ── */
             --accent-blue: #3b82f6;
             --accent-purple: #8b5cf6;
             --accent-cyan: #06b6d4;
             --accent-green: #10b981;
             --accent-red: #ef4444;
-            --accent-neon: #ef4444; /* Force neon green replacement with Swiss Red */
-            --glow-neon: none;      /* No decorative glow */
+            --accent-neon: #ef4444;
+            --glow-neon: none;
             --glow-purple: none;
-            --glass-blur: blur(16px);
             --grid-color: rgba(239, 68, 68, 0.08);
-
-            /* ── BORDER RADIUS (disciplined, not decorative) ── */
-            --radius-sm: 2px;
-            --radius-md: 4px;
-            --radius-lg: 8px;
         }
 
         * {
@@ -617,10 +640,10 @@
         .btn-quick-action:hover {
             border-color: var(--accent-neon);
             color: var(--text-primary);
-            background-color: rgba(255, 255, 255, 0.02);
-        }
-        body.light-theme .btn-quick-action:hover {
             background-color: rgba(0, 0, 0, 0.02);
+        }
+        body.dark-theme .btn-quick-action:hover {
+            background-color: rgba(255, 255, 255, 0.02);
         }
 
         .sidebar-logo-container {
@@ -1496,89 +1519,65 @@
         }
 
         /* ==========================================================================
-           LIGHT THEME OVERRIDES
+           DARK THEME OVERRIDES (sidebar-toggle hover fix below)
            ========================================================================== */
-        body.light-theme {
-            --bg-base: #f9f9fb;        /* warm clean off-white */
-            --bg-sidebar: #f0f0f3;     /* clean sidebar */
-            --bg-chat: #e6e6eb;        /* slightly darker chat panel */
-            --bg-editor: #ffffff;      /* pure white focused editor */
-            --bg-card: rgba(255, 255, 255, 0.75);
-            --border-color: rgba(0, 0, 0, 0.08);
-            --border-active: rgba(0, 0, 0, 0.16);
-            
-            --text-primary: #121211;    /* warm primary black */
-            --text-secondary: #4a4a4d;  /* legible secondary dark grey */
-            --text-muted: #8d8d92;      /* soft muted grey */
-            
-            --accent-blue: #2563eb;
-            --accent-purple: #7c3aed;
-            --accent-cyan: #0891b2;
-            --accent-green: #059669;
-            --accent-red: #dc2626;
-            
-            --accent-neon: #059669;     /* stable emerald green for readable light layout */
-            --glow-neon: 0 0 15px rgba(5, 150, 105, 0.2);
-            --glow-purple: 0 0 15px rgba(124, 58, 237, 0.1);
-            
-            --grid-color: rgba(5, 150, 105, 0.07);
-        }
+        /* (body.dark-theme variables already defined above in :root override block) */
 
-        /* Password Screen Light Theme Overrides */
-        body.light-theme .password-overlay-wrapper {
+        /* Password Screen Base Styles (Light — default) */
+        .password-overlay-wrapper {
             background: #f9f9fb;
         }
-        body.light-theme .password-card {
+        .password-card {
             background: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(0, 0, 0, 0.08);
             box-shadow: 0 30px 70px rgba(0, 0, 0, 0.06), 0 0 40px rgba(0, 0, 0, 0.02);
         }
-        body.light-theme .password-card-glow {
+        .password-card-glow {
             background: radial-gradient(circle, rgba(239, 68, 68, 0.05) 0%, transparent 70%);
         }
-        body.light-theme .password-logo {
+        .password-logo {
             background: rgba(239, 68, 68, 0.06);
             color: var(--accent-red);
             border: 1px solid rgba(239, 68, 68, 0.15);
             box-shadow: 0 0 20px rgba(239, 68, 68, 0.08);
         }
-        body.light-theme .password-title {
+        .password-title {
             color: var(--text-primary);
         }
-        body.light-theme .password-subtitle {
+        .password-subtitle {
             color: var(--text-secondary);
         }
-        body.light-theme .password-input-wrapper {
+        .password-input-wrapper {
             background: rgba(245, 245, 245, 0.9);
             border: 1px solid rgba(0, 0, 0, 0.08);
         }
-        body.light-theme .password-input-wrapper:focus-within {
+        .password-input-wrapper:focus-within {
             border-color: var(--accent-red);
             box-shadow: 0 0 10px rgba(239, 68, 68, 0.1);
         }
-        body.light-theme .password-input-wrapper input {
+        .password-input-wrapper input {
             color: var(--text-primary);
         }
-        body.light-theme .password-input-wrapper .input-icon {
+        .password-input-wrapper .input-icon {
             color: var(--text-muted);
         }
-        body.light-theme .password-toggle-btn {
+        .password-toggle-btn {
             color: var(--text-muted);
         }
-        body.light-theme .password-toggle-btn:hover {
+        .password-toggle-btn:hover {
             color: var(--text-primary);
         }
-        body.light-theme .password-submit-btn {
+        .password-submit-btn {
             background: var(--accent-red);
             color: #ffffff;
             box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
         }
-        body.light-theme .password-submit-btn:hover {
+        .password-submit-btn:hover {
             background: #d32f2f;
             box-shadow: 0 8px 25px rgba(239, 68, 68, 0.35);
         }
 
-        body.light-theme::before {
+        body::before {
             background: radial-gradient(
                 550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
                 rgba(5, 150, 105, 0.07) 0%,
@@ -1586,146 +1585,158 @@
                 transparent 80%
             );
         }
+        body.dark-theme::before {
+            background: radial-gradient(
+                550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(239, 68, 68, 0.06) 0%,
+                rgba(139, 92, 246, 0.03) 45%,
+                transparent 80%
+            );
+        }
 
-        body.light-theme .aurora-blob {
+        .aurora-blob {
             mix-blend-mode: multiply;
             opacity: 0.12;
         }
+        body.dark-theme .aurora-blob {
+            mix-blend-mode: screen;
+            opacity: 0.24;
+        }
 
-        body.light-theme .manus-prompt-container {
+        .manus-prompt-container {
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.01));
             box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.08);
         }
 
-        body.light-theme .manus-prompt-container::before {
+        .manus-prompt-container::before {
             background: linear-gradient(135deg, var(--accent-neon), var(--accent-blue), var(--accent-purple));
             opacity: 0.12;
         }
 
-        body.light-theme .prompt-box-inner {
+        .prompt-box-inner {
             background: #ffffff;
         }
 
-        body.light-theme .prompt-box-inner textarea {
+        .prompt-box-inner textarea {
             color: var(--text-primary);
         }
 
-        body.light-theme .prompt-submit-btn {
+        .prompt-submit-btn {
             background: #121211;
             color: #ffffff;
         }
 
-        body.light-theme .prompt-submit-btn:hover {
+        .prompt-submit-btn:hover {
             background: var(--accent-neon);
             color: #ffffff;
         }
 
-        body.light-theme .suggestion-pill {
+        .suggestion-pill {
             background: rgba(0, 0, 0, 0.01);
             color: var(--text-secondary);
         }
 
-        body.light-theme .suggestion-pill:hover {
+        .suggestion-pill:hover {
             background: rgba(0, 0, 0, 0.03);
             color: var(--text-primary);
         }
 
-        body.light-theme .landing-history-card {
+        .landing-history-card {
             background: rgba(255, 255, 255, 0.7);
         }
 
-        body.light-theme .landing-history-card:hover {
+        .landing-history-card:hover {
             background: rgba(255, 255, 255, 0.95);
         }
 
-        body.light-theme .history-item-card {
+        .history-item-card {
             background: rgba(255, 255, 255, 0.4);
         }
 
-        body.light-theme .history-item-card:hover {
+        .history-item-card:hover {
             background: rgba(255, 255, 255, 0.85);
         }
 
-        body.light-theme .computer-chrome {
+        .computer-chrome {
             background: #ededef;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8);
         }
 
-        body.light-theme .chrome-title-bar {
+        .chrome-title-bar {
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        body.light-theme .chrome-tab.active {
+        .chrome-tab.active {
             background: #ffffff;
             border-color: var(--border-color);
             color: var(--accent-neon);
         }
 
-        body.light-theme .chrome-address-bar {
+        .chrome-address-bar {
             background: #f4f4f7;
         }
 
-        body.light-theme .chrome-url-box {
+        .chrome-url-box {
             background: #ffffff;
             border-color: rgba(0, 0, 0, 0.08);
         }
 
-        body.light-theme .chrome-url-box input {
+        .chrome-url-box input {
             color: var(--text-secondary);
         }
 
-        body.light-theme .viewer-canvas {
+        .viewer-canvas {
             background-color: #ffffff;
         }
 
-        body.light-theme .document-wrapper {
+        .document-wrapper {
             background: transparent;
             box-shadow: none;
         }
 
-        body.light-theme .markdown-body h1 {
+        .markdown-body h1 {
             /* ink-on-grid: plain dark, no gradient */
             color: var(--text-primary);
         }
 
-        body.light-theme .markdown-body table {
+        .markdown-body table {
             background: transparent;
         }
 
-        body.light-theme .markdown-body th {
+        .markdown-body th {
             background: rgba(0, 0, 0, 0.03);
             color: var(--text-primary);
         }
 
-        body.light-theme .markdown-body blockquote {
+        .markdown-body blockquote {
             background: rgba(0, 0, 0, 0.01);
             border-left-color: var(--accent-neon);
         }
 
-        body.light-theme .editor-textarea-custom {
+        .editor-textarea-custom {
             background: #f9f9fb;
             color: var(--text-primary);
             border-color: var(--border-color);
         }
 
-        body.light-theme .editor-textarea-custom:focus {
+        .editor-textarea-custom:focus {
             border-color: var(--accent-neon);
         }
 
-        body.light-theme .stepper-container {
+        .stepper-container {
             background: rgba(255, 255, 255, 0.3);
         }
 
-        body.light-theme .chat-follow-up-bar {
+        .chat-follow-up-bar {
             background: rgba(255, 255, 255, 0.5);
         }
 
-        body.light-theme .wf-tab-btn.active {
+        .wf-tab-btn.active {
             background: var(--text-primary);
             color: #ffffff;
         }
 
-        body.light-theme .wf-tab-btn:hover {
+        .wf-tab-btn:hover {
             color: var(--text-primary);
             background: rgba(0, 0, 0, 0.03);
         }
@@ -1755,12 +1766,11 @@
         }
 
         .sidebar-toggle-btn:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.05);
             color: var(--accent-neon);
         }
-
-        body.light-theme .sidebar-toggle-btn:hover {
-            background: rgba(0, 0, 0, 0.05);
+        body.dark-theme .sidebar-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .sidebar-overlay {
@@ -4293,7 +4303,8 @@
             }
 
             // Transition UI State
-            document.body.className = 'state-workspace';
+            document.body.classList.remove('state-landing');
+            document.body.classList.add('state-workspace');
 
             // Clear previous Middle Panel chat flow
             const chatMessagesContainer = document.getElementById('chat-messages-container');
@@ -4329,7 +4340,8 @@
             if (container) container.classList.remove('sidebar-open');
             if (overlay) overlay.classList.remove('active');
 
-            document.body.className = 'state-landing';
+            document.body.classList.remove('state-workspace');
+            document.body.classList.add('state-landing');
             const textarea = document.getElementById('idea-textarea');
             if (textarea) {
                 textarea.value = '';
@@ -4352,7 +4364,8 @@
 
         // View dashboard directly (empty state workspace)
         function goToWorkspaceDashboard() {
-            document.body.className = 'state-workspace';
+            document.body.classList.remove('state-landing');
+            document.body.classList.add('state-workspace');
             renderEmptyStateConsole();
         }
 
@@ -5519,7 +5532,8 @@
             if (ideaTextarea) ideaTextarea.disabled = true;
             
             // Transition view directly to workspace
-            document.body.className = 'state-workspace';
+            document.body.classList.remove('state-landing');
+            document.body.classList.add('state-workspace');
 
             // Close mobile sidebar if open
             const container = document.querySelector('.workspace-view-container');
@@ -5626,16 +5640,16 @@
 
         // DYNAMIC THEME SWITCHER IMPLEMENTATION
         function toggleTheme() {
-            const isLight = document.body.classList.toggle('light-theme');
-            localStorage.setItem('pitl-theme', isLight ? 'light' : 'dark');
+            const isDark = document.body.classList.toggle('dark-theme');
+            localStorage.setItem('pitl-theme', isDark ? 'dark' : 'light');
             
             // Sync all theme toggle icons
             const icons = document.querySelectorAll('.theme-toggle-btn i');
             icons.forEach(icon => {
-                if (isLight) {
-                    icon.className = 'fa-solid fa-sun';
-                } else {
+                if (isDark) {
                     icon.className = 'fa-solid fa-moon';
+                } else {
+                    icon.className = 'fa-solid fa-sun';
                 }
             });
             
@@ -5645,15 +5659,20 @@
 
         // Early Theme restorer to avoid flicker on page load
         (function() {
-            // Force light theme by default, ignoring previous dark theme storage to align with Swiss Light identity
-            document.body.classList.add('light-theme');
-            localStorage.setItem('pitl-theme', 'light');
+            // Light is the default — no class needed on body
+            // Only apply dark-theme if user explicitly set it before
+            const saved = localStorage.getItem('pitl-theme');
+            if (saved === 'dark') {
+                document.body.classList.add('dark-theme');
+            }
+            // Remove any stale light-theme class from prior version
+            document.body.classList.remove('light-theme');
             
-            // wait for DOM to bind the sun icon
             window.addEventListener('DOMContentLoaded', () => {
+                const isDark = document.body.classList.contains('dark-theme');
                 const icons = document.querySelectorAll('.theme-toggle-btn i');
                 icons.forEach(icon => {
-                    icon.className = 'fa-solid fa-sun';
+                    icon.className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
                 });
             });
         })();
