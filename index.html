@@ -603,6 +603,7 @@
             border-left: 1px solid var(--border-color);
             border-right: 1px solid var(--border-color);
             position: relative;
+            padding: 0 15%;
         }
 
         /* PANEL 1: LEFT SIDEBAR PANEL (2/12 columns wide) */
@@ -1792,6 +1793,10 @@
         }
 
         @media (max-width: 1024px) {
+            .workspace-view-container {
+                padding: 0 4%;
+            }
+
             .sidebar-panel {
                 position: fixed !important;
                 left: -240px !important;
@@ -1814,6 +1819,10 @@
         }
 
         @media (max-width: 768px) {
+            .workspace-view-container {
+                padding: 0;
+            }
+
             .chat-panel {
                 width: 64px !important; /* Shrunk from 300px to exactly fit the vertical icons column */
                 flex-direction: column !important; /* Stack stepper and timeline vertically */
