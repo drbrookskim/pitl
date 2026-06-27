@@ -3395,6 +3395,33 @@
             }
         }
 
+        function summarizeIdeaToTitle(idea) {
+            if (!idea) return 'product_planning';
+            let summary = idea.trim();
+            
+            // 1. 끝부분의 전형적인 어미/요청어 제거
+            summary = summary.replace(/(기획|설계|작성|분석|개발)?(해줘|해주세요|해봐|해주라|함|작성|설계|기획|보고서)$/g, '').trim();
+            summary = summary.replace(/(에 대한|에 대해|의|를|을)$/g, '').trim();
+            
+            // 2. 중간의 대표적인 사족 문구 축소/제거
+            summary = summary.replace(/에 대한 신규 기능 기획$/, ' 신규 기능');
+            summary = summary.replace(/에 대한 기획$/, '');
+            summary = summary.replace(/에 대한 설계$/, '');
+            summary = summary.replace(/에 대한 분석$/, '');
+            summary = summary.replace(/신규 기능 기획$/, '신규 기능');
+            summary = summary.replace(/신규 서비스 기획$/, '신규 서비스');
+            
+            // 3. 다시 한번 끝부분 정리
+            summary = summary.replace(/(에 대한|에 대해|의|를|을|에)$/g, '').trim();
+            
+            // 4. 너무 길면 22자로 자르고 '...' 붙이기
+            if (summary.length > 22) {
+                summary = summary.slice(0, 22).trim() + '...';
+            }
+            
+            return summary || '상품 기획';
+        }
+
         function saveClientHistoryLocally(docs) {
             let clientHistory = localStorage.getItem('pitl_client_history');
             clientHistory = clientHistory ? JSON.parse(clientHistory) : [];
@@ -3406,7 +3433,8 @@
             const month = keyDate.slice(2, 4);
             const day = keyDate.slice(4, 6);
             
-            const displayTitle = cleanTitle.replace(/_/g, ' ');
+            // Use natural summary for display title instead of truncated cleanTitle
+            const displayTitle = summarizeIdeaToTitle(docs.idea || cleanTitle);
             const displayDate = `${year}-${month}-${day}`;
             
             const existingIdx = clientHistory.findIndex(item => item.title === cleanTitle && item.date === keyDate);
@@ -5822,12 +5850,18 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             if (container) container.classList.remove('sidebar-open');
             if (overlay) overlay.classList.remove('active');
 
+            // Find full idea description from local storage or server data first
+            let clientHistory = localStorage.getItem('pitl_client_history');
+            clientHistory = clientHistory ? JSON.parse(clientHistory) : [];
+            const foundItem = clientHistory.find(item => item.title === title && item.date === date);
+            const rawIdea = foundItem ? (foundItem.idea || foundItem.displayTitle) : title.replace(/_/g, ' ');
+
             // Populate system loaded message card in timeline
             const chatContainer = document.getElementById('chat-messages-container');
             if (chatContainer) {
                 chatContainer.innerHTML = `
-                    <div class="system-notification" data-i18n-msg="기획 세션 로드 완료: ${title.replace(/_/g, ' ')} (${date})">
-                        <i class="fa-solid fa-folder-open"></i> <span class="msg-text">${t("기획 세션 로드 완료", "Planning session loaded")}: ${title.replace(/_/g, ' ')} (${date})</span>
+                    <div class="system-notification" data-i18n-msg="기획 세션 로드 완료: ${rawIdea} (${date})">
+                        <i class="fa-solid fa-folder-open"></i> <span class="msg-text">${t("기획 세션 로드 완료", "Planning session loaded")}: ${rawIdea} (${date})</span>
                     </div>
                     <div class="chat-bubble agent-system">
                         <div class="bubble-avatar" style="background: var(--text-muted)">
@@ -5916,7 +5950,8 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             isEditing = false;
             switchDocument('1pager');
             
-            pitlAlert(t(`'<strong>${title.replace(/_/g, ' ')}</strong>' 기획서 세션이 성공적으로 로드되었습니다.<br>기획안 수정 모드를 통해 연쇄 자동 갱신이 지원됩니다.`, `'<strong>${title.replace(/_/g, ' ')}</strong>' planning session loaded successfully.<br>Cascade auto-updates supported via edit mode.`), 'success', t('히스토리 로드 완료', 'History Loaded'));
+            const displayIdea = data.idea || title.replace(/_/g, ' ');
+            pitlAlert(t(`'<strong>${displayIdea}</strong>' 기획서 세션이 성공적으로 로드되었습니다.<br>기획안 수정 모드를 통해 연쇄 자동 갱신이 지원됩니다.`, `'<strong>${displayIdea}</strong>' planning session loaded successfully.<br>Cascade auto-updates supported via edit mode.`), 'success', t('히스토리 로드 완료', 'History Loaded'));
         }
 
         // DYNAMIC THEME SWITCHER IMPLEMENTATION
