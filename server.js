@@ -575,6 +575,7 @@ app.get('/api/generate-stream', async (req, res) => {
         let prdContent = '';
         let uxContent = '';
         let auditContent = '';
+        let prototypeContent = '';
 
         // --- STAGE 0: Naver Real-time News Fetch (컨텍스트 데이터 수집) ---
         const naverClientId = process.env.NAVER_CLIENT_ID;
@@ -866,6 +867,47 @@ app.get('/api/generate-stream', async (req, res) => {
         fs.writeFileSync(path.join(workspaceDir, '04_reviewer_audit.md'), auditContent);
         logAgent('reviewer', t(`검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`, `Audit complete. Verified 100% consistency across all planning documents. [QA PASS] approved.`));
 
+        // --- STAGE 5: Prototype Generator (Interactive HTML) ---
+        logAgent('architect', t(`QA 검수 완료. 와이어프레임 Type A를 기반으로 인터랙티브 HTML 프로토타입을 생성합니다.`, `QA audit passed. Generating interactive HTML prototype based on Wireframe Type A.`));
+
+        const prototypePrompt = `
+        당신은 숙련된 프론트엔드 개발자입니다. 아래 PRD 요건서와 와이어프레임을 기반으로, 완전히 동작하는 인터랙티브 HTML 프로토타입을 생성하세요.
+
+        [PRD 요건서]
+        ${prdContent}
+
+        [와이어프레임 (Type A 기준 레이아웃 참고)]
+        ${uxContent}
+
+        [요구사항]
+        - 반드시 단일 완전한 HTML 파일로 생성 (외부 의존성 없이 CDN 사용 가능)
+        - CSS는 <style> 태그 내부에 인라인으로 포함
+        - JavaScript는 <script> 태그 내부에 인라인으로 포함
+        - 모던하고 세련된 UI (CSS 변수, 그라디언트, 애니메이션 포함)
+        - 주요 인터랙션 동작 구현 (탭 전환, 모달, 폼 입력, 버튼 클릭 효과)
+        - 반응형 레이아웃 (모바일/데스크탑 대응)
+        - 실제 서비스처럼 보이는 더미 데이터와 텍스트 포함
+        - PRD의 핵심 기능(REQ-*)을 화면에 시각적으로 표현
+        - 한국어 UI 텍스트 사용
+
+        반드시 <!DOCTYPE html>로 시작하는 완전한 단일 HTML 파일만 출력하라. 마크다운 코드블록(\`\`\`) 없이 순수 HTML만 출력.
+        `;
+
+        prototypeContent = await callGemini(
+            "당신은 PRD와 와이어프레임을 실제 동작하는 인터랙티브 HTML 프로토타입으로 변환하는 프론트엔드 개발 에이전트입니다.",
+            prototypePrompt,
+            (msg) => logAgent('architect', msg)
+        );
+
+        // Strip markdown code fences if Gemini wraps output
+        prototypeContent = prototypeContent
+            .replace(/^```html\s*/i, '')
+            .replace(/^```\s*/i, '')
+            .replace(/\s*```$/i, '')
+            .trim();
+
+        logAgent('architect', t(`인터랙티브 HTML 프로토타입 생성 완료. 브라우저에서 즉시 실행 가능합니다.`, `Interactive HTML prototype generated. Ready to run in browser.`));
+
         // --- DEPLOYMENT & EXPORT ---
         logAgent('system', t(`최종 배포 프로세스 진입. 파일명 보안 정제 적용 중...`, `Entering final deployment phase. Applying filename sanitation...`));
         const cleanTitle = sanitizeFilename(originalIdea.slice(0, 15));
@@ -877,6 +919,7 @@ app.get('/api/generate-stream', async (req, res) => {
         const prdName = `prd_${cleanTitle}_${dateStr}.md`;
         const wireframeName = `wireframe_${cleanTitle}_${dateStr}.md`;
         const auditName = `audit_${cleanTitle}_${dateStr}.md`;
+        const prototypeName = `prototype_${cleanTitle}_${dateStr}.html`;
 
         fs.writeFileSync(path.join(outputsDir, onePagerName), onePagerContent);
         fs.writeFileSync(path.join(outputsDir, threeCName), threeCContent);
@@ -884,14 +927,16 @@ app.get('/api/generate-stream', async (req, res) => {
         fs.writeFileSync(path.join(outputsDir, prdName), prdContent);
         fs.writeFileSync(path.join(outputsDir, wireframeName), uxContent);
         fs.writeFileSync(path.join(outputsDir, auditName), auditContent);
+        fs.writeFileSync(path.join(outputsDir, prototypeName), prototypeContent);
         
-        logAgent('system', t(`outputs/ 디렉토리에 마크다운 기획 서류 6종 영구 배포 완료.`, `Successfully deployed 6 markdown planning documents to outputs/ directory.`));
+        logAgent('system', t(`outputs/ 디렉토리에 마크다운 기획 서류 6종 + HTML 프로토타입 영구 배포 완료.`, `Successfully deployed 6 markdown planning documents + HTML prototype to outputs/ directory.`));
         logAgent('system', t(`- 요약서: outputs/${onePagerName}`, `- Summary: outputs/${onePagerName}`));
         logAgent('system', t(`- 3C 분석: outputs/${threeCName}`, `- 3C Analysis: outputs/${threeCName}`));
         logAgent('system', t(`- MECE 분석: outputs/${meceName}`, `- MECE Analysis: outputs/${meceName}`));
         logAgent('system', t(`- PRD: outputs/${prdName}`, `- PRD: outputs/${prdName}`));
         logAgent('system', t(`- 와이어프레임: outputs/${wireframeName}`, `- Wireframes: outputs/${wireframeName}`));
         logAgent('system', t(`- 검수서: outputs/${auditName}`, `- Audit Report: outputs/${auditName}`));
+        logAgent('system', t(`- 프로토타입: outputs/${prototypeName}`, `- Prototype: outputs/${prototypeName}`));
 
         // Send Final Data to Client
         sendSSE('complete', {
@@ -901,7 +946,8 @@ app.get('/api/generate-stream', async (req, res) => {
             'mece': meceContent,
             'prd': prdContent,
             'wireframe': uxContent,
-            'audit': auditContent
+            'audit': auditContent,
+            'prototype': prototypeContent
         });
         
         logAgent('system', t(`오케스트레이션 성공. 에이전트 팀 해체 및 완공.`, `Orchestration successful. Agent team dissolved and work completed.`));

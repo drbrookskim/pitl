@@ -2580,6 +2580,9 @@
                         <button class="chrome-tab disabled nav-item" id="nav-wireframe" onclick="switchDocument('wireframe')" data-i18n="tab_wireframe">
                             <i class="fa-solid fa-crop-simple"></i> Wireframe
                         </button>
+                        <button class="chrome-tab disabled nav-item" id="nav-prototype" onclick="switchDocument('prototype')" data-i18n="tab_prototype">
+                            <i class="fa-solid fa-display"></i> Prototype
+                        </button>
                         <button class="chrome-tab disabled nav-item" id="nav-audit" onclick="switchDocument('audit')" data-i18n="tab_audit">
                             <i class="fa-solid fa-clipboard-check"></i> QA Audit
                         </button>
@@ -4846,6 +4849,7 @@
                 'mece': 'pitl.ai/workspace/strategist-mece-analysis',
                 'prd': 'pitl.ai/workspace/architect-prd-spec',
                 'wireframe': 'pitl.ai/workspace/architect-wireframes',
+                'prototype': 'pitl.ai/workspace/prototype-interactive-html',
                 'audit': 'pitl.ai/workspace/reviewer-qa-audit'
             };
             const urlInput = document.getElementById('mock-browser-url');
@@ -4873,6 +4877,8 @@
 
             if (docKey === 'wireframe') {
                 renderWireframesContainer(targetArea);
+            } else if (docKey === 'prototype') {
+                renderPrototypeView(targetArea);
             } else if (docKey === 'console') {
                 renderConsoleView();
             } else {
@@ -5318,8 +5324,72 @@
             if (scrollArea) scrollArea.scrollTop = scrollArea.scrollHeight;
         }
 
+
+        // Render Interactive HTML Prototype in sandboxed iframe
+        function renderPrototypeView(targetArea) {
+            const htmlContent = generatedDocs['prototype'] || '';
+
+            if (!htmlContent) {
+                targetArea.innerHTML = `
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:16px; color:var(--text-secondary); padding:40px;">
+                        <i class="fa-solid fa-display" style="font-size:48px; opacity:0.3;"></i>
+                        <p style="font-size:16px; font-weight:600;">${t('프로토타입이 아직 생성되지 않았습니다.', 'Prototype has not been generated yet.')}</p>
+                        <p style="font-size:13px; opacity:0.6;">${t('분석을 완료하면 자동으로 생성됩니다.', 'It will be generated automatically once analysis is complete.')}</p>
+                    </div>`;
+                return;
+            }
+
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const blobUrl = URL.createObjectURL(blob);
+
+            targetArea.innerHTML = `
+                <div style="display:flex; flex-direction:column; height:100%; background:var(--bg-base);">
+                    <!-- Prototype toolbar -->
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:var(--bg-sidebar); border-bottom:1px solid var(--border-color); flex-shrink:0;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <i class="fa-solid fa-display" style="color:var(--accent-neon); font-size:15px;"></i>
+                            <span style="font-size:14px; font-weight:600; color:var(--text-primary);">${t('인터랙티브 HTML 프로토타입', 'Interactive HTML Prototype')}</span>
+                            <span style="font-size:12px; color:var(--text-muted); background:var(--bg-chat); padding:2px 8px; border-radius:12px; border:1px solid var(--border-color);">Live Preview</span>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button onclick="downloadPrototype()" style="display:flex; align-items:center; gap:6px; background:none; border:1px solid var(--border-color); color:var(--text-secondary); padding:6px 12px; border-radius:6px; font-size:13px; cursor:pointer; transition:all 0.15s;">
+                                <i class="fa-solid fa-download"></i> ${t('다운로드', 'Download')}
+                            </button>
+                            <button onclick="openPrototypeFullscreen()" style="display:flex; align-items:center; gap:6px; background:none; border:1px solid var(--border-color); color:var(--text-secondary); padding:6px 12px; border-radius:6px; font-size:13px; cursor:pointer; transition:all 0.15s;">
+                                <i class="fa-solid fa-up-right-and-down-left-from-center"></i> ${t('전체화면', 'Fullscreen')}
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Sandboxed iframe -->
+                    <iframe id="prototype-iframe"
+                        src="${blobUrl}"
+                        style="flex:1; width:100%; border:none; background:#fff;"
+                        sandbox="allow-scripts allow-same-origin allow-forms allow-modals"
+                        title="Interactive Prototype">
+                    </iframe>
+                </div>`;
+        }
+
+        function downloadPrototype() {
+            const htmlContent = generatedDocs['prototype'] || '';
+            if (!htmlContent) return;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `prototype_${(generatedDocs['title'] || 'pitl')}.html`;
+            a.click();
+        }
+
+        function openPrototypeFullscreen() {
+            const htmlContent = generatedDocs['prototype'] || '';
+            if (!htmlContent) return;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            window.open(URL.createObjectURL(blob), '_blank');
+        }
+
         // Render interactive ASCII wireframe container
         function renderWireframesContainer(targetArea) {
+
             targetArea.innerHTML = `
                 <div class="document-wrapper" style="padding: 20px;">
                     <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">${t("와이어프레임 구조 설계 3안", "Wireframe Structural Design (3 Options)")}</h2>
