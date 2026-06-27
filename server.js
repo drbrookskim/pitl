@@ -29,10 +29,10 @@ if (!fs.existsSync(outputsDir)) fs.mkdirSync(outputsDir);
 // Helper to call Gemini API
 let preferredModelIndex = 0;
 const modelsToTry = [
-    'gemini-3.5-flash',
-    'gemini-3.1-flash-lite',
     'gemini-2.5-flash',
-    'gemini-1.5-flash'
+    'gemini-2.0-flash',
+    'gemini-2.0-flash-lite',
+    'gemini-1.5-flash-latest'
 ];
 
 async function callGemini(systemInstruction, userPrompt, logCallback = null) {
@@ -41,7 +41,10 @@ async function callGemini(systemInstruction, userPrompt, logCallback = null) {
     for (let offset = 0; offset < modelsToTry.length; offset++) {
         const modelIdx = (preferredModelIndex + offset) % modelsToTry.length;
         const model = modelsToTry[modelIdx];
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+        // 2.5-flash requires v1beta; others use stable v1
+        const apiVersion = model.startsWith('gemini-2.5') ? 'v1beta' : 'v1';
+        const url = `https://generativelanguage.googleapis.com/${apiVersion}/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+
         
         const requestBody = {
             contents: [
