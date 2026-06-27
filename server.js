@@ -488,6 +488,7 @@ app.get('/api/history/load', (req, res) => {
         const prdPath = path.join(outputsDir, `prd_${title}_${date}.md`);
         const wireframePath = path.join(outputsDir, `wireframe_${title}_${date}.md`);
         const auditPath = path.join(outputsDir, `audit_${title}_${date}.md`);
+        const prototypePath = path.join(outputsDir, `prototype_${title}_${date}.html`);
 
         const displayTitle = title.replace(/_/g, ' ');
         const doc = {
@@ -497,7 +498,8 @@ app.get('/api/history/load', (req, res) => {
             'mece': fs.existsSync(mecePath) ? fs.readFileSync(mecePath, 'utf-8') : generateFallbackMECE(displayTitle, lang),
             'prd': fs.existsSync(prdPath) ? fs.readFileSync(prdPath, 'utf-8') : '',
             'wireframe': fs.existsSync(wireframePath) ? fs.readFileSync(wireframePath, 'utf-8') : '',
-            'audit': fs.existsSync(auditPath) ? fs.readFileSync(auditPath, 'utf-8') : ''
+            'audit': fs.existsSync(auditPath) ? fs.readFileSync(auditPath, 'utf-8') : '',
+            'prototype': fs.existsSync(prototypePath) ? fs.readFileSync(prototypePath, 'utf-8') : ''
         };
 
         // Populate active workspace files so editing and regeneration are supported instantly
