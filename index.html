@@ -3299,21 +3299,24 @@
             
             const existingIdx = clientHistory.findIndex(item => item.title === cleanTitle && item.date === keyDate);
             
-            const types = ['1pager', 'threec', 'mece', 'prd', 'wireframe', 'audit'];
+            const types = ['1pager', 'threec', 'mece', 'prd', 'wireframe', 'audit', 'prototype'];
             const historyItem = {
                 title: cleanTitle,
                 date: keyDate,
                 displayTitle: displayTitle,
                 displayDate: displayDate,
+                idea: docs.idea || displayTitle,
                 types: types,
                 docs: {
                     title: cleanTitle,
+                    idea: docs.idea || '',
                     '1pager': docs['1pager'] || '',
                     'threec': docs['threec'] || '',
                     'mece': docs['mece'] || '',
                     'prd': docs['prd'] || '',
                     'wireframe': docs['wireframe'] || '',
-                    'audit': docs['audit'] || ''
+                    'audit': docs['audit'] || '',
+                    'prototype': docs['prototype'] || ''
                 }
             };
             
@@ -3404,6 +3407,8 @@
                 
                 // STAGE 1: Product Strategist (1-pager)
                 logAgentClientSide('strategist', `입력하신 아이디어 '${idea}'를 바탕으로 1-pager 요약서 기획을 시작합니다.`);
+                // Store idea in resultDocs for history
+                const ideaText = idea;
                 const strategistPrompt = `
                 사용자의 상품 아이디어를 분석하여 '이 제품이 왜 필요한가'를 1장으로 정리하는 1-pager 요약서를 작성하라.
                 
@@ -3710,6 +3715,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 
                 const resultDocs = {
                     title: cleanTitle,
+                    idea: ideaText,
                     '1pager': onePagerContent,
                     'threec': threeCContent,
                     'mece': meceContent,
@@ -5588,17 +5594,22 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                         </div>
                     `;
                 } else {
-                    listContainer.innerHTML = data.map(item => `
+                    listContainer.innerHTML = data.map(item => {
+                        const ideaSummary = (item.idea || item.displayTitle || '').slice(0, 60);
+                        const ideaExtra = (item.idea || '').length > 60 ? '...' : '';
+                        return `
                         <div class="history-item-card" onclick="loadHistoryItem('${item.title}', '${item.date}')">
-                            <div class="history-card-title">
-                                <i class="fa-regular fa-file-lines" style="color: var(--accent-neon);"></i> ${item.displayTitle}
+                            <div class="history-card-title" style="user-select:text;" onclick="event.stopPropagation()">
+                                <i class="fa-regular fa-file-lines" style="color: var(--accent-neon); user-select:none;"></i> ${item.displayTitle}
                             </div>
+                            ${ideaSummary ? `<div style="font-size:11px; color:var(--text-secondary); margin:3px 0 4px 0; line-height:1.4; user-select:text; cursor:text; padding:2px 0;" onclick="event.stopPropagation()">${ideaSummary}${ideaExtra}</div>` : ''}
                             <div class="history-card-meta">
-                                <span>${item.displayDate}</span>
+                                <span style="user-select:text;" onclick="event.stopPropagation()">${item.displayDate}</span>
                                 <span class="landing-card-badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary);">${item.types.length} ${t("Files", "Files")}</span>
                             </div>
                         </div>
-                    `).join('');
+                        `;
+                    }).join('');
                 }
             }
             
@@ -5614,19 +5625,24 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                     `;
                 } else {
                     const recents = data.slice(0, 3);
-                    landingGrid.innerHTML = recents.map(item => `
+                    landingGrid.innerHTML = recents.map(item => {
+                        const ideaSummary = (item.idea || '').slice(0, 80);
+                        const ideaExtra = (item.idea || '').length > 80 ? '...' : '';
+                        return `
                         <div class="landing-history-card" onclick="loadHistoryItem('${item.title}', '${item.date}')">
                             <div class="landing-card-content">
-                                <div class="landing-card-title">
-                                    <i class="fa-regular fa-file-lines" style="color: var(--accent-neon); margin-right: 6px;"></i> ${item.displayTitle}
+                                <div class="landing-card-title" style="user-select:text;" onclick="event.stopPropagation()">
+                                    <i class="fa-regular fa-file-lines" style="color: var(--accent-neon); margin-right: 6px; user-select:none;"></i> ${item.displayTitle}
                                 </div>
+                                ${ideaSummary ? `<div style="font-size:12px; color:var(--text-secondary); margin:6px 0 4px; line-height:1.5; user-select:text; cursor:text;" onclick="event.stopPropagation()">${ideaSummary}${ideaExtra}</div>` : ''}
                                 <div class="landing-card-footer">
-                                    <span>${item.displayDate}</span>
+                                    <span style="user-select:text;" onclick="event.stopPropagation()">${item.displayDate}</span>
                                     <span class="landing-card-badge">${item.types.length}${t("개 파일 완료", " files completed")}</span>
                                 </div>
                             </div>
                         </div>
-                    `).join('');
+                        `;
+                    }).join('');
                 }
             }
             
