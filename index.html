@@ -2322,8 +2322,72 @@
         </div>
     </div>
 
+    <!-- ========================================================
+         PITL Custom Alert Modal (replaces all native alert())
+         ======================================================== -->
+    <div id="pitl-alert-overlay" style="
+        display:none; position:fixed; inset:0; z-index:99999;
+        background:rgba(0,0,0,0.65); backdrop-filter:blur(8px);
+        align-items:center; justify-content:center;
+        animation: fadeInOverlay 0.2s ease;">
+        <div id="pitl-alert-card" style="
+            position:relative; background:var(--bg-card, #131c2e);
+            border:1px solid rgba(255,255,255,0.1); border-radius:20px;
+            padding:36px 32px 28px; max-width:420px; width:90%;
+            box-shadow:0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+            animation: slideUpModal 0.25s cubic-bezier(0.34,1.56,0.64,1);">
+            <!-- Glow -->
+            <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+                width:60%;height:2px;background:linear-gradient(90deg,transparent,var(--accent-neon,#39ff14),transparent);
+                border-radius:999px;"></div>
+            <!-- Icon -->
+            <div id="pitl-alert-icon-wrap" style="
+                width:52px;height:52px;border-radius:14px;
+                display:flex;align-items:center;justify-content:center;
+                font-size:22px;margin:0 auto 18px;
+                background:rgba(57,255,20,0.1); color:var(--accent-neon,#39ff14);">
+                <i id="pitl-alert-icon" class="fa-solid fa-circle-info"></i>
+            </div>
+            <!-- Title -->
+            <h3 id="pitl-alert-title" style="
+                font-family:'Space Grotesk',sans-serif; font-size:17px;
+                font-weight:700; color:var(--text-primary,#e8eaf6);
+                text-align:center; margin:0 0 10px;"></h3>
+            <!-- Message -->
+            <p id="pitl-alert-message" style="
+                font-size:13.5px; color:var(--text-secondary,#8892aa);
+                text-align:center; line-height:1.7; margin:0 0 24px;
+                user-select:text; cursor:text;"></p>
+            <!-- Buttons -->
+            <div id="pitl-alert-buttons" style="display:flex;gap:10px;justify-content:center;"></div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeInOverlay { from{opacity:0} to{opacity:1} }
+        @keyframes slideUpModal  { from{opacity:0;transform:translateY(24px) scale(0.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+        .pitl-modal-btn {
+            flex:1; max-width:160px; height:40px; border-radius:10px; border:none;
+            font-size:13.5px; font-weight:600; cursor:pointer;
+            display:flex; align-items:center; justify-content:center; gap:6px;
+            transition:all 0.18s ease;
+        }
+        .pitl-modal-btn-primary {
+            background:var(--accent-neon,#39ff14); color:#0a0f1a;
+        }
+        .pitl-modal-btn-primary:hover { filter:brightness(1.12); transform:translateY(-1px); }
+        .pitl-modal-btn-secondary {
+            background:rgba(255,255,255,0.06); color:var(--text-secondary,#8892aa);
+            border:1px solid rgba(255,255,255,0.1);
+        }
+        .pitl-modal-btn-secondary:hover { background:rgba(255,255,255,0.1); color:var(--text-primary,#e8eaf6); }
+        .pitl-modal-btn-danger { background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); }
+        .pitl-modal-btn-danger:hover { background:rgba(239,68,68,0.25); }
+    </style>
+
     <!-- API Settings Modal Overlay -->
     <div id="pitl-settings-overlay" class="password-overlay-wrapper" style="display: none; z-index: 10000;">
+
         <div class="password-card" style="max-width: 450px;">
             <div class="password-card-glow"></div>
             <div class="password-header">
@@ -3074,6 +3138,54 @@
         // ───────────────────────────────────────────────────────────────
         //  모달 (설정 버튼용 보조 진입점) — 내부적으로 암호화 사용
         // ───────────────────────────────────────────────────────────────
+        // Custom Alert Modal (replaces native alert())
+        // Usage: pitlAlert(message, type='info'|'warn'|'error'|'success', title='')
+        // ───────────────────────────────────────────────────────────────
+        function pitlAlert(message, type = 'info', title = '') {
+            const overlay  = document.getElementById('pitl-alert-overlay');
+            const iconWrap = document.getElementById('pitl-alert-icon-wrap');
+            const icon     = document.getElementById('pitl-alert-icon');
+            const titleEl  = document.getElementById('pitl-alert-title');
+            const msgEl    = document.getElementById('pitl-alert-message');
+            const btnsEl   = document.getElementById('pitl-alert-buttons');
+            if (!overlay) { alert(message); return; }
+
+            const cfg = {
+                info:    { icon:'fa-circle-info',  color:'var(--accent-neon,#39ff14)',   bg:'rgba(57,255,20,0.10)',  defaultTitle:'안내' },
+                success: { icon:'fa-circle-check', color:'#10b981',                      bg:'rgba(16,185,129,0.12)', defaultTitle:'완료' },
+                warn:    { icon:'fa-triangle-exclamation', color:'#f59e0b',              bg:'rgba(245,158,11,0.12)', defaultTitle:'주의' },
+                error:   { icon:'fa-circle-xmark', color:'#ef4444',                     bg:'rgba(239,68,68,0.12)',  defaultTitle:'오류' },
+            };
+            const c = cfg[type] || cfg.info;
+
+            iconWrap.style.background = c.bg;
+            iconWrap.style.color      = c.color;
+            icon.className            = `fa-solid ${c.icon}`;
+            titleEl.textContent       = title || c.defaultTitle;
+            msgEl.innerHTML           = message;
+
+            btnsEl.innerHTML = `<button class="pitl-modal-btn pitl-modal-btn-primary" onclick="document.getElementById('pitl-alert-overlay').style.display='none'">
+                <i class="fa-solid fa-check"></i> 확인
+            </button>`;
+
+            overlay.style.display = 'flex';
+            // Re-trigger animation
+            const card = document.getElementById('pitl-alert-card');
+            card.style.animation = 'none';
+            card.offsetHeight; // reflow
+            card.style.animation = '';
+        }
+
+        // Close on overlay backdrop click
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('pitl-alert-overlay');
+            if (overlay) overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) overlay.style.display = 'none';
+            });
+        });
+
+        // ───────────────────────────────────────────────────────────────
+
         async function openSettingsModal() {
             const overlay = document.getElementById('pitl-settings-overlay');
             const input = document.getElementById('pitl-gemini-key-input');
@@ -3129,7 +3241,7 @@
                     closeSettingsModal();
                     _showApiKeyToast('🔒 API Key가 AES-GCM으로 암호화 저장되었습니다.');
                 } catch (e) {
-                    alert('암호화 저장 실패: ' + e.message);
+                    pitlAlert('암호화 저장 실패: ' + e.message, 'error', 'API Key 저장 오류');
                 }
             } else {
                 localStorage.removeItem(PITL_CRYPTO_KEY);
@@ -4390,7 +4502,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             const textarea = document.getElementById('idea-textarea');
             const idea = textarea.value.trim();
             if (!idea) {
-                alert("상품 기획안 아이디어를 입력해주세요.");
+                pitlAlert('상품 기획안 아이디어를 입력해주세요.', 'warn', '입력 필요');
                 return;
             }
 
@@ -4670,7 +4782,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             const textarea = document.getElementById('idea-textarea');
             const idea = textarea.value.trim();
             if (!idea) {
-                alert(t("상품 기획안 아이디어를 입력해주세요.", "Please enter your product planning idea."));
+                pitlAlert(t('상품 기획안 아이디어를 입력해주세요.', 'Please enter your product planning idea.'), 'warn', t('입력 필요', 'Input Required'));
                 return;
             }
 
@@ -4678,7 +4790,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             const geminiApiKey = await getDecryptedApiKey();
             if (geminiApiKey || window.location.hostname.includes('github.io')) {
                 if (!geminiApiKey) {
-                    alert(t("GitHub Pages 환경에서는 Gemini API Key가 필요합니다. 아래 'Gemini API Key 설정' 카드에 API Key를 먼저 저장해 주세요.", "In a GitHub Pages environment, a Gemini API Key is required. Please save your API Key in the 'Gemini API Settings' card below."));
+                    pitlAlert(t("GitHub Pages 환경에서는 <strong>Gemini API Key</strong>가 필요합니다.<br>아래 'Gemini API Key 설정' 카드에 API Key를 먼저 저장해 주세요.", "A <strong>Gemini API Key</strong> is required in GitHub Pages.<br>Please save your API Key first."), 'warn', t('API Key 필요', 'API Key Required'));
                     return;
                 }
                 startProductPlanningClientSide(idea, geminiApiKey);
@@ -5047,7 +5159,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             
             const content = document.getElementById('editor-textarea').value.trim();
             if (!content) {
-                alert("기획안 내용을 입력해주세요.");
+                pitlAlert('기획안 내용을 입력해주세요.', 'warn', '입력 필요');
                 return;
             }
             
@@ -5063,14 +5175,14 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             
             const resumeFrom = nextStageMap[docKey];
             if (!resumeFrom) {
-                alert("자동 수정을 진행할 수 없는 단계입니다.");
+                pitlAlert('자동 수정을 진행할 수 없는 단계입니다.', 'warn', '수정 불가');
                 return;
             }
             
             const geminiApiKey = await getDecryptedApiKey();
             if (geminiApiKey || window.location.hostname.includes('github.io')) {
                 if (!geminiApiKey) {
-                    alert("GitHub Pages 환경에서는 Gemini API Key가 필요합니다. 아래 'Gemini API Key 설정' 카드에 API Key를 먼저 저장해 주세요.");
+                    pitlAlert("GitHub Pages 환경에서는 <strong>Gemini API Key</strong>가 필요합니다.<br>아래 'Gemini API Key 설정' 카드에 API Key를 먼저 저장해 주세요.", 'warn', 'API Key 필요');
                     return;
                 }
                 
@@ -5121,7 +5233,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 startCascadingRegeneration(resumeFrom);
             })
             .catch(error => {
-                alert("저장 및 연쇄 수정 요청에 실패했습니다: " + error.message);
+                pitlAlert('저장 및 연쇄 수정 요청에 실패했습니다:<br><code style="font-size:11px;color:#f87171">' + error.message + '</code>', 'error', '수정 실패');
                 btnSave.disabled = false;
                 btnSave.innerHTML = `<i class="fa-solid fa-rotate"></i> 변경사항 적용 및 이후 단계 자동 수정`;
             });
@@ -5572,13 +5684,13 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             if (!generatedDocs) return;
             const md = generatedDocs[activeDoc];
             navigator.clipboard.writeText(md).then(() => {
-                alert(t(`[보안 필터링 완료] '${activeDoc}' 문서의 무결한 마크다운 원본 소스가 클립보드에 복사되었습니다.`, `[Security Filtering Complete] The unmodified markdown source of the '${activeDoc}' document has been copied to the clipboard.`));
+                pitlAlert(t(`'<strong>${activeDoc}</strong>' 문서의 마크다운 소스가 클립보드에 복사되었습니다.`, `Markdown source of '<strong>${activeDoc}</strong>' copied to clipboard.`), 'success', t('복사 완료', 'Copied'));
             });
         }
 
         function simulatePDFDownload() {
             if (!generatedDocs) return;
-            alert(t(`[Command Safety 검증 완료] pandoc --version 확인 완료. 파일명이 싱글쿼트(')로 이스케이프 처리된 'outputs/${generatedDocs.title}_wireframes.pdf' 파일로의 무결한 PDF 빌드가 완공되었습니다.`, `[Command Safety Verified] Checked pandoc --version. Complete PDF build exported successfully to 'outputs/${generatedDocs.title}_wireframes.pdf' (filename escaped with single quotes).`));
+            pitlAlert(t(`PDF 빌드가 완공되었습니다.<br><code style="font-size:11px;color:var(--accent-neon)">outputs/${generatedDocs.title}_wireframes.pdf</code>`, `PDF build complete.<br><code style="font-size:11px;color:var(--accent-neon)">outputs/${generatedDocs.title}_wireframes.pdf</code>`), 'success', t('PDF 내보내기 완료', 'PDF Export Complete'));
         }
 
         // Helper to render history cards (used by loadHistoryList)
@@ -5740,7 +5852,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 if (foundItem && foundItem.docs) {
                     setupLoadedSession(foundItem.docs, title, date);
                 } else {
-                    alert(t("히스토리 로드에 실패했습니다. 해당 항목을 브라우저 로컬 저장소에서 찾을 수 없습니다.", "Failed to load history. The item could not be found in the local storage."));
+                    pitlAlert(t('히스토리 로드에 실패했습니다.<br>해당 항목을 로컬 저장소에서 찾을 수 없습니다.', 'History load failed.<br>Item not found in local storage.'), 'error', t('히스토리 로드 실패', 'History Load Failed'));
                     if (btnSubmit) btnSubmit.disabled = false;
                     if (ideaTextarea) ideaTextarea.disabled = false;
                     resetToLanding();
@@ -5765,7 +5877,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 if (foundItem && foundItem.docs) {
                     setupLoadedSession(foundItem.docs, title, date);
                 } else {
-                    alert(t("히스토리 로드에 실패했습니다. 해당 항목을 브라우저 로컬 저장소에서 찾을 수 없습니다.", "Failed to load history. The item could not be found in the local storage."));
+                    pitlAlert(t('히스토리 로드에 실패했습니다.<br>해당 항목을 로컬 저장소에서 찾을 수 없습니다.', 'History load failed.<br>Item not found in local storage.'), 'error', t('히스토리 로드 실패', 'History Load Failed'));
                     if (btnSubmit) btnSubmit.disabled = false;
                     if (ideaTextarea) ideaTextarea.disabled = false;
                     resetToLanding();
@@ -5804,7 +5916,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             isEditing = false;
             switchDocument('1pager');
             
-            alert(t(`[히스토리 로드 완료] '${title.replace(/_/g, ' ')}' 기획서 세션을 성공적으로 로드했습니다. 기획안 수정 모드를 통해 연쇄 자동 갱신이 지원됩니다.`, `[History Load Complete] Successfully loaded the '${title.replace(/_/g, ' ')}' planning session. Dynamic cascade updates are supported via the edit mode.`));
+            pitlAlert(t(`'<strong>${title.replace(/_/g, ' ')}</strong>' 기획서 세션이 성공적으로 로드되었습니다.<br>기획안 수정 모드를 통해 연쇄 자동 갱신이 지원됩니다.`, `'<strong>${title.replace(/_/g, ' ')}</strong>' planning session loaded successfully.<br>Cascade auto-updates supported via edit mode.`), 'success', t('히스토리 로드 완료', 'History Loaded'));
         }
 
         // DYNAMIC THEME SWITCHER IMPLEMENTATION
