@@ -2901,8 +2901,12 @@
                 enMsg = 'Audit complete. Verified 100% consistency across all planning documents. [QA PASS] approved.';
             } else if (enMsg.includes('최종 배포 프로세스 진입. 파일명 보안 정제 적용 중...')) {
                 enMsg = 'Entering final deployment phase. Applying filename sanitation...';
+            } else if (enMsg.includes('브라우저 로컬 저장소(localStorage)에 마크다운 기획 서류 7종 영구 배포 완료.')) {
+                enMsg = 'Successfully deployed 7 markdown planning documents to localStorage.';
             } else if (enMsg.includes('브라우저 로컬 저장소(localStorage)에 마크다운 기획 서류 6종 영구 배포 완료.')) {
                 enMsg = 'Successfully deployed 6 markdown planning documents to localStorage.';
+            } else if (enMsg.includes('- 요약서, 3C 분석, MECE 분석, PRD, 와이어프레임, 검수서, 프로토타입 완료.')) {
+                enMsg = '- Completed Summary, 3C, MECE, PRD, Wireframes, Audit Report, and Prototype.';
             } else if (enMsg.includes('- 요약서, 3C 분석, MECE 분석, PRD, 와이어프레임, 검수서 완료.')) {
                 enMsg = '- Completed Summary, 3C, MECE, PRD, Wireframes, and Audit Report.';
             } else if (enMsg.includes('상품기획 자동화 부분 재기획 프로세스 가동 (Client-Side).')) {
@@ -2922,6 +2926,8 @@
                 enMsg = 'PRD requirements changes verified. Re-drafting ASCII wireframes for Type A/B/C layouts.';
             } else if (enMsg.includes('Type A, B, C 3가지 상이한 가치 지향 레이아웃 ASCII 제도 완료. 와이어프레임 문서 갱신 완료.')) {
                 enMsg = 'Completed ASCII drafts for Type A/B/C layouts. Wireframe document updated.';
+            } else if (enMsg.includes('브라우저 로컬 저장소(localStorage)에 갱신된 기획 서류 7종 동기화 완료.')) {
+                enMsg = 'Synchronized 7 updated markdown planning documents to localStorage.';
             } else if (enMsg.includes('브라우저 로컬 저장소(localStorage)에 갱신된 기획 서류 6종 동기화 완료.')) {
                 enMsg = 'Synchronized 6 updated markdown planning documents to localStorage.';
             } else if (enMsg.includes('기존 1-pager 요약, 3C 환경분석 및 MECE 구조분석 반영본 로딩 완료.')) {
@@ -3252,7 +3258,9 @@
         }
 
         // --- CLIENT-SIDE DIRECT GEMINI ORCHESTRATION ---
-        async function callGeminiClientSide(apiKey, systemInstruction, userPrompt, logCallback = null) {
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        async function callGeminiClientSide(apiKey, systemInstruction, userPrompt, logCallback = null, customMaxTokens = 8192) {
             const currentLang = localStorage.getItem('pitl_lang') || 'ko';
             let finalPrompt = userPrompt;
             if (currentLang === 'en') {
@@ -3284,40 +3292,61 @@
                     ],
                     generationConfig: {
                         temperature: 0.2,
-                        maxOutputTokens: 8192
+                        maxOutputTokens: customMaxTokens
                     }
                 };
                 
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(requestBody)
-                    });
-                    
-                    if (!response.ok) {
-                        const errData = await response.json().catch(() => ({}));
-                        throw new Error(errData.error?.message || `HTTP error! status: ${response.status}`);
+                let retries = 3;
+                let delay = 3000; // Start with 3s delay
+                
+                while (retries > 0) {
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(requestBody)
+                        });
+                        
+                        if (response.status === 429) {
+                            throw new Error("QUOTA_EXCEEDED");
+                        }
+                        
+                        if (!response.ok) {
+                            const errData = await response.json().catch(() => ({}));
+                            const errMsg = errData.error?.message || `HTTP error! status: ${response.status}`;
+                            if (errMsg.toLowerCase().includes('quota') || errMsg.toLowerCase().includes('rate limit') || errMsg.toLowerCase().includes('exceeded')) {
+                                throw new Error("QUOTA_EXCEEDED");
+                            }
+                            throw new Error(errMsg);
+                        }
+                        
+                        const data = await response.json();
+                        const candidate = data.candidates?.[0];
+                        const text = candidate?.content?.parts?.[0]?.text;
+                        if (!text) {
+                            throw new Error("No response text from Gemini API");
+                        }
+                        window.pitlPreferredModelIndex = modelIdx;
+                        return text;
+                    } catch (error) {
+                        if (error.message === "QUOTA_EXCEEDED" && retries > 1) {
+                            if (logCallback) {
+                                logCallback(t(`[⚠️ 할당량 초과 감지] API 호출 제한에 도달했습니다. ${delay/1000}초 후 자동 재시도합니다... (남은 재시도: ${retries - 1}회)`, `[⚠️ Quota Exceeded] Rate limit reached. Auto retrying in ${delay/1000}s... (Retries left: ${retries - 1})`));
+                            }
+                            await sleep(delay);
+                            retries--;
+                            delay *= 2; // Exponential backoff
+                            continue;
+                        }
+                        
+                        console.warn(`[Model Fallback Retry] ${model} retry error: ${error.message}`);
+                        lastError = error;
+                        break;
                     }
-                    
-                    const data = await response.json();
-                    const candidate = data.candidates?.[0];
-                    const text = candidate?.content?.parts?.[0]?.text;
-                    if (!text) {
-                        throw new Error("No response text from Gemini API");
-                    }
-                    window.pitlPreferredModelIndex = modelIdx;
-                    return text;
-                } catch (error) {
-                    console.warn(`[Model Fallback] ${model} failed: ${error.message}`);
-                    if (logCallback) {
-                        logCallback(t(`[부하/에러 감지] ${model} 모델 호출 실패. 다음 대체 모델로 우회를 진행합니다...`, `[Load/Error Detected] Call to model ${model} failed. Attempting bypass to the next alternative model...`));
-                    }
-                    lastError = error;
                 }
             }
             
-            throw new Error(t(`모든 모델 호출에 실패했습니다. 최종 에러: ${lastError.message}`, `All model calls failed. Final error: ${lastError.message}`));
+            throw new Error(t(`모든 모델 호출 및 재시도에 실패했습니다. 최종 에러: ${lastError.message}`, `All model calls and retries failed. Final error: ${lastError.message}`));
         }
 
         function logAgentClientSide(agent, msg) {
@@ -3574,6 +3603,8 @@
                 );
                 logAgentClientSide('strategist', `비즈니스 문제 정의 및 정량 목표 수립 성공. 1-pager 요약 기획안 적재 완료.`);
                 
+                await sleep(1500); // Prevent API Rate Limits
+
                 // STAGE 1.1: 3C
                 logAgentClientSide('strategist', `3C 프레임워크(Customer, Competitor, Company)를 활용한 입체적 환경 분석을 시작합니다.`);
                 const threeCPrompt = `
@@ -3634,6 +3665,8 @@
                     (msg) => logAgentClientSide('strategist', msg)
                 );
                 logAgentClientSide('strategist', `3C 프레임워크 기반 환경 분석서 적재 완료.`);
+                
+                await sleep(1500); // Prevent API Rate Limits
                 
                 // STAGE 1.2: MECE
                 logAgentClientSide('strategist', `맥킨지 MECE 프레임워크 기반의 구조적 전략 기획 분석을 개시합니다.`);
@@ -3698,6 +3731,8 @@
                 );
                 logAgentClientSide('strategist', `맥킨지 MECE 전략 분석 보고서 적재 완료.`);
                 logAgentClientSide('strategist', `→ [SendMessage to prd-analyst] 기획 사양 및 기능 도출 협업 요청.`);
+                
+                await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 2: PRD Analyst (PRD)
                 logAgentClientSide('analyst', `1-pager 기획안을 바탕으로 상세 개발 요구사항(PRD) 및 예외 정책 수립을 전개합니다.`);
@@ -3732,6 +3767,8 @@
                 logAgentClientSide('analyst', `REQ 사양 식별 완료 및 예외/보안 정책 수립 완료. PRD 명세서 적재 완료.`);
                 logAgentClientSide('analyst', `→ [SendMessage to ux-architect] UX 레이아웃 스케치 협업 요청.`);
 
+                await sleep(1500); // Prevent API Rate Limits
+
                 // STAGE 3: UX Architect (ASCII Wireframes)
                 logAgentClientSide('architect', `PRD 요구사항을 확인했습니다. 공통 CTA 및 정보 우선순위에 부합하는 Type A/B/C 3가지 시안의 ASCII 와이어프레임을 그립니다.`);
                 const uxPrompt = `
@@ -3751,6 +3788,8 @@
                 );
                 logAgentClientSide('architect', `Type A, B, C 3가지 상이한 가치 지향 레이아웃 ASCII 제도 완료. 와이어프레임 문서 적재 완료.`);
                 logAgentClientSide('architect', `→ [SendMessage to product-reviewer] 삼각 정합성 크로스 검수 의뢰.`);
+
+                await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 4: Product Reviewer (QA Audit)
                 logAgentClientSide('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`);
@@ -3782,6 +3821,8 @@
                 );
                 logAgentClientSide('reviewer', `검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`);
 
+                await sleep(1500); // Prevent API Rate Limits
+
                 // STAGE 5: Prototype Generator (Interactive HTML)
                 logAgentClientSide('architect', `QA 검수 완료. PRD 및 와이어프레임을 분석하여 인터랙티브 HTML 프로토타입을 생성합니다...`);
 
@@ -3811,26 +3852,14 @@ ${uxTrimmed}
 
 IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no code fences, no explanation text before or after.`;
 
-                    // Direct fetch with higher token limit for HTML output
-                    const protoApiVer = 'v1beta';
-                    const protoModel = 'gemini-2.5-flash';
-                    const protoUrl = `https://generativelanguage.googleapis.com/${protoApiVer}/models/${protoModel}:generateContent?key=${apiKey}`;
-                    const protoResp = await fetch(protoUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ role: 'user', parts: [{ text: prototypePromptClient }] }],
-                            generationConfig: { temperature: 0.4, maxOutputTokens: 16384 }
-                        })
-                    });
-
-                    if (!protoResp.ok) {
-                        const errData = await protoResp.json().catch(() => ({}));
-                        throw new Error(errData.error?.message || `HTTP ${protoResp.status}`);
-                    }
-
-                    const protoData = await protoResp.json();
-                    let rawProto = protoData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                    // Use callGeminiClientSide with customMaxTokens: 16384 for long HTML generation
+                    let rawProto = await callGeminiClientSide(
+                        apiKey,
+                        "당신은 PRD와 와이어프레임을 실제 동작하는 인터랙티브 HTML 프로토타입으로 변환하는 프론트엔드 개발 에이전트입니다.",
+                        prototypePromptClient,
+                        (msg) => logAgentClientSide('architect', msg),
+                        16384
+                    );
 
                     // Strip everything before <!DOCTYPE (handles any prefix/fences)
                     const doctypeIdx = rawProto.search(/<!doctype/i);
@@ -3869,8 +3898,8 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 
                 saveClientHistoryLocally(resultDocs);
                 
-                logAgentClientSide('system', `브라우저 로컬 저장소(localStorage)에 마크다운 기획 서류 6종 영구 배포 완료.`);
-                logAgentClientSide('system', `- 요약서, 3C 분석, MECE 분석, PRD, 와이어프레임, 검수서 완료.`);
+                logAgentClientSide('system', `브라우저 로컬 저장소(localStorage)에 마크다운 기획 서류 7종 영구 배포 완료.`);
+                logAgentClientSide('system', `- 요약서, 3C 분석, MECE 분석, PRD, 와이어프레임, 검수서, 프로토타입 완료.`);
                 
                 completeAllPipelineSteps();
                 
@@ -4061,6 +4090,8 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                     logAgentClientSide('architect', `기존 와이어프레임 문서 적재 상태 로딩 완료. 정합성이 유지됩니다.`);
                 }
 
+                await sleep(1500); // Prevent API Rate Limits
+
                 // STAGE 4: Product Reviewer (QA Audit)
                 logAgentClientSide('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`);
                 const reviewerPrompt = `
@@ -4092,9 +4123,66 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 generatedDocs['audit'] = auditContent;
                 logAgentClientSide('reviewer', `검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`);
 
+                await sleep(1500); // Prevent API Rate Limits
+
+                // STAGE 5: Prototype Generator (Interactive HTML)
+                logAgentClientSide('architect', `QA 검수 완료. PRD 및 와이어프레임을 분석하여 인터랙티브 HTML 프로토타입을 다시 생성합니다...`);
+                
+                let prototypeContent = '';
+                try {
+                    const prdTrimmed = prdContent.slice(0, 4000);
+                    const uxTrimmed = uxContent.slice(0, 3000);
+                    
+                    const prototypePromptClient = `You are a senior frontend developer. Based on the product requirements and wireframe below, generate a complete, interactive HTML prototype.
+                    
+[Product Requirements (PRD Summary)]
+${prdTrimmed}
+
+[Wireframe Layout (Type A reference)]
+${uxTrimmed}
+
+[Requirements]
+- Single complete self-contained HTML file (CDN allowed e.g. fonts.googleapis.com)
+- Inline CSS in <style> tag, inline JavaScript in <script> tag
+- Modern polished UI: CSS variables, gradients, smooth hover/click animations
+- Interactive: tab switching, modals, form inputs, button click effects
+- Responsive layout (mobile + desktop breakpoints)
+- Realistic Korean dummy data and text throughout
+- Show all key PRD features visually on screen
+- Include navigation header, main content sections, and footer
+
+IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no code fences, no explanation text before or after.`;
+                    
+                    let rawProto = await callGeminiClientSide(
+                        apiKey,
+                        "당신은 PRD와 와이어프레임을 실제 동작하는 인터랙티브 HTML 프로토타입으로 변환하는 프론트엔드 개발 에이전트입니다.",
+                        prototypePromptClient,
+                        (msg) => logAgentClientSide('architect', msg),
+                        16384
+                    );
+                    
+                    const doctypeIdx = rawProto.search(/<!doctype/i);
+                    if (doctypeIdx > 0) rawProto = rawProto.slice(doctypeIdx);
+                    rawProto = rawProto.replace(/```\s*$/i, '').trim();
+                    
+                    if (rawProto && rawProto.toLowerCase().includes('<!doctype')) {
+                        prototypeContent = rawProto;
+                        generatedDocs['prototype'] = prototypeContent;
+                        logAgentClientSide('architect', `인터랙티브 HTML 프로토타입 갱신 완료.`);
+                    } else {
+                        console.warn('[Prototype] Unexpected output:', rawProto.slice(0, 300));
+                        prototypeContent = rawProto;
+                        generatedDocs['prototype'] = prototypeContent;
+                        logAgentClientSide('architect', `프로토타입 갱신 완료 (HTML 추출 중...).`);
+                    }
+                } catch (protoErr) {
+                    console.error('[Prototype] Generation failed:', protoErr);
+                    logAgentClientSide('architect', `[⚠️ 프로토타입 갱신 실패] 에러: ${protoErr.message}`);
+                }
+
                 saveClientHistoryLocally(generatedDocs);
 
-                logAgentClientSide('system', `브라우저 로컬 저장소(localStorage)에 갱신된 기획 서류 6종 동기화 완료.`);
+                logAgentClientSide('system', `브라우저 로컬 저장소(localStorage)에 갱신된 기획 서류 7종 동기화 완료.`);
                 
                 // Unlock
                 document.getElementById('btn-submit-planning').disabled = false;
