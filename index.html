@@ -2461,8 +2461,9 @@
                 <button class="btn-minimal theme-toggle-btn" onclick="toggleTheme()" title="테마 변경">
                     <i class="fa-solid fa-moon"></i>
                 </button>
-                <button class="btn-minimal" onclick="openSettingsModal()" title="API 설정" data-i18n="landing_nav_api_settings">
+                <button class="btn-minimal" id="btn-api-settings-nav" onclick="openSettingsModal()" title="API 설정" data-i18n="landing_nav_api_settings">
                     <i class="fa-solid fa-key"></i> API 설정
+                    <span id="proxy-badge-nav" style="display:none;margin-left:4px;background:#10b981;color:#fff;font-size:9px;padding:1px 5px;border-radius:8px;vertical-align:middle;">로컬</span>
                 </button>
                 <button class="btn-minimal" onclick="goToWorkspaceDashboard()">
                     <i class="fa-solid fa-desktop"></i> 워크스페이스 대시보드
@@ -2548,8 +2549,9 @@
                 <button class="theme-toggle-btn btn-quick-action" onclick="toggleTheme()" title="테마 변경">
                     <i class="fa-solid fa-moon"></i>
                 </button>
-                <button class="btn-quick-action" onclick="openSettingsModal()" title="API 설정">
+                <button class="btn-quick-action" id="btn-api-settings-sidebar" onclick="openSettingsModal()" title="API 설정">
                     <i class="fa-solid fa-key"></i>
+                    <span id="proxy-badge-sidebar" style="display:none;position:absolute;top:-3px;right:-3px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--bg-primary,#0a0a0f);"></span>
                 </button>
             </div>
             
@@ -3207,6 +3209,25 @@
                 input.type = 'password';
                 input.focus();
             }
+            // 로컬 프록시 상태 안내 배너
+            let proxyInfo = document.getElementById('pitl-proxy-status-banner');
+            if (!proxyInfo) {
+                proxyInfo = document.createElement('div');
+                proxyInfo.id = 'pitl-proxy-status-banner';
+                proxyInfo.style.cssText = 'margin:12px 0 0;padding:10px 14px;border-radius:8px;font-size:12px;line-height:1.5;display:none;';
+                const form = overlay ? overlay.querySelector('.password-card') || overlay : overlay;
+                const saveBtn = overlay ? overlay.querySelector('button') : null;
+                if (saveBtn) saveBtn.parentNode.insertBefore(proxyInfo, saveBtn);
+            }
+            if (window.PITL_USE_LOCAL_PROXY) {
+                proxyInfo.style.display = 'block';
+                proxyInfo.style.background = 'rgba(16,185,129,0.12)';
+                proxyInfo.style.border = '1px solid rgba(16,185,129,0.35)';
+                proxyInfo.style.color = '#10b981';
+                proxyInfo.innerHTML = '<i class="fa-solid fa-circle-check"></i> <strong>로컬 서버 연결됨</strong> — API Key 불필요<br><span style="color:var(--text-secondary,#888);font-size:11px;">서버의 .env GEMINI_API_KEY가 자동으로 사용됩니다.</span>';
+            } else {
+                proxyInfo.style.display = 'none';
+            }
         }
 
         function closeSettingsModal() {
@@ -3261,6 +3282,31 @@
         const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
         async function callGeminiClientSide(apiKey, systemInstruction, userPrompt, logCallback = null, customMaxTokens = 8192) {
+            // ── Local Proxy Mode (OAuth-like) ──────────────────────────────────
+            // localhost에서 실행 중이면 서버 프록시를 통해 API Key 없이 호출
+            if (window.PITL_USE_LOCAL_PROXY) {
+                const currentLangP = localStorage.getItem('pitl_lang') || 'ko';
+                let finalPromptP = userPrompt;
+                if (currentLangP === 'en') finalPromptP += '\n\nCRITICAL: You must write the entire output/content/report in English. Do not write any Korean.';
+                try {
+                    const res = await fetch('/api/proxy-gemini', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ systemInstruction, userPrompt: finalPromptP, maxTokens: customMaxTokens })
+                    });
+                    if (!res.ok) {
+                        const errData = await res.json().catch(() => ({}));
+                        throw new Error(errData.error || `Proxy error: ${res.status}`);
+                    }
+                    const data = await res.json();
+                    if (!data.text) throw new Error('프록시 서버에서 응답 텍스트를 받지 못했습니다.');
+                    return data.text;
+                } catch (proxyErr) {
+                    if (logCallback) logCallback(`[로컬 프록시 오류] ${proxyErr.message}`);
+                    throw proxyErr;
+                }
+            }
+            // ── Direct Gemini Call (GitHub Pages / API Key mode) ────────────────
             const currentLang = localStorage.getItem('pitl_lang') || 'ko';
             let finalPrompt = userPrompt;
             if (currentLang === 'en') {
@@ -4561,6 +4607,36 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
         animateStars();
         loadHistoryList();
         _initApiKeyCard();  // API 키 카드 상태 초기화 + 구버전 키 자동 마이그레이션
+
+        // ── Local Proxy Detection (OAuth-like) ─────────────────────────────────
+        // localhost:4000/api/proxy-status 를 조용히 호출하여 로컬 서버 유무 감지
+        window.PITL_USE_LOCAL_PROXY = false;
+        async function detectLocalProxy() {
+            // GitHub Pages 등 외부 도메인에서는 시도하지 않음
+            if (!window.location.hostname.match(/^(localhost|127\.0\.0\.1)$/)) return;
+            try {
+                const res = await fetch('http://localhost:4000/api/proxy-status', { signal: AbortSignal.timeout(2000) });
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data.ok && data.proxyAvailable) {
+                    window.PITL_USE_LOCAL_PROXY = true;
+                    console.info('[PITL Proxy] 로컬 서버 감지 완료 — API Key 없이 서버 프록시 모드로 동작합니다.');
+                    // 뱃지 표시
+                    const n = document.getElementById('proxy-badge-nav');
+                    const s = document.getElementById('proxy-badge-sidebar');
+                    if (n) n.style.display = 'inline';
+                    if (s) s.style.display = 'block';
+                    // API 설정 버튼 tooltip 갱신
+                    const btnNav = document.getElementById('btn-api-settings-nav');
+                    if (btnNav) btnNav.title = '🟢 로컬 서버 연결됨 (API Key 불필요)';
+                    const btnSide = document.getElementById('btn-api-settings-sidebar');
+                    if (btnSide) btnSide.title = '🟢 로컬 서버 연결됨 (API Key 불필요)';
+                }
+            } catch (e) {
+                // 서버 없음 — 정상 흐름 (GitHub Pages 등)
+            }
+        }
+        detectLocalProxy();
         
         // Timeout to ensure DOM finishes rendering
         setTimeout(init3dTiltEffects, 200);
@@ -4899,6 +4975,12 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             const idea = textarea.value.trim();
             if (!idea) {
                 pitlAlert(t('상품 기획안 아이디어를 입력해주세요.', 'Please enter your product planning idea.'), 'warn', t('입력 필요', 'Input Required'));
+                return;
+            }
+
+            // ── 로컬 프록시 모드: API Key 없이도 바로 진행 ──────────────────────
+            if (window.PITL_USE_LOCAL_PROXY) {
+                startProductPlanningClientSide(idea, null);
                 return;
             }
 
@@ -5295,6 +5377,17 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 return;
             }
             
+            // 로컬 프록시 모드
+            if (window.PITL_USE_LOCAL_PROXY) {
+                generatedDocs[docKey] = content;
+                isEditing = false;
+                const btnEdit2 = document.getElementById('btn-edit');
+                if (btnEdit2) { btnEdit2.innerHTML = '<i class="fa-regular fa-pen-to-square"></i> 기획 수정'; btnEdit2.classList.remove('active'); }
+                saveClientHistoryLocally(generatedDocs);
+                startCascadingRegenerationClientSide(resumeFrom, null);
+                return;
+            }
+
             const geminiApiKey = await getDecryptedApiKey();
             if (geminiApiKey || window.location.hostname.includes('github.io')) {
                 if (!geminiApiKey) {
@@ -5886,7 +5979,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
         // Planning history fetching
         async function loadHistoryList() {
             const geminiApiKey = await getDecryptedApiKey();
-            if (geminiApiKey || window.location.hostname.includes('github.io')) {
+            if (window.PITL_USE_LOCAL_PROXY || geminiApiKey || window.location.hostname.includes('github.io')) {
                 let clientHistory = localStorage.getItem('pitl_client_history');
                 clientHistory = clientHistory ? JSON.parse(clientHistory) : [];
                 renderHistoryLists(clientHistory);
@@ -5967,7 +6060,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             }
 
             const geminiApiKey = await getDecryptedApiKey();
-            if (geminiApiKey || window.location.hostname.includes('github.io')) {
+            if (window.PITL_USE_LOCAL_PROXY || geminiApiKey || window.location.hostname.includes('github.io')) {
                 let clientHistory = localStorage.getItem('pitl_client_history');
                 clientHistory = clientHistory ? JSON.parse(clientHistory) : [];
                 const foundItem = clientHistory.find(item => item.title === title && item.date === date);

@@ -966,7 +966,53 @@ app.get('/api/generate-stream', async (req, res) => {
     }
 });
 
+// ── Localhost-only security guard middleware ─────────────────────────────────
+function localOnlyGuard(req, res, next) {
+    const ip = req.ip || req.connection.remoteAddress || '';
+    const isLocal = ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1' || ip === 'localhost';
+    if (!isLocal) {
+        return res.status(403).json({ error: '로컬 접근만 허용됩니다.' });
+    }
+    next();
+}
+
+// ── GET /api/proxy-status ─────────────────────────────────────────────────────
+// 브라우저가 로컬 서버 실행 여부 및 API Key 보유 여부를 감지하는 엔드포인트
+app.get('/api/proxy-status', localOnlyGuard, (req, res) => {
+    const hasKey = !!(GEMINI_API_KEY && GEMINI_API_KEY.trim().length > 10);
+    res.json({
+        ok: true,
+        proxyAvailable: hasKey,
+        port: PORT,
+        message: hasKey
+            ? '✅ 로컬 서버 실행 중 — API Key 불필요 (서버에서 자동 처리)'
+            : '⚠️ 서버 실행 중이나 .env에 GEMINI_API_KEY가 없습니다.'
+    });
+});
+
+// ── POST /api/proxy-gemini ────────────────────────────────────────────────────
+// 클라이언트 대신 서버의 .env API Key로 Gemini를 호출하는 투명 프록시
+app.post('/api/proxy-gemini', localOnlyGuard, async (req, res) => {
+    if (!GEMINI_API_KEY || GEMINI_API_KEY.trim().length < 10) {
+        return res.status(503).json({ error: '.env에 GEMINI_API_KEY가 설정되지 않았습니다.' });
+    }
+
+    const { systemInstruction, userPrompt, maxTokens } = req.body;
+    if (!systemInstruction || !userPrompt) {
+        return res.status(400).json({ error: 'systemInstruction 과 userPrompt 가 필요합니다.' });
+    }
+
+    try {
+        const text = await callGemini(systemInstruction, userPrompt);
+        res.json({ ok: true, text });
+    } catch (err) {
+        const msg = err.response?.data?.error?.message || err.message;
+        res.status(500).json({ ok: false, error: msg });
+    }
+});
+
 // Start Server
 app.listen(PORT, () => {
     console.log(`[PITL Engine] Server is running on http://localhost:${PORT}`);
+    console.log(`[PITL Proxy]  Local proxy active → /api/proxy-status  /api/proxy-gemini`);
 });
