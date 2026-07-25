@@ -3676,7 +3676,28 @@
             localStorage.setItem('pitl_client_history', JSON.stringify(clientHistory));
         }
 
-        async function startProductPlanningClientSide(idea, apiKey) {
+        // Helper to update animated pipeline progress bar & percentage globally
+        window.updatePipelineProgress = function(percent, label) {
+            try {
+                const fillEl = document.getElementById('pipeline-progress-fill');
+                const percentEl = document.getElementById('progress-percent-label');
+                const labelEl = document.getElementById('progress-stage-label');
+                
+                if (fillEl) fillEl.style.width = percent + '%';
+                if (percentEl) percentEl.innerText = percent + '%';
+                if (labelEl && label) labelEl.innerText = label;
+            } catch (e) {
+                console.warn('[Progress] Update failed:', e);
+            }
+        };
+
+        function safeUpdateProgress(percent, label) {
+            if (typeof window.updatePipelineProgress === 'function') {
+                window.updatePipelineProgress(percent, label);
+            }
+        }
+
+        async function startProductPlanningClientSide(apiKey, idea) {
             // Reset workspace states
             generatedDocs = null;
             currentConsoleLogs = [];
@@ -3696,8 +3717,8 @@
 
             // Disable prompt submission button on landing
             document.getElementById('btn-submit-planning').disabled = true;
-            const textarea = document.getElementById('idea-textarea');
-            textarea.disabled = true;
+            const textarea = document.getElementById('user-idea-input') || document.getElementById('idea-textarea');
+            if (textarea) textarea.disabled = true;
 
             // Lock all browser tabs initially
             document.querySelectorAll('.chrome-tab').forEach(el => {
@@ -3705,8 +3726,10 @@
                 el.classList.remove('active');
             });
             const navFirst = document.getElementById('nav-1pager');
-            navFirst.classList.remove('disabled');
-            navFirst.classList.add('active');
+            if (navFirst) {
+                navFirst.classList.remove('disabled');
+                navFirst.classList.add('active');
+            }
 
             document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/strategist-1pager';
 
@@ -3715,46 +3738,36 @@
             if (chatContainer) {
                 chatContainer.innerHTML = `
                     <div class="system-notification">
-                        <i class="fa-solid fa-play"></i> 기획 스트리밍 프로세스 시작 (Client Mode API 호출)
+                        <i class="fa-solid fa-play"></i> 기획 프로세스 개시 (Client Mode API)
                     </div>
                 `;
             }
 
-            // Inject terminal shell container with animated Progress Bar in Right Panel Computer viewer
+            // Inject Centered Animated Progress Bar Container in Right Panel (NO TERMINAL BOX AT ALL)
             const targetArea = document.getElementById('viewer-main-content');
             targetArea.innerHTML = `
-                <div class="document-wrapper" style="padding: 20px;">
-                    <!-- Animated Progress Bar Container -->
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span class="status-dot-pulse"></span>
-                                <span id="progress-stage-label" style="font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif; font-size: 14px; font-weight: 700; color: var(--text-primary);">
-                                    기획 프로세스 개시 중...
-                                </span>
+                <div class="document-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 520px; padding: 40px 20px; text-align: center;">
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 36px 40px; width: 100%; max-width: 520px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                        <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-neon); font-size: 24px;">
+                            <i class="fa-solid fa-wand-magic-sparkles fa-spin" style="--fa-animation-duration: 3s;"></i>
+                        </div>
+                        
+                        <div>
+                            <h3 id="progress-stage-label" style="font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif; font-size: 17px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                                ${t("기획 프로세스 개시 중...", "Initializing planning pipeline...")}
+                            </h3>
+                            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+                                ${t("전문 에이전트 4팀이 전략 요약서, PRD, 와이어프레임을 생성하고 있습니다.", "4 AI Agent teams are building your strategy, PRD, and wireframes.")}
+                            </p>
+                        </div>
+
+                        <div style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700;">
+                                <span style="color: var(--text-secondary);">${t("전체 진행률", "Overall Progress")}</span>
+                                <span id="progress-percent-label" style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 800; color: var(--accent-neon);">0%</span>
                             </div>
-                            <span id="progress-percent-label" style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 800; color: var(--accent-neon); letter-spacing: -0.5px;">
-                                0%
-                            </span>
-                        </div>
-                        <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; position: relative;">
-                            <div id="pipeline-progress-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-neon), var(--accent-blue)); border-radius: 4px; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="terminal-container">
-                        <div class="terminal-header">
-                            <div class="terminal-buttons">
-                                <div class="t-btn tb-red"></div>
-                                <div class="t-btn tb-yellow"></div>
-                                <div class="t-btn tb-green"></div>
-                            </div>
-                            <div class="terminal-title">bash - pitl-orchestrator-client.sh</div>
-                            <div></div>
-                        </div>
-                        <div class="terminal-body" id="live-console-target" style="max-height: 440px; overflow-y: auto;">
-                            <div class="console-log-area" id="console-logs-container">
-                                <!-- Streamed raw terminal logs go here -->
+                            <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; position: relative;">
+                                <div id="pipeline-progress-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-neon), var(--accent-blue)); border-radius: 6px; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
                             </div>
                         </div>
                     </div>
@@ -3762,6 +3775,7 @@
             `;
 
             try {
+                safeUpdateProgress(10, t("1/5. 비즈니스 1-Pager 요약서 수립 중...", "1/5. Drafting 1-Pager strategy..."));
                 logAgentClientSide('system', `상품기획 자동화 프로세스 가동 (Client-Side Direct Mode 감지됨).`);
                 logAgentClientSide('system', `에이전트 4인 팀 및 오케스트레이션 스폰 완료 (strategist, analyst, architect, reviewer).`);
                 
@@ -3803,7 +3817,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 1.1: 3C
-                updatePipelineProgress(25, t("2/5. 3C 환경 분석(Customer, Competitor, Company) 진행 중...", "2/5. Analyzing 3C environment..."));
+                safeUpdateProgress(25, t("2/5. 3C 환경 분석(Customer, Competitor, Company) 진행 중...", "2/5. Analyzing 3C environment..."));
                 logAgentClientSide('strategist', `3C 프레임워크(Customer, Competitor, Company)를 활용한 입체적 환경 분석을 시작합니다.`);
                 const threeCPrompt = `
                 다음 상품 아이디어를 기반으로 오마에 겐이치의 3C 전략 삼각형(Customer, Competitor, Company)을 적용하여 심층적이고 입체적인 환경 분석 보고서를 작성하라.
@@ -3867,7 +3881,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 1.1.1: SWOT
-                updatePipelineProgress(35, t("2/5. SWOT 분석 및 교차 전략 매트릭스 도출 중...", "2/5. Formulating SWOT matrix..."));
+                safeUpdateProgress(35, t("2/5. SWOT 분석 및 교차 전략 매트릭스 도출 중...", "2/5. Formulating SWOT matrix..."));
                 logAgentClientSide('strategist', `SWOT(강점·약점·기회·위협) 전략 도출 및 교차 매트릭스 수립을 시작합니다.`);
                 const swotPrompt = `
                 다음 상품 아이디어를 기반으로 입체적인 SWOT 분석 및 교차(Cross) 전략 매트릭스 보고서를 작성하라.
@@ -3914,7 +3928,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 1.1.2: STP
-                updatePipelineProgress(45, t("2/5. STP 타깃 세분화 및 포지셔닝 명세 중...", "2/5. Setting STP positioning..."));
+                safeUpdateProgress(45, t("2/5. STP 타깃 세분화 및 포지셔닝 명세 중...", "2/5. Setting STP positioning..."));
                 logAgentClientSide('strategist', `STP(Segmentation, Targeting, Positioning) 마케팅 전략 수립을 진행합니다.`);
                 const stpPrompt = `
                 다음 상품 아이디어를 기반으로 세밀한 STP(시장 세분화, 타깃 선정, 포지셔닝) 전략 보고서를 작성하라.
@@ -3952,7 +3966,7 @@
                 await sleep(1500); // Prevent API Rate Limits
                 
                 // STAGE 1.2: MECE
-                updatePipelineProgress(55, t("3/5. 맥킨지 MECE 프레임워크 구조화 분석 중...", "3/5. Structuring MECE taxonomy..."));
+                safeUpdateProgress(55, t("3/5. 맥킨지 MECE 프레임워크 구조화 분석 중...", "3/5. Structuring MECE taxonomy..."));
                 logAgentClientSide('strategist', `맥킨지 MECE 프레임워크 기반의 구조적 전략 기획 분석을 개시합니다.`);
                 const mecePrompt = `
                 다음 상품 아이디어를 기반으로 맥킨지식 MECE(Mutually Exclusive, Collectively Exhaustive: 상호배제와 전체포괄) 구조화 분석 보고서를 작성하라.
@@ -4019,7 +4033,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 2: PRD Analyst (PRD)
-                updatePipelineProgress(68, t("3/5. 상세 기능 요구사항(PRD) 및 예외 정책 수립 중...", "3/5. Writing PRD spec & policies..."));
+                safeUpdateProgress(68, t("3/5. 상세 기능 요구사항(PRD) 및 예외 정책 수립 중...", "3/5. Writing PRD spec & policies..."));
                 logAgentClientSide('analyst', `1-pager 기획안을 바탕으로 상세 개발 요구사항(PRD) 및 예외 정책 수립을 전개합니다.`);
                 const prdPrompt = `
                 다음 기획안(1-pager)을 참조하여 기능 요구사항, KPI 지표, 정책 및 예외 처리(결제 실패, API 타임아웃 등)가 포함된 정밀한 PRD를 작성하라.
@@ -4055,7 +4069,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 3: UX Architect (ASCII Wireframes)
-                updatePipelineProgress(82, t("4/5. 와이어프레임 3안 레이아웃 시안 설계 중...", "4/5. Designing 3-type wireframes..."));
+                safeUpdateProgress(82, t("4/5. 와이어프레임 3안 레이아웃 시안 설계 중...", "4/5. Designing 3-type wireframes..."));
                 logAgentClientSide('architect', `PRD 요구사항을 확인했습니다. 공통 CTA 및 정보 우선순위에 부합하는 Type A/B/C 3가지 시안의 ASCII 와이어프레임을 그립니다.`);
                 const uxPrompt = `
                 다음 PRD 요건서를 참조하여, 화면 목적 및 공통 CTA를 노출하고 정보 구조가 확연히 다른 3가지 시안(Type A: 현실/안정형, Type B: 디자인/감성몰입형, Type C: 미래형 동적 위젯)의 ASCII 와이어프레임 레이아웃과 특징을 작조하라.
@@ -4078,7 +4092,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 4: Product Reviewer (QA Audit)
-                updatePipelineProgress(92, t("5/5. 삼각 정합성 QA 검수 및 프로토타입 완공 중...", "5/5. Running QA audit & HTML prototype..."));
+                safeUpdateProgress(92, t("5/5. 삼각 정합성 QA 검수 및 프로토타입 완공 중...", "5/5. Running QA audit & HTML prototype..."));
                 logAgentClientSide('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`);
                 const reviewerPrompt = `
                 다음 3종의 기획 패키지(1-pager, PRD, 와이어프레임)를 분석하여 비즈니스-명세-디자인 정합성을 감사하라.
@@ -4167,7 +4181,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 }
 
                 // STAGE 6: Complete & Save
-                updatePipelineProgress(100, t("전체 기획 파이프라인 완공 완료!", "Planning pipeline completed!"));
+                safeUpdateProgress(100, t("전체 기획 파이프라인 완공 완료!", "Planning pipeline completed!"));
                 logAgentClientSide('system', `최종 배포 프로세스 진입. 파일명 보안 정제 적용 중...`);
                 
                 const resultDocs = {
