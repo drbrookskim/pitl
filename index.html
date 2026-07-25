@@ -843,12 +843,11 @@
         .circle-steps-container {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 12px;
+            justify-content: space-around;
+            gap: 6px;
             margin-bottom: 32px;
             flex-wrap: nowrap;
             width: 100%;
-            overflow-x: auto;
             padding: 6px 0;
         }
 
@@ -858,6 +857,8 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
+            flex: 1 1 0px;
+            min-width: 0;
             transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -866,8 +867,8 @@
         }
 
         .circle-step-node {
-            width: 66px;
-            height: 66px;
+            width: 58px;
+            height: 58px;
             border-radius: 50%;
             border: 2.5px solid var(--border-color);
             background: var(--bg-card);
@@ -3824,7 +3825,7 @@
             const targetArea = document.getElementById('viewer-main-content');
             targetArea.innerHTML = `
                 <div class="document-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 160px); padding: 40px 20px; text-align: center;">
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 44px 40px; width: 95%; max-width: 980px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; margin-top: -6vh;">
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 44px 32px; width: 98%; max-width: 1080px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; margin-top: -6vh;">
                         
                         <!-- Circular Step Node Tabs (Positioned directly above progress bar) -->
                         <div class="circle-steps-container">
