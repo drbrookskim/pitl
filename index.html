@@ -2810,6 +2810,7 @@
                 step_3_label: '3. 와이어프레임 3안 시안 (Architect)',
                 step_4_label: '4. 삼각 정합성 QA 검수 (Reviewer)',
                 editor_guide_text: '오른쪽 뷰어 편집기에서 기획서 내용을 직접 수정할 수 있습니다.',
+                tab_dashboard: '<i class="fa-solid fa-table-cells-large"></i> 타일 대시보드',
                 tab_1pager: '<i class="fa-solid fa-file-invoice"></i> 1-Pager',
                 tab_threec: '<i class="fa-solid fa-chart-pie"></i> 3C 분석',
                 tab_swot: '<i class="fa-solid fa-scale-balanced"></i> SWOT',
@@ -2817,6 +2818,7 @@
                 tab_mece: '<i class="fa-solid fa-network-wired"></i> MECE 분석',
                 tab_prd: '<i class="fa-solid fa-file-shield"></i> PRD Spec',
                 tab_wireframe: '<i class="fa-solid fa-crop-simple"></i> Wireframe',
+                tab_prototype: '<i class="fa-solid fa-display"></i> Prototype',
                 tab_audit: '<i class="fa-solid fa-clipboard-check"></i> QA Audit',
                 btn_edit: '<i class="fa-regular fa-pen-to-square"></i> 기획 수정',
                 btn_copy: '<i class="fa-regular fa-copy"></i> 마크다운 복사',
@@ -2852,6 +2854,7 @@
                 step_3_label: '3. 3-Type Wireframes (Architect)',
                 step_4_label: '4. Consistency QA Audit (Reviewer)',
                 editor_guide_text: 'You can edit the planning document using the editor in the right viewer panel.',
+                tab_dashboard: '<i class="fa-solid fa-table-cells-large"></i> Tile Overview',
                 tab_1pager: '<i class="fa-solid fa-file-invoice"></i> 1-Pager',
                 tab_threec: '<i class="fa-solid fa-chart-pie"></i> 3C Analysis',
                 tab_swot: '<i class="fa-solid fa-scale-balanced"></i> SWOT',
@@ -5376,7 +5379,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
 
         // Switch Computer Browser active document tab
         function switchDocument(docKey) {
-            if (!generatedDocs && docKey !== '1pager') return;
+            if (!generatedDocs && docKey !== '1pager' && docKey !== 'dashboard') return;
             
             // Clean active states of chrome tabs
             document.querySelectorAll('.chrome-tab').forEach(el => el.classList.remove('active'));
@@ -5399,6 +5402,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
 
             // Update Mock browser Address bar text
             const urlPathMap = {
+                'dashboard': 'pitl.ai/workspace/overview-tiles',
                 '1pager': 'pitl.ai/workspace/strategist-1pager',
                 'threec': 'pitl.ai/workspace/strategist-3c-analysis',
                 'swot': 'pitl.ai/workspace/strategist-swot-analysis',
@@ -5432,7 +5436,9 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             const targetArea = document.getElementById('viewer-main-content');
             if (!targetArea) return;
 
-            if (docKey === 'wireframe') {
+            if (docKey === 'dashboard') {
+                renderTileDashboardView(targetArea);
+            } else if (docKey === 'wireframe') {
                 renderWireframesContainer(targetArea);
             } else if (docKey === 'prototype') {
                 renderPrototypeView(targetArea);
@@ -5444,6 +5450,168 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                     </div>
                 `;
             }
+        }
+
+        // Render Tile UI Dashboard View
+        function renderTileDashboardView(targetArea) {
+            if (!targetArea) return;
+
+            const tiles = [
+                {
+                    key: '1pager',
+                    num: '01',
+                    code: 'STRATEGY',
+                    title: t('1-Pager 비즈니스 요약', '1-Pager Business Strategy'),
+                    icon: 'fa-file-invoice',
+                    desc: t('사업 추진 배경, 대상 고객, 문제 정의 및 핵심 정량 목표 수치 정리', 'Business goals, target customers, problem definition & key metric targets')
+                },
+                {
+                    key: 'threec',
+                    num: '02',
+                    code: '3C MODEL',
+                    title: t('3C 환경 분석', '3C Environment Analysis'),
+                    icon: 'fa-chart-pie',
+                    desc: t('Customer(수요), Competitor(경쟁), Company(자사) 핵심 역량 및 KSF 도출', 'Customer demand, Competitor gaps, Company core strengths & KSFs')
+                },
+                {
+                    key: 'swot',
+                    num: '03',
+                    code: 'SWOT',
+                    title: t('SWOT 전략 분석', 'SWOT Cross Strategy'),
+                    icon: 'fa-scale-balanced',
+                    desc: t('내부 강점/약점과 외부 기회/위협 결합 SO·ST·WO·WT 교차 전략 매트릭스', 'Internal S/W and external O/T combined into SO/ST/WO/WT cross strategy')
+                },
+                {
+                    key: 'stp',
+                    num: '04',
+                    code: 'STP',
+                    title: t('STP 타깃 포지셔닝', 'STP Target Positioning'),
+                    icon: 'fa-bullseye',
+                    desc: t('시장 세분화(Segmentation), 핵심 타깃 선정(Targeting), 2축 포지셔닝(Positioning)', 'Market segmentation, Primary/Secondary targeting & positioning map')
+                },
+                {
+                    key: 'mece',
+                    num: '05',
+                    code: 'MECE',
+                    title: t('MECE 구조화 분석', 'McKinsey MECE Structuring'),
+                    icon: 'fa-network-wired',
+                    desc: t('상호배제 및 전체포괄 원칙 기반 5대 영역 분류체계 및 MoSCoW 우선순위', 'Mutually Exclusive, Collectively Exhaustive value breakdown & MoSCoW')
+                },
+                {
+                    key: 'prd',
+                    num: '06',
+                    code: 'SPEC PRD',
+                    title: t('PRD 요구사항 명세', 'Product Requirements Spec'),
+                    icon: 'fa-file-shield',
+                    desc: t('기능 요구사항 테이블(REQ), KPI 지표, 서비스 정책 및 예외 처리 가이드', 'Functional REQ specs, KPI metrics, service policies & exception handling')
+                },
+                {
+                    key: 'wireframe',
+                    num: '07',
+                    code: 'UX/UI',
+                    title: t('와이어프레임 3안', '3-Option ASCII Wireframes'),
+                    icon: 'fa-crop-simple',
+                    desc: t('모바일/대화면 기반 UI 구조 레이아웃 3가지 시안 및 컴포넌트 스케치', '3 alternative UI layout wireframes & structural component sketches')
+                },
+                {
+                    key: 'prototype',
+                    num: '08',
+                    code: 'DEMO',
+                    title: t('인터랙티브 프로토타입', 'Interactive Demo App'),
+                    icon: 'fa-display',
+                    desc: t('작동 가능한 실시간 HTML/JS 샌드박스 라이브 시뮬레이션 데모', 'Live interactive HTML/JS runnable prototype preview sandbox')
+                },
+                {
+                    key: 'audit',
+                    num: '09',
+                    code: 'QA AUDIT',
+                    title: t('QA 삼각 정합성 검수', 'Consistency QA Audit'),
+                    icon: 'fa-clipboard-check',
+                    desc: t('전략-PRD-와이어프레임 간 모순/누락 검증 및 품질 100점 만점 평가서', 'Strategy-PRD-Wireframe consistency verification & score audit')
+                }
+            ];
+
+            const tileCardsHtml = tiles.map(tile => {
+                const mdRaw = generatedDocs ? (generatedDocs[tile.key] || '') : '';
+                const isReady = Boolean(mdRaw && mdRaw.trim().length > 0);
+                
+                // Extract snippet text
+                let snippet = tile.desc;
+                if (isReady) {
+                    const cleanText = mdRaw.replace(/#+/g, '').replace(/[*_`]/g, '').replace(/\|/g, ' ').trim();
+                    const lines = cleanText.split('\n').map(l => l.trim()).filter(l => l.length > 10);
+                    if (lines.length > 0) {
+                        snippet = lines.slice(0, 2).join(' ') || tile.desc;
+                        if (snippet.length > 110) snippet = snippet.slice(0, 110) + '...';
+                    }
+                }
+
+                return `
+                    <div class="tile-card ${isReady ? 'ready' : 'empty'}" onclick="switchDocument('${tile.key}')" style="
+                        background: var(--bg-card);
+                        border: 1px solid var(--border-color);
+                        border-radius: var(--radius-lg);
+                        padding: 18px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        gap: 14px;
+                        cursor: pointer;
+                        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+                        position: relative;
+                        overflow: hidden;
+                    " onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='var(--accent-neon)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='none'; this.style.borderColor='var(--border-color)'; this.style.boxShadow='none';">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <span style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 700; color: var(--accent-neon); letter-spacing: 1px;">
+                                    ${tile.num}. ${tile.code}
+                                </span>
+                                <span style="font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: ${isReady ? 'rgba(16, 185, 129, 0.1)' : 'rgba(148, 163, 184, 0.1)'}; color: ${isReady ? 'var(--accent-neon)' : 'var(--text-muted)'}; border: 1px solid ${isReady ? 'rgba(16, 185, 129, 0.2)' : 'transparent'};">
+                                    ${isReady ? t('작성 완료', 'Ready') : t('대기 중', 'Pending')}
+                                </span>
+                            </div>
+                            <h3 style="font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid ${tile.icon}" style="color: var(--accent-neon); font-size: 15px;"></i>
+                                ${tile.title}
+                            </h3>
+                            <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-top: 4px;">
+                                ${snippet}
+                            </p>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; align-items: center; font-size: 12px; font-weight: 600; color: var(--text-primary); margin-top: 6px;">
+                            <span>${t('상세 서류 보기', 'View Document')} <i class="fa-solid fa-arrow-right" style="font-size: 11px; margin-left: 4px; color: var(--accent-neon);"></i></span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            targetArea.innerHTML = `
+                <div class="document-wrapper" style="padding: 24px;">
+                    <div style="margin-bottom: 24px;">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--accent-neon); letter-spacing: 1.5px; text-transform: uppercase;">
+                            <i class="fa-solid fa-layer-group"></i> Architecture Overview
+                        </span>
+                        <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: var(--text-primary); margin-top: 4px; margin-bottom: 6px;">
+                            ${t('전체 기획 파이프라인 타일 대시보드', 'Full Pipeline Tile Overview')}
+                        </h2>
+                        <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6; max-width: 680px;">
+                            ${t(
+                                'AI 에이전트 4팀이 수립한 9개 단계별 산출물의 핵심 결과입니다. 타일을 클릭하면 해당 세부 기획서 및 와이어프레임 화면으로 이동합니다.',
+                                'Key output overview of all 9 pipeline steps by 4 AI agent teams. Click any tile to navigate directly to the detailed document.'
+                            )}
+                        </p>
+                    </div>
+
+                    <div style="
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                        gap: 16px;
+                        width: 100%;
+                    ">
+                        ${tileCardsHtml}
+                    </div>
+                </div>
+            `;
         }
 
         // Toggle edit mode in right panel computer canvas
