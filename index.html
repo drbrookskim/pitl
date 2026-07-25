@@ -3786,11 +3786,94 @@
                 
                 const threeCContent = await callGeminiClientSide(
                     apiKey,
-                    "당신은 시장 환경 분석을 3C 프레임워크로 전문 설계하는 Product Strategist 에이전트입니다.",
+                    "당신은 시장 환경 분석을 3C 프레임워크로 전문 설계하는 Product Strategist 에이전트입니다. AI 티 없이 자연스럽고 명료한 한글로 작성합니다.",
                     threeCPrompt,
                     (msg) => logAgentClientSide('strategist', msg)
                 );
                 logAgentClientSide('strategist', `3C 프레임워크 기반 환경 분석서 적재 완료.`);
+                
+                await sleep(1500); // Prevent API Rate Limits
+
+                // STAGE 1.1.1: SWOT
+                logAgentClientSide('strategist', `SWOT(강점·약점·기회·위협) 전략 도출 및 교차 매트릭스 수립을 시작합니다.`);
+                const swotPrompt = `
+                다음 상품 아이디어를 기반으로 입체적인 SWOT 분석 및 교차(Cross) 전략 매트릭스 보고서를 작성하라.
+                
+                아이디어: ${idea}
+                
+                [문체 작성 지침 (Humanize Korean)]
+                - AI 특유의 상투어구('혁신적인', '선도하는', '면밀히' 등)와 번역투('~에 대해', '~를 통해'), 과도한 접속사('또한', '하지만')를 배제하라.
+                - 단정하고 직관적인 문장으로 정밀하게 작성하라.
+                
+                반드시 다음 마크다운 형식을 충실하게 준수하라:
+                # [전략 분석] SWOT 분석 및 교차 전략 매트릭스: {제목}
+                
+                ## 1. SWOT 핵심 요약
+                - 서비스의 현재 경쟁 환경과 주요 전략적 시사점을 3-4문장으로 서술하라.
+                
+                ## 2. 내부/외부 환경 다차원 분석
+                ### 2.1. 강점 (Strengths) — 내부적 핵심 우위
+                - 독보적인 기술, 리소스, 데이터, 브랜드 등 3가지 이상을 명확히 정의하라.
+                ### 2.2. 약점 (Weaknesses) — 내부적 한계 및 보완점
+                - 초기 인지도, 자원 제약, 파트너십 부족 등 3가지 이상을 정직하게 도출하라.
+                ### 2.3. 기회 (Opportunities) — 외부적 시장 기회
+                - 시장 성장세, 사용자 행동 변화, 경쟁사 공백, 규제 완화 등 3가지 이상을 도출하라.
+                ### 2.4. 위협 (Threats) — 외부적 위험 요소
+                - 신규 진입자, 대체 기술, 플랫폼 의존성, 경기 변동 등 3가지 이상을 도출하라.
+                
+                ## 3. SWOT 교차(Cross) 전략 매트릭스
+                | 전략 유형 | 핵심 분석 결합 | 세부 실행 액션 로드맵 |
+                | :--- | :--- | :--- |
+                | **SO 전략 (공격적 성장)** | 강점으로 기회를 극대화 | ... |
+                | **ST 전략 (위협 회피/다각화)** | 강점으로 위협을 완화 | ... |
+                | **WO 전략 (체질 개선)** | 약점을 보완하여 기회 포착 | ... |
+                | **WT 전략 (방어 및 위기관리)** | 약점 최소화 및 위협 회피 | ... |
+                `;
+                
+                const swotContent = await callGeminiClientSide(
+                    apiKey,
+                    "당신은 SWOT 분석 및 교차 전략을 전문 수립하는 Product Strategist 에이전트입니다. AI 티 없이 자연스러운 한국어로 작성합니다.",
+                    swotPrompt,
+                    (msg) => logAgentClientSide('strategist', msg)
+                );
+                logAgentClientSide('strategist', `SWOT 및 교차 전략 분석 보고서 적재 완료.`);
+                
+                await sleep(1500); // Prevent API Rate Limits
+
+                // STAGE 1.1.2: STP
+                logAgentClientSide('strategist', `STP(Segmentation, Targeting, Positioning) 마케팅 전략 수립을 진행합니다.`);
+                const stpPrompt = `
+                다음 상품 아이디어를 기반으로 세밀한 STP(시장 세분화, 타깃 선정, 포지셔닝) 전략 보고서를 작성하라.
+                
+                아이디어: ${idea}
+                
+                [문체 작성 지침 (Humanize Korean)]
+                - AI 특유의 상투어구와 번역투를 배제하고 실무적이고 단정한 어조로 작성하라.
+                
+                반드시 다음 마크다운 형식을 충실하게 준수하라:
+                # [전략 기획] STP 마케팅 및 타깃 포지셔닝 명세서: {제목}
+                
+                ## 1. Segmentation (시장 세분화)
+                - 전체 잠재 시장을 인구통계학적, 행동적, 심리적 특성에 따라 3개 이상의 독자적 세그먼트로 분해하라.
+                
+                ## 2. Targeting (목표 타깃 선정)
+                - **핵심 타깃 (Primary Target)**: 핵심 페르소나, 주요 Pain Point, 가치 제안
+                - **서브 타깃 (Secondary Target)**: 확장 타깃층 및 파생 니즈
+                - **시장 규모 유추 (TAM / SAM / SOM)**: 추정치와 합리적 유추 논리
+                
+                ## 3. Positioning (차별화 포지셔닝)
+                - **포지셔닝 맵 (2축 속성 정의)**: X축, Y축 기준 자사의 독보적 위치 서술
+                - **Value Proposition Statement**: "X 고객에게 Y 문제를 해결해 주는 Z 독점 브랜드" 형식의 포지셔닝 명제
+                - **차별화 요인 (POD & POP)**: 경쟁사 대비 확실한 차별점(POD) 및 필수 동등 요소(POP)
+                `;
+                
+                const stpContent = await callGeminiClientSide(
+                    apiKey,
+                    "당신은 STP 타깃팅과 포지셔닝 전략을 구체화하는 Product Strategist 에이전트입니다.",
+                    stpPrompt,
+                    (msg) => logAgentClientSide('strategist', msg)
+                );
+                logAgentClientSide('strategist', `STP 전략 분석 및 포지셔닝 명세서 적재 완료.`);
                 
                 await sleep(1500); // Prevent API Rate Limits
                 
@@ -4013,8 +4096,8 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                     idea: ideaText,
                     '1pager': onePagerContent,
                     'threec': threeCContent,
-                    'swot': '',
-                    'stp': '',
+                    'swot': swotContent,
+                    'stp': stpContent,
                     'mece': meceContent,
                     'prd': prdContent,
                     'wireframe': uxContent,
@@ -4026,8 +4109,8 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 
                 saveClientHistoryLocally(resultDocs);
                 
-                logAgentClientSide('system', `브라우저 로컬 저장소(localStorage)에 마크다운 기획 서류 7종 영구 배포 완료.`);
-                logAgentClientSide('system', `- 요약서, 3C 분석, MECE 분석, PRD, 와이어프레임, 검수서, 프로토타입 완료.`);
+                logAgentClientSide('system', `브라우저 로컬 저장소(localStorage)에 전체 기획 서류 9종 영구 배포 완료.`);
+                logAgentClientSide('system', `- 1-Pager, 3C 분석, SWOT, STP, MECE 분석, PRD, 와이어프레임, 검수서, 프로토타입 완료.`);
                 
                 completeAllPipelineSteps();
                 
@@ -4149,19 +4232,23 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 let uxContent = generatedDocs['wireframe'] || '';
                 let auditContent = generatedDocs['audit'] || '';
                 let threeCContent = generatedDocs['threec'] || '';
+                let swotContent = generatedDocs['swot'] || '';
+                let stpContent = generatedDocs['stp'] || '';
                 let meceContent = generatedDocs['mece'] || '';
 
                 // STAGE 2: PRD Analyst (PRD)
                 if (resumeFrom === 'prd') {
-                    logAgentClientSide('analyst', `1-pager 및 수정안을 바탕으로 상세 개발 요구사항(PRD) 및 예외 정책 수립을 다시 전개합니다.`);
+                    logAgentClientSide('analyst', `1-pager 및 전략 분석(3C/SWOT/STP/MECE) 수정안을 바탕으로 상세 PRD를 다시 작성합니다.`);
                     const prdPrompt = `
-                    다음 기획안(1-pager 및 3C, MECE 분석)을 참조하여 기능 요구사항, KPI 지표, 정책 및 예외 처리(결제 실패, API 타임아웃 등)가 포함된 정밀한 PRD를 작성하라.
+                    다음 기획안(1-pager 및 3C, SWOT, STP, MECE 분석)을 참조하여 기능 요구사항, KPI 지표, 정책 및 예외 처리(결제 실패, API 타임아웃 등)가 포함된 정밀한 PRD를 작성하라.
                     
                     기획안 정보:
                     ${onePagerContent}
                     
-                    참조 3C 및 MECE 분석:
+                    참조 전략 분석:
                     ${threeCContent}
+                    ${swotContent}
+                    ${stpContent}
                     ${meceContent}
                     
                     반드시 다음 구조를 충실하게 기입하여 작성하라:
@@ -5349,31 +5436,8 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 renderWireframesContainer(targetArea);
             } else if (docKey === 'prototype') {
                 renderPrototypeView(targetArea);
-            } else if (docKey === 'swot' || docKey === 'stp') {
-                const mdRaw = generatedDocs ? (generatedDocs[docKey] || '') : '';
-                if (mdRaw) {
-                    targetArea.innerHTML = `
-                        <div class="document-wrapper markdown-body">
-                            ${marked.parse(mdRaw)}
-                        </div>
-                    `;
-                } else {
-                    const labelMap = { 'swot': 'SWOT', 'stp': 'STP' };
-                    targetArea.innerHTML = `
-                        <div class="document-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center;">
-                            <i class="fa-solid ${docKey === 'swot' ? 'fa-scale-balanced' : 'fa-bullseye'}" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px; opacity: 0.4;"></i>
-                            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; color: var(--text-secondary); margin-bottom: 8px;">${labelMap[docKey]} Analysis</h3>
-                            <p style="font-size: 13px; color: var(--text-muted); max-width: 320px; line-height: 1.6;">
-                                ${t(
-                                    labelMap[docKey] + ' 분석 기능은 향후 업데이트에서 자동 생성이 지원될 예정입니다.<br>현재는 기획 수정 모드에서 직접 작성할 수 있습니다.',
-                                    labelMap[docKey] + ' analysis auto-generation will be supported in a future update.<br>You can manually write content using the edit mode.'
-                                )}
-                            </p>
-                        </div>
-                    `;
-                }
             } else {
-                const mdRaw = generatedDocs[docKey] || '';
+                const mdRaw = generatedDocs ? (generatedDocs[docKey] || '') : '';
                 targetArea.innerHTML = `
                     <div class="document-wrapper markdown-body">
                         ${marked.parse(mdRaw)}
@@ -5386,7 +5450,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
         function toggleEditMode() {
             if (!generatedDocs) return;
             
-            const editableDocs = ['1pager', 'threec', 'mece', 'prd', 'wireframe'];
+            const editableDocs = ['1pager', 'threec', 'swot', 'stp', 'mece', 'prd', 'wireframe'];
             if (!editableDocs.includes(activeDoc)) return;
             
             isEditing = !isEditing;
@@ -5411,6 +5475,8 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             const docLabels = {
                 '1pager': '1-pager 기획 요약서',
                 'threec': '3C 환경 분석 보고서',
+                'swot': 'SWOT 분석 및 교차 전략서',
+                'stp': 'STP 타깃 포지셔닝 명세서',
                 'mece': 'MECE 구조화 분석 보고서',
                 'prd': 'PRD 요구사항 명세서',
                 'wireframe': '와이어프레임 3안 시안'
@@ -5419,6 +5485,8 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             const docDescriptions = {
                 '1pager': '1-pager의 비즈니스 목표나 고객층을 수정하면, 이후 단계인 상세 PRD와 와이어프레임 3안이 수정안에 맞춰 실시간으로 전면 재기획 및 자동 정합성 갱신됩니다.',
                 'threec': '3C 분석의 시장 기회나 차별화 포인트(KSF)를 수정하면, 이를 반영하여 상세 PRD와 와이어프레임 3안이 실시간으로 자동 재기획 및 갱신됩니다.',
+                'swot': 'SWOT 분석의 강점/약점/기회/위협 및 교차 전략을 수정하면, 이를 반영하여 상세 PRD와 와이어프레임 3안이 실시간으로 자동 재기획 및 갱신됩니다.',
+                'stp': 'STP 전략의 타깃 세그먼트 및 포지셔닝을 수정하면, 이를 반영하여 상세 PRD와 와이어프레임 3안이 실시간으로 자동 재기획 및 갱신됩니다.',
                 'mece': 'MECE 분석의 리스크나 기능 우선순위를 수정하면, 이에 영향을 받는 상세 PRD와 와이어프레임 3안이 실시간으로 자동 재기획 및 갱신됩니다.',
                 'prd': 'PRD의 기능 요구사항이나 정책/예외 정의를 수정하면, 이에 영향을 받는 이후 단계 와이어프레임 설계 및 검수 보고서가 수정안에 맞춰 일관성 있게 자동 갱신됩니다.',
                 'wireframe': '와이어프레임의 레이아웃이나 시안 컨셉을 수정하면, 최종 정합성 검수 보고서(QA Audit)가 이에 맞춰 최신 정보로 자동 갱신됩니다.'
