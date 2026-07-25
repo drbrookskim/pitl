@@ -839,6 +839,102 @@
             background: rgba(16, 185, 129, 0.08);
         }
 
+        /* Circular Step Nodes Container & Liquid Bottom-to-Top Fill Animation */
+        .circle-steps-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .circle-step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .circle-step-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .circle-step-node {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            color: var(--text-muted);
+            font-size: 15px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .circle-step-node .node-icon {
+            position: relative;
+            z-index: 2;
+            transition: color 0.3s ease;
+        }
+
+        /* Liquid fill element inside circle node - Fills from bottom to top (0% -> 100%) */
+        .circle-step-node .liquid-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(180deg, var(--accent-neon), #059669);
+            transition: height 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1;
+            border-radius: 0 0 50% 50%;
+        }
+
+        .circle-step-item.active .circle-step-node {
+            border-color: var(--accent-neon);
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
+        }
+
+        .circle-step-item.active .circle-step-node .node-icon {
+            color: #0f172a;
+            font-weight: bold;
+        }
+
+        .circle-step-item.completed .circle-step-node {
+            border-color: var(--accent-neon);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+
+        .circle-step-item.completed .circle-step-node .node-icon {
+            color: #0f172a;
+        }
+
+        .circle-step-item.completed .circle-step-node .liquid-fill {
+            height: 100% !important;
+            border-radius: 0;
+        }
+
+        .circle-step-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .circle-step-item.active .circle-step-label,
+        .circle-step-item.completed .circle-step-label {
+            color: var(--text-primary);
+        }
+
         .history-card-meta {
             display: flex;
             justify-content: space-between;
@@ -2689,37 +2785,13 @@
         <!-- PANEL 2: MIDDLE PANEL (Timeline - AI Agent Thoughts) -->
         <section class="chat-panel" id="panel-chat">
             
-            <!-- Dynamic workflow progressive checklist -->
-            <div class="stepper-container">
-                <div class="stepper-header-row">
-                    <button class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="메뉴 열기">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                    <div class="stepper-title" data-i18n="stepper_header_title">에이전트 워크플로우 진행 정보</div>
-                </div>
-                
-                <div class="step-item" id="step-strategist">
-                    <div class="step-icon"><i class="fa-solid fa-compass"></i></div>
-                    <div class="step-label" data-i18n="step_1_label">1. 비즈니스 전략 기획 (Strategist)</div>
-                    <div class="step-status"><i class="fa-solid fa-circle"></i></div>
-                </div>
-                
-                <div class="step-item" id="step-prd">
-                    <div class="step-icon"><i class="fa-solid fa-file-shield"></i></div>
-                    <div class="step-label" data-i18n="step_2_label">2. 세부 기능 요구정의 (Architect)</div>
-                    <div class="step-status"><i class="fa-solid fa-circle"></i></div>
-                </div>
-                
-                <div class="step-item" id="step-wireframe">
-                    <div class="step-icon"><i class="fa-solid fa-crop-simple"></i></div>
-                    <div class="step-label" data-i18n="step_3_label">3. 와이어프레임 3안 시안 (Architect)</div>
-                    <div class="step-status"><i class="fa-solid fa-circle"></i></div>
-                </div>
-                
-                <div class="step-item" id="step-audit">
-                    <div class="step-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-                    <div class="step-label" data-i18n="step_4_label">4. 삼각 정합성 QA 검수 (Reviewer)</div>
-                    <div class="step-status"><i class="fa-solid fa-circle"></i></div>
+            <div style="height: 48px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 16px; gap: 10px; background: var(--bg-sidebar);">
+                <button class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="메뉴 열기">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div style="font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-comments" style="color: var(--accent-neon);"></i>
+                    <span>에이전트 협업 타임라인</span>
                 </div>
             </div>
 
@@ -3677,23 +3749,48 @@
         }
 
         // Helper to update animated pipeline progress bar & percentage globally
-        window.updatePipelineProgress = function(percent, label) {
+        window.updatePipelineProgress = function(percent, activeKey) {
             try {
                 const fillEl = document.getElementById('pipeline-progress-fill');
                 const percentEl = document.getElementById('progress-percent-label');
-                const labelEl = document.getElementById('progress-stage-label');
                 
                 if (fillEl) fillEl.style.width = percent + '%';
                 if (percentEl) percentEl.innerText = percent + '%';
-                if (labelEl && label) labelEl.innerText = label;
+
+                // Update circular step nodes liquid fill height & states
+                if (activeKey) {
+                    const stepKeys = ['1pager', 'threec', 'swot', 'stp', 'mece', 'prd', 'wireframe', 'prototype', 'audit'];
+                    const activeIdx = stepKeys.indexOf(activeKey);
+
+                    stepKeys.forEach((key, idx) => {
+                        const itemEl = document.getElementById(`circle-node-${key}`);
+                        const fillNode = document.getElementById(`liquid-fill-${key}`);
+
+                        if (itemEl && fillNode) {
+                            if (idx < activeIdx) {
+                                // Completed steps: 100% liquid fill
+                                itemEl.className = 'circle-step-item completed';
+                                fillNode.style.height = '100%';
+                            } else if (idx === activeIdx) {
+                                // Currently active step: liquid animation rising from bottom (0% -> 100%)
+                                itemEl.className = 'circle-step-item active';
+                                setTimeout(() => { fillNode.style.height = '100%'; }, 50);
+                            } else {
+                                // Pending steps
+                                itemEl.className = 'circle-step-item pending';
+                                fillNode.style.height = '0%';
+                            }
+                        }
+                    });
+                }
             } catch (e) {
                 console.warn('[Progress] Update failed:', e);
             }
         };
 
-        function safeUpdateProgress(percent, label) {
+        function safeUpdateProgress(percent, activeKey) {
             if (typeof window.updatePipelineProgress === 'function') {
-                window.updatePipelineProgress(percent, label);
+                window.updatePipelineProgress(percent, activeKey);
             }
         }
 
@@ -3743,39 +3840,99 @@
                 `;
             }
 
-            // Inject Centered Animated Progress Bar Container in Right Panel (NO TERMINAL BOX AT ALL)
+            // Inject Upper 2/3 Centered Progress Container with Circular Step Node Tabs & Liquid Fill Animation
             const targetArea = document.getElementById('viewer-main-content');
             targetArea.innerHTML = `
-                <div class="document-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 520px; padding: 40px 20px; text-align: center;">
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 36px 40px; width: 100%; max-width: 520px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; gap: 20px;">
-                        <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-neon); font-size: 24px;">
-                            <i class="fa-solid fa-wand-magic-sparkles fa-spin" style="--fa-animation-duration: 3s;"></i>
-                        </div>
+                <div class="document-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 160px); padding: 40px 20px; text-align: center;">
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 36px 30px; width: 100%; max-width: 580px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; margin-top: -6vh;">
                         
-                        <div>
-                            <h3 id="progress-stage-label" style="font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif; font-size: 17px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
-                                ${t("기획 프로세스 개시 중...", "Initializing planning pipeline...")}
-                            </h3>
-                            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0;">
-                                ${t("전문 에이전트 4팀이 전략 요약서, PRD, 와이어프레임을 생성하고 있습니다.", "4 AI Agent teams are building your strategy, PRD, and wireframes.")}
-                            </p>
+                        <!-- Circular Step Node Tabs (Positioned directly above progress bar) -->
+                        <div class="circle-steps-container">
+                            <div class="circle-step-item active" id="circle-node-1pager" title="1-Pager 비즈니스 요약">
+                                <div class="circle-step-node">
+                                    <i class="fa-solid fa-file-invoice node-icon"></i>
+                                    <div class="liquid-fill" id="liquid-fill-1pager" style="height: 0%;"></div>
+                                </div>
+                                <span class="circle-step-label">1-Pager</span>
+                            </div>
+                            <div class="circle-step-item pending" id="circle-node-threec" title="3C 환경 분석">
+                                <div class="circle-step-node">
+                                    <i class="fa-solid fa-chart-pie node-icon"></i>
+                                    <div class="liquid-fill" id="liquid-fill-threec" style="height: 0%;"></div>
+                                </div>
+                                <span class="circle-step-label">3C</span>
+                            </div>
+                            <div class="circle-step-item pending" id="circle-node-swot" title="SWOT 전략">
+                                <div class="circle-step-node">
+                                    <i class="fa-solid fa-scale-balanced node-icon"></i>
+                                    <div class="liquid-fill" id="liquid-fill-swot" style="height: 0%;"></div>
+                                </div>
+                                <span class="circle-step-label">SWOT</span>
+                            </div>
+                            <div class="circle-step-item pending" id="circle-node-stp" title="STP 타깃 포지셔닝">
+                                <div class="circle-step-node">
+                                    <i class="fa-solid fa-bullseye node-icon"></i>
+                                    <div class="liquid-fill" id="liquid-fill-stp" style="height: 0%;"></div>
+                                </div>
+                                <span class="circle-step-label">STP</span>
+                            </div>
+                            <div class="circle-step-item pending" id="circle-node-mece" title="MECE 구조화">
+                                <div class="circle-step-node">
+                                    <i class="fa-solid fa-network-wired node-icon"></i>
+                                    <div class="liquid-fill" id="liquid-fill-mece" style="height: 0%;"></div>
+                                </div>
+                                <span class="circle-step-label">MECE</span>
+                            </div>
+                            <div class="circle-step-item pending" id="circle-node-prd" title="PRD 요구사항 명세">
+                                <div class="circle-step-node">
+                                    <i class="fa-solid fa-file-shield node-icon"></i>
+                                    <div class="liquid-fill" id="liquid-fill-prd" style="height: 0%;"></div>
+                                </div>
+                                <span class="circle-step-label">PRD</span>
+                            </div>
+                            <div class="circle-step-item pending" id="circle-node-wireframe" title="와이어프레임 3안">
+                                <div class="circle-step-node">
+                                    <i class="fa-solid fa-crop-simple node-icon"></i>
+                                    <div class="liquid-fill" id="liquid-fill-wireframe" style="height: 0%;"></div>
+                                </div>
+                                <span class="circle-step-label">Wireframe</span>
+                            </div>
+                            <div class="circle-step-item pending" id="circle-node-prototype" title="인터랙티브 데모">
+                                <div class="circle-step-node">
+                                    <i class="fa-solid fa-display node-icon"></i>
+                                    <div class="liquid-fill" id="liquid-fill-prototype" style="height: 0%;"></div>
+                                </div>
+                                <span class="circle-step-label">Demo</span>
+                            </div>
+                            <div class="circle-step-item pending" id="circle-node-audit" title="QA 정합성 검수">
+                                <div class="circle-step-node">
+                                    <i class="fa-solid fa-clipboard-check node-icon"></i>
+                                    <div class="liquid-fill" id="liquid-fill-audit" style="height: 0%;"></div>
+                                </div>
+                                <span class="circle-step-label">QA Audit</span>
+                            </div>
                         </div>
 
-                        <div style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+                        <!-- Overall Pipeline Progress Bar Only -->
+                        <div style="width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700;">
-                                <span style="color: var(--text-secondary);">${t("전체 진행률", "Overall Progress")}</span>
-                                <span id="progress-percent-label" style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 800; color: var(--accent-neon);">0%</span>
+                                <span style="color: var(--text-secondary); display: flex; align-items: center; gap: 6px;">
+                                    <i class="fa-solid fa-arrows-spin fa-spin" style="color: var(--accent-neon); --fa-animation-duration: 3s;"></i>
+                                    전체 기획 파이프라인 진행률
+                                </span>
+                                <span id="progress-percent-label" style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 800; color: var(--accent-neon);">0%</span>
                             </div>
-                            <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; position: relative;">
+                            <div style="width: 100%; height: 12px; background: rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; position: relative;">
                                 <div id="pipeline-progress-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-neon), var(--accent-blue)); border-radius: 6px; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             `;
 
             try {
-                safeUpdateProgress(10, t("1/5. 비즈니스 1-Pager 요약서 수립 중...", "1/5. Drafting 1-Pager strategy..."));
+                safeUpdateProgress(10, '1pager');
                 logAgentClientSide('system', `상품기획 자동화 프로세스 가동 (Client-Side Direct Mode 감지됨).`);
                 logAgentClientSide('system', `에이전트 4인 팀 및 오케스트레이션 스폰 완료 (strategist, analyst, architect, reviewer).`);
                 
@@ -3817,7 +3974,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 1.1: 3C
-                safeUpdateProgress(25, t("2/5. 3C 환경 분석(Customer, Competitor, Company) 진행 중...", "2/5. Analyzing 3C environment..."));
+                safeUpdateProgress(22, 'threec');
                 logAgentClientSide('strategist', `3C 프레임워크(Customer, Competitor, Company)를 활용한 입체적 환경 분석을 시작합니다.`);
                 const threeCPrompt = `
                 다음 상품 아이디어를 기반으로 오마에 겐이치의 3C 전략 삼각형(Customer, Competitor, Company)을 적용하여 심층적이고 입체적인 환경 분석 보고서를 작성하라.
@@ -3881,7 +4038,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 1.1.1: SWOT
-                safeUpdateProgress(35, t("2/5. SWOT 분석 및 교차 전략 매트릭스 도출 중...", "2/5. Formulating SWOT matrix..."));
+                safeUpdateProgress(34, 'swot');
                 logAgentClientSide('strategist', `SWOT(강점·약점·기회·위협) 전략 도출 및 교차 매트릭스 수립을 시작합니다.`);
                 const swotPrompt = `
                 다음 상품 아이디어를 기반으로 입체적인 SWOT 분석 및 교차(Cross) 전략 매트릭스 보고서를 작성하라.
@@ -3928,7 +4085,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 1.1.2: STP
-                safeUpdateProgress(45, t("2/5. STP 타깃 세분화 및 포지셔닝 명세 중...", "2/5. Setting STP positioning..."));
+                safeUpdateProgress(46, 'stp');
                 logAgentClientSide('strategist', `STP(Segmentation, Targeting, Positioning) 마케팅 전략 수립을 진행합니다.`);
                 const stpPrompt = `
                 다음 상품 아이디어를 기반으로 세밀한 STP(시장 세분화, 타깃 선정, 포지셔닝) 전략 보고서를 작성하라.
@@ -3966,7 +4123,7 @@
                 await sleep(1500); // Prevent API Rate Limits
                 
                 // STAGE 1.2: MECE
-                safeUpdateProgress(55, t("3/5. 맥킨지 MECE 프레임워크 구조화 분석 중...", "3/5. Structuring MECE taxonomy..."));
+                safeUpdateProgress(58, 'mece');
                 logAgentClientSide('strategist', `맥킨지 MECE 프레임워크 기반의 구조적 전략 기획 분석을 개시합니다.`);
                 const mecePrompt = `
                 다음 상품 아이디어를 기반으로 맥킨지식 MECE(Mutually Exclusive, Collectively Exhaustive: 상호배제와 전체포괄) 구조화 분석 보고서를 작성하라.
@@ -4033,7 +4190,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 2: PRD Analyst (PRD)
-                safeUpdateProgress(68, t("3/5. 상세 기능 요구사항(PRD) 및 예외 정책 수립 중...", "3/5. Writing PRD spec & policies..."));
+                safeUpdateProgress(70, 'prd');
                 logAgentClientSide('analyst', `1-pager 기획안을 바탕으로 상세 개발 요구사항(PRD) 및 예외 정책 수립을 전개합니다.`);
                 const prdPrompt = `
                 다음 기획안(1-pager)을 참조하여 기능 요구사항, KPI 지표, 정책 및 예외 처리(결제 실패, API 타임아웃 등)가 포함된 정밀한 PRD를 작성하라.
@@ -4069,7 +4226,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 3: UX Architect (ASCII Wireframes)
-                safeUpdateProgress(82, t("4/5. 와이어프레임 3안 레이아웃 시안 설계 중...", "4/5. Designing 3-type wireframes..."));
+                safeUpdateProgress(82, 'wireframe');
                 logAgentClientSide('architect', `PRD 요구사항을 확인했습니다. 공통 CTA 및 정보 우선순위에 부합하는 Type A/B/C 3가지 시안의 ASCII 와이어프레임을 그립니다.`);
                 const uxPrompt = `
                 다음 PRD 요건서를 참조하여, 화면 목적 및 공통 CTA를 노출하고 정보 구조가 확연히 다른 3가지 시안(Type A: 현실/안정형, Type B: 디자인/감성몰입형, Type C: 미래형 동적 위젯)의 ASCII 와이어프레임 레이아웃과 특징을 작조하라.
@@ -4092,7 +4249,7 @@
                 await sleep(1500); // Prevent API Rate Limits
 
                 // STAGE 4: Product Reviewer (QA Audit)
-                safeUpdateProgress(92, t("5/5. 삼각 정합성 QA 검수 및 프로토타입 완공 중...", "5/5. Running QA audit & HTML prototype..."));
+                safeUpdateProgress(92, 'prototype');
                 logAgentClientSide('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`);
                 const reviewerPrompt = `
                 다음 3종의 기획 패키지(1-pager, PRD, 와이어프레임)를 분석하여 비즈니스-명세-디자인 정합성을 감사하라.
@@ -4181,7 +4338,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 }
 
                 // STAGE 6: Complete & Save
-                safeUpdateProgress(100, t("전체 기획 파이프라인 완공 완료!", "Planning pipeline completed!"));
+                safeUpdateProgress(100, 'audit');
                 logAgentClientSide('system', `최종 배포 프로세스 진입. 파일명 보안 정제 적용 중...`);
                 
                 const resultDocs = {
