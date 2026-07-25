@@ -1783,15 +1783,74 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
+        /* ==========================================================================
+           APPLE DESIGN SYSTEM: FLUID MOTION, PHYSICAL TOUCH & ACCESSIBILITY
+           ========================================================================== */
+        /* 1. Instant Pointer-Down (Press) Feedback: Scale 0.97 on active */
+        button:active,
+        .btn-minimal:active,
+        .prompt-submit-btn:active,
+        .chrome-tab:active,
+        .landing-history-card:active,
+        .history-item-card:active,
+        .suggestion-pill:active,
+        .pitl-modal-btn:active {
+            transform: scale(0.97) !important;
+            transition: transform 80ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        /* 2. Apple Fluid Spring Curves & Translucency Materials */
+        .btn-minimal,
+        .prompt-submit-btn,
+        .chrome-tab,
+        .landing-history-card,
+        .history-item-card,
+        .suggestion-pill,
+        .pitl-modal-content,
+        .sidebar-toggle-btn {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Translucent Frosted Glass Overlay */
+        .pitl-modal-overlay {
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+        }
+
+        /* 3. Reduced Motion & Reduced Transparency Accessibility (Apple Standard) */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .sidebar-panel {
+                transition: none !important;
+            }
+        }
+
+        @media (prefers-reduced-transparency: reduce) {
+            .pitl-modal-overlay,
+            .pitl-modal-content,
+            .chrome-title-bar,
+            .computer-chrome {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                background-opacity: 1 !important;
+            }
+        }
+
         .sidebar-overlay {
             display: none;
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 999;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
         }
 
@@ -2718,35 +2777,35 @@
         // --- TRANSLATIONS (KR / EN) ---
         const translations = {
             ko: {
-                password_subtitle: 'Planning-in-the-Loop Agentic Workspace가 암호화되어 있습니다.<br>비밀번호를 입력하세요.',
-                password_placeholder: '암호입력',
-                password_error: '올바르지 않은 암호입니다. 다시 시도해 주세요.',
-                unlock_btn: '접근 해제',
+                password_subtitle: 'Planning-in-the-Loop Agentic Workspace가 암호화되어 있습니다.<br>비밀번호를 입력해 주세요.',
+                password_placeholder: '암호 입력',
+                password_error: '올바르지 않은 암호입니다. 다시 입력해 주세요.',
+                unlock_btn: '잠금 해제',
                 api_settings_title: 'API Settings',
-                api_settings_subtitle: 'Gemini API Key를 입력하면 AES-GCM으로 암호화하여 이 기기의 로컬 스토리지에만 저장합니다.',
+                api_settings_subtitle: 'Gemini API 키를 입력하면 AES-GCM으로 암호화하여 이 기기의 로컬 저장소에만 안전하게 보관합니다.',
                 api_key_placeholder: 'Gemini API Key 입력',
-                api_key_warning: '<i class="fa-solid fa-shield-halved" style="color:var(--accent-neon);"></i> <strong>암호화 저장 안내</strong><br>입력한 API Key는 <strong>AES-GCM 256-bit</strong>으로 즉시 암호화된 뒤 이 기기(localStorage)에만 저장됩니다. 서버로 전송되지 않습니다.<br>공란 저장 시 저장된 키가 삭제됩니다.',
+                api_key_warning: '<i class="fa-solid fa-shield-halved" style="color:var(--accent-neon);"></i> <strong>보안 저장 안내</strong><br>입력한 API 키는 <strong>AES-GCM 256-bit</strong>으로 즉시 암호화되어 이 기기(localStorage)에만 저장됩니다. 외부 서버로 전송되지 않습니다.<br>빈칸으로 저장하면 기존 저장된 키가 삭제됩니다.',
                 save_encrypted_btn: '암호화 저장',
                 close_btn: '닫기',
                 landing_nav_api_settings: '<i class="fa-solid fa-key"></i> API 설정',
                 landing_nav_dashboard: '<i class="fa-solid fa-desktop"></i> 워크스페이스 대시보드',
                 badge_autonomous_agent: '<i class="fa-solid fa-wand-magic-sparkles"></i> Autonomous AI Agent Team',
                 landing_title: 'Planning-in-the-Loop <span>Agent</span>',
-                landing_subtitle: '4인의 전용 AI 에이전트 협업 팀이 아이디어 하나로 비즈니스 전략 기획서(1-pager),<br>요구사항 정의서(PRD), 와이어프레임 3안 시안 및 삼각 정합성 검수서를 실시간 완공합니다.',
-                prompt_placeholder: '기획하고 싶으신 상품이나 피처 아이디어를 제출하세요. (예: 구글 뉴스 API 기반의 온디맨드 뉴스 큐레이션 플랫폼 설계해줘.)',
+                landing_subtitle: '전문 AI 에이전트 4팀이 아이디어 하나로 사업 전략(1-Pager), 요구사항(PRD),<br>와이어프레임 3안, 정합성 검수서까지 한 번에 완성합니다.',
+                prompt_placeholder: '기획하고 싶은 제품이나 기능 아이디어를 입력해 보세요. (예: 구글 뉴스 API 기반 온디맨드 뉴스 큐레이션 플랫폼)',
                 suggestion_news_api: '📰 뉴스 API 기반 큐레이션 툴',
                 suggestion_wellness_app: '🧘 구독형 스트레칭 가이드 앱',
                 suggestion_kanban_dashboard: '📊 에이전트 칸반 대시보드 툴',
-                history_section_title: '최근 생성된 완공 기획안 히스토리',
+                history_section_title: '최근 작성한 기획서',
                 agent_status_active: '<span class="status-dot-pulse"></span> 에이전트 활성화',
-                new_plan_btn: '<i class="fa-solid fa-plus"></i> 새로운 아이디어 기획',
-                history_sidebar_title: '기획 히스토리 내역',
-                stepper_header_title: '에이전트 워크플로우 진행 정보',
+                new_plan_btn: '<i class="fa-solid fa-plus"></i> 새 기획 작성',
+                history_sidebar_title: '기획 히스토리',
+                stepper_header_title: '에이전트 워크플로우 진행 상태',
                 step_1_label: '1. 비즈니스 전략 기획 (Strategist)',
                 step_2_label: '2. 세부 기능 요구정의 (Architect)',
                 step_3_label: '3. 와이어프레임 3안 시안 (Architect)',
                 step_4_label: '4. 삼각 정합성 QA 검수 (Reviewer)',
-                editor_guide_text: '우측 컴퓨터 뷰어의 편집기로 기획 수정이 가능합니다.',
+                editor_guide_text: '오른쪽 뷰어 편집기에서 기획서 내용을 직접 수정할 수 있습니다.',
                 tab_1pager: '<i class="fa-solid fa-file-invoice"></i> 1-Pager',
                 tab_threec: '<i class="fa-solid fa-chart-pie"></i> 3C 분석',
                 tab_swot: '<i class="fa-solid fa-scale-balanced"></i> SWOT',
@@ -3642,6 +3701,10 @@
                 
                 아이디어: ${idea}
                 
+                [문체 작성 지침 (Humanize Korean)]
+                - AI 특유의 상투어구('혁신적인', '선도하는', '면밀히', '지평을 열다' 등)와 번역투('~에 대해', '~를 통해'), 과도한 접속사('또한', '하지만')를 전면 배제하라.
+                - 능동태 중심의 단정하고 직관적인 문장으로 작성하여 사람이 직접 쓴 것처럼 명확하게 전달하라.
+                
                 반드시 다음 마크다운 형식을 따르고, 빈 칸 없이 완벽히 메트릭과 테이블 수치를 합리적으로 유추하여 채워라:
                 # [YY.MM.DD] {아이디어 기반 제목} (Product Team)
                 ## 1. 프로젝트 한 줄 요약
@@ -3656,7 +3719,7 @@
                 
                 const onePagerContent = await callGeminiClientSide(
                     apiKey,
-                    "당신은 상품 기획의 존재 이유(Why)를 정의하는 Product Strategist 에이전트입니다.",
+                    "당신은 상품 기획의 본질과 고객 문제를 명확하게 정의하는 Product Strategist 에이전트입니다. AI 티 없이 자연스럽고 명료한 한글로 작성합니다.",
                     strategistPrompt,
                     (msg) => logAgentClientSide('strategist', msg)
                 );
