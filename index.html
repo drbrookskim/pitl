@@ -2779,38 +2779,10 @@
             </div>
         </aside>
 
-        <!-- Left-Middle Resizer Bar -->
+        <!-- Sidebar-Main Resizer Bar -->
         <div class="resizer-bar" id="resizer-left" title="좌측 히스토리 패널 너비 조절"></div>
 
-        <!-- PANEL 2: MIDDLE PANEL (Timeline - AI Agent Thoughts) -->
-        <section class="chat-panel" id="panel-chat">
-            
-            <div style="height: 48px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 16px; gap: 10px; background: var(--bg-sidebar);">
-                <button class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="메뉴 열기">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <div style="font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
-                    <i class="fa-solid fa-comments" style="color: var(--accent-neon);"></i>
-                    <span>에이전트 협업 타임라인</span>
-                </div>
-            </div>
-
-            <!-- Agent Conversation timeline -->
-            <div class="chat-messages-container" id="chat-messages-container">
-                <!-- Chat bubbles streamed live will be appended here -->
-            </div>
-
-            <!-- Bottom status/reminder bar -->
-            <div class="chat-follow-up-bar">
-                <i class="fa-solid fa-circle-info"></i>
-                <span data-i18n="editor_guide_text">우측 컴퓨터 뷰어의 편집기로 기획 수정이 가능합니다.</span>
-            </div>
-        </section>
-
-        <!-- Middle-Right Resizer Bar -->
-        <div class="resizer-bar" id="resizer-middle" title="중앙 챗 패널 너비 조절"></div>
-
-        <!-- PANEL 3: RIGHT PANEL (Manus's Computer Browser Mockup) -->
+        <!-- MAIN PANEL: RIGHT PANEL (Manus's Computer Browser Mockup) -->
         <main class="computer-panel" id="panel-computer">
             
             <!-- Browser Chrome Frame -->
@@ -4696,7 +4668,13 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
 
         // Run authentication screen initialization
         function initLockScreen() {
-            const isAuth = sessionStorage.getItem('pitl_auth') === 'true';
+            const hostname = window.location.hostname;
+            const isLocalHost = hostname === 'localhost' || 
+                                hostname === '127.0.0.1' || 
+                                hostname === '::1' || 
+                                hostname === '';
+
+            const isAuth = sessionStorage.getItem('pitl_auth') === 'true' || isLocalHost;
             if (isAuth) {
                 const overlay = document.getElementById('pitl-password-overlay');
                 if (overlay) overlay.remove();
@@ -6821,65 +6799,52 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             });
         })();
 
-        // Resizable Columns Script
+        // Resizable Columns Script (2-Column Layout: Sidebar & Main Viewer)
         function initResizablePanels() {
             const sidebar = document.getElementById('panel-sidebar');
-            const chatPanel = document.getElementById('panel-chat');
             const resizerLeft = document.getElementById('resizer-left');
-            const resizerMiddle = document.getElementById('resizer-middle');
 
-            if (!resizerLeft || !resizerMiddle) return;
+            if (!resizerLeft || !sidebar) return;
 
-            // Restore saved column widths from localStorage
+            // Restore saved column width from localStorage
             const savedSidebarWidth = localStorage.getItem('pitl_sidebar_width');
-            const savedChatWidth = localStorage.getItem('pitl_chat_width');
             if (savedSidebarWidth && sidebar) sidebar.style.width = savedSidebarWidth + 'px';
-            if (savedChatWidth && chatPanel) chatPanel.style.width = savedChatWidth + 'px';
 
-            function setupDrag(resizer, targetPanel, isSidebar) {
-                let isDragging = false;
-                let startX = 0;
-                let startWidth = 0;
+            let isDragging = false;
+            let startX = 0;
+            let startWidth = 0;
 
-                resizer.addEventListener('mousedown', (e) => {
-                    isDragging = true;
-                    startX = e.clientX;
-                    startWidth = targetPanel.offsetWidth;
-                    resizer.classList.add('dragging');
-                    document.body.style.cursor = 'col-resize';
-                    document.body.style.userSelect = 'none';
-                });
+            resizerLeft.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                startWidth = sidebar.offsetWidth;
+                resizerLeft.classList.add('dragging');
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+            });
 
-                document.addEventListener('mousemove', (e) => {
-                    if (!isDragging) return;
-                    const dx = e.clientX - startX;
-                    let newWidth = startWidth + dx;
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                let newWidth = startWidth + dx;
 
-                    const minW = isSidebar ? 200 : 260;
-                    const maxW = isSidebar ? 480 : 640;
+                const minW = 220;
+                const maxW = 560;
 
-                    if (newWidth >= minW && newWidth <= maxW) {
-                        targetPanel.style.width = newWidth + 'px';
-                        if (isSidebar) {
-                            localStorage.setItem('pitl_sidebar_width', newWidth);
-                        } else {
-                            localStorage.setItem('pitl_chat_width', newWidth);
-                        }
-                    }
-                });
+                if (newWidth >= minW && newWidth <= maxW) {
+                    sidebar.style.width = newWidth + 'px';
+                    localStorage.setItem('pitl_sidebar_width', newWidth);
+                }
+            });
 
-                document.addEventListener('mouseup', () => {
-                    if (isDragging) {
-                        isDragging = false;
-                        resizer.classList.remove('dragging');
-                        document.body.style.cursor = '';
-                        document.body.style.userSelect = '';
-                    }
-                });
-            }
-
-            setupDrag(resizerLeft, sidebar, true);
-            setupDrag(resizerMiddle, chatPanel, false);
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    resizerLeft.classList.remove('dragging');
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            });
         }
     </script>
 </body>
