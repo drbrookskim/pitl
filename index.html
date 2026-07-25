@@ -3766,7 +3766,12 @@
             }
         }
 
-        async function startProductPlanningClientSide(apiKey, idea) {
+        async function startProductPlanningClientSide(idea, apiKey) {
+            if (!idea || typeof idea !== 'string') {
+                console.error('[Pipeline Error] Invalid idea parameter:', idea);
+                return;
+            }
+            
             // Reset workspace states
             generatedDocs = null;
             currentConsoleLogs = [];
