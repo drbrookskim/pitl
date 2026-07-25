@@ -2628,14 +2628,17 @@
                     
                     <!-- Tabs mapping each document view -->
                     <div class="chrome-tab-container">
-                        <button class="chrome-tab active nav-item" id="nav-console" onclick="switchDocument('console')" data-i18n="tab_terminal">
-                            <i class="fa-solid fa-terminal" style="color: var(--accent-neon);"></i> Terminal
-                        </button>
-                        <button class="chrome-tab disabled nav-item" id="nav-1pager" onclick="switchDocument('1pager')" data-i18n="tab_1pager">
+                        <button class="chrome-tab active nav-item" id="nav-1pager" onclick="switchDocument('1pager')" data-i18n="tab_1pager">
                             <i class="fa-solid fa-file-invoice"></i> 1-Pager
                         </button>
                         <button class="chrome-tab disabled nav-item" id="nav-threec" onclick="switchDocument('threec')" data-i18n="tab_threec">
-                            <i class="fa-solid fa-chart-pie"></i> 3C 전략
+                            <i class="fa-solid fa-chart-pie"></i> 3C 분석
+                        </button>
+                        <button class="chrome-tab disabled nav-item" id="nav-swot" onclick="switchDocument('swot')" data-i18n="tab_swot">
+                            <i class="fa-solid fa-scale-balanced"></i> SWOT
+                        </button>
+                        <button class="chrome-tab disabled nav-item" id="nav-stp" onclick="switchDocument('stp')" data-i18n="tab_stp">
+                            <i class="fa-solid fa-bullseye"></i> STP
                         </button>
                         <button class="chrome-tab disabled nav-item" id="nav-mece" onclick="switchDocument('mece')" data-i18n="tab_mece">
                             <i class="fa-solid fa-network-wired"></i> MECE 분석
@@ -2672,7 +2675,7 @@
                     
                     <div class="chrome-url-box">
                         <i class="fa-solid fa-lock" style="color: var(--accent-neon);"></i>
-                        <input type="text" id="mock-browser-url" value="pitl.ai/workspace/live-terminal">
+                        <input type="text" id="mock-browser-url" value="pitl.ai/workspace/strategist-1pager">
                     </div>
                     
                     <div class="chrome-actions">
@@ -2738,9 +2741,10 @@
                 step_3_label: '3. 와이어프레임 3안 시안 (Architect)',
                 step_4_label: '4. 삼각 정합성 QA 검수 (Reviewer)',
                 editor_guide_text: '우측 컴퓨터 뷰어의 편집기로 기획 수정이 가능합니다.',
-                tab_terminal: '<i class="fa-solid fa-terminal" style="color: var(--accent-neon);"></i> Terminal',
                 tab_1pager: '<i class="fa-solid fa-file-invoice"></i> 1-Pager',
-                tab_threec: '<i class="fa-solid fa-chart-pie"></i> 3C 전략',
+                tab_threec: '<i class="fa-solid fa-chart-pie"></i> 3C 분석',
+                tab_swot: '<i class="fa-solid fa-scale-balanced"></i> SWOT',
+                tab_stp: '<i class="fa-solid fa-bullseye"></i> STP',
                 tab_mece: '<i class="fa-solid fa-network-wired"></i> MECE 분석',
                 tab_prd: '<i class="fa-solid fa-file-shield"></i> PRD Spec',
                 tab_wireframe: '<i class="fa-solid fa-crop-simple"></i> Wireframe',
@@ -2779,9 +2783,10 @@
                 step_3_label: '3. 3-Type Wireframes (Architect)',
                 step_4_label: '4. Consistency QA Audit (Reviewer)',
                 editor_guide_text: 'You can edit the planning document using the editor in the right viewer panel.',
-                tab_terminal: '<i class="fa-solid fa-terminal" style="color: var(--accent-neon);"></i> Terminal',
                 tab_1pager: '<i class="fa-solid fa-file-invoice"></i> 1-Pager',
-                tab_threec: '<i class="fa-solid fa-chart-pie"></i> 3C Strategy',
+                tab_threec: '<i class="fa-solid fa-chart-pie"></i> 3C Analysis',
+                tab_swot: '<i class="fa-solid fa-scale-balanced"></i> SWOT',
+                tab_stp: '<i class="fa-solid fa-bullseye"></i> STP',
                 tab_mece: '<i class="fa-solid fa-network-wired"></i> MECE',
                 tab_prd: '<i class="fa-solid fa-file-shield"></i> PRD Spec',
                 tab_wireframe: '<i class="fa-solid fa-crop-simple"></i> Wireframe',
@@ -2831,10 +2836,10 @@
             // Refresh history list and currently viewed document to apply translations
             loadHistoryList();
             if (typeof activeDoc !== 'undefined') {
-                if (activeDoc === 'console') {
-                    renderConsoleView();
-                } else if (activeDoc === 'wireframe') {
+                if (activeDoc === 'wireframe') {
                     renderWireframesContainer(document.getElementById('viewer-main-content'));
+                } else if (activeDoc === 'swot' || activeDoc === 'stp') {
+                    switchDocument(activeDoc);
                 } else if (isEditing) {
                     renderEditorView();
                 }
@@ -3514,7 +3519,7 @@
             
             const existingIdx = clientHistory.findIndex(item => item.title === cleanTitle && item.date === keyDate);
             
-            const types = ['1pager', 'threec', 'mece', 'prd', 'wireframe', 'audit', 'prototype'];
+            const types = ['1pager', 'threec', 'swot', 'stp', 'mece', 'prd', 'wireframe', 'audit', 'prototype'];
             const historyItem = {
                 title: cleanTitle,
                 date: keyDate,
@@ -3527,6 +3532,8 @@
                     idea: docs.idea || '',
                     '1pager': docs['1pager'] || '',
                     'threec': docs['threec'] || '',
+                    'swot': docs['swot'] || '',
+                    'stp': docs['stp'] || '',
                     'mece': docs['mece'] || '',
                     'prd': docs['prd'] || '',
                     'wireframe': docs['wireframe'] || '',
@@ -3567,16 +3574,16 @@
             const textarea = document.getElementById('idea-textarea');
             textarea.disabled = true;
 
-            // Lock all browser tabs except Live Terminal initially
+            // Lock all browser tabs initially
             document.querySelectorAll('.chrome-tab').forEach(el => {
                 el.classList.add('disabled');
                 el.classList.remove('active');
             });
-            const navConsole = document.getElementById('nav-console');
-            navConsole.classList.remove('disabled');
-            navConsole.classList.add('active');
+            const navFirst = document.getElementById('nav-1pager');
+            navFirst.classList.remove('disabled');
+            navFirst.classList.add('active');
 
-            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/live-terminal';
+            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/strategist-1pager';
 
             // Inject first System orchestrator notification in Middle panel
             const chatContainer = document.getElementById('chat-messages-container');
@@ -3933,6 +3940,8 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                     idea: ideaText,
                     '1pager': onePagerContent,
                     'threec': threeCContent,
+                    'swot': '',
+                    'stp': '',
                     'mece': meceContent,
                     'prd': prdContent,
                     'wireframe': uxContent,
@@ -4005,16 +4014,16 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             document.getElementById('btn-submit-planning').disabled = true;
             document.getElementById('idea-textarea').disabled = true;
 
-            // Lock browser tabs except live terminal
+            // Lock browser tabs
             document.querySelectorAll('.chrome-tab').forEach(el => {
                 el.classList.add('disabled');
                 el.classList.remove('active');
             });
-            const navConsole = document.getElementById('nav-console');
-            navConsole.classList.remove('disabled');
-            navConsole.classList.add('active');
+            const navFirst2 = document.getElementById('nav-1pager');
+            navFirst2.classList.remove('disabled');
+            navFirst2.classList.add('active');
 
-            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/live-terminal';
+            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/strategist-1pager';
 
             const stageLabels = {
                 'prd': t('PRD 요구사항 정의', 'PRD Requirements Definition'),
@@ -4643,7 +4652,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
 
         // Reactive Application State
         let generatedDocs = null;
-        let activeDoc = 'console';
+        let activeDoc = '1pager';
         let activeWf = 'A';
         let currentConsoleLogs = [];
         let isEditing = false;
@@ -4774,16 +4783,16 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
 
         // Render Empty state when accessing workspace directly
         function renderEmptyStateConsole() {
-            // Enable console tab
+            // Enable first tab
             document.querySelectorAll('.chrome-tab').forEach(el => {
                 el.classList.add('disabled');
                 el.classList.remove('active');
             });
-            const navConsole = document.getElementById('nav-console');
-            navConsole.classList.remove('disabled');
-            navConsole.classList.add('active');
+            const navFirst3 = document.getElementById('nav-1pager');
+            navFirst3.classList.remove('disabled');
+            navFirst3.classList.add('active');
 
-            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/live-terminal';
+            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/strategist-1pager';
 
             // Inject empty workspace welcome in middle panel
             const chatContainer = document.getElementById('chat-messages-container');
@@ -5016,16 +5025,16 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             document.getElementById('btn-submit-planning').disabled = true;
             textarea.disabled = true;
 
-            // Lock all browser tabs except Live Terminal initially
+            // Lock all browser tabs initially
             document.querySelectorAll('.chrome-tab').forEach(el => {
                 el.classList.add('disabled');
                 el.classList.remove('active');
             });
-            const navConsole = document.getElementById('nav-console');
-            navConsole.classList.remove('disabled');
-            navConsole.classList.add('active');
+            const navFirst4 = document.getElementById('nav-1pager');
+            navFirst4.classList.remove('disabled');
+            navFirst4.classList.add('active');
 
-            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/live-terminal';
+            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/strategist-1pager';
 
             // Inject first System orchestrator notification in Middle panel
             const chatContainer = document.getElementById('chat-messages-container');
@@ -5207,7 +5216,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
 
         // Switch Computer Browser active document tab
         function switchDocument(docKey) {
-            if (!generatedDocs && docKey !== 'console') return;
+            if (!generatedDocs && docKey !== '1pager') return;
             
             // Clean active states of chrome tabs
             document.querySelectorAll('.chrome-tab').forEach(el => el.classList.remove('active'));
@@ -5230,9 +5239,10 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
 
             // Update Mock browser Address bar text
             const urlPathMap = {
-                'console': 'pitl.ai/workspace/live-terminal',
                 '1pager': 'pitl.ai/workspace/strategist-1pager',
                 'threec': 'pitl.ai/workspace/strategist-3c-analysis',
+                'swot': 'pitl.ai/workspace/strategist-swot-analysis',
+                'stp': 'pitl.ai/workspace/strategist-stp-analysis',
                 'mece': 'pitl.ai/workspace/strategist-mece-analysis',
                 'prd': 'pitl.ai/workspace/architect-prd-spec',
                 'wireframe': 'pitl.ai/workspace/architect-wireframes',
@@ -5245,7 +5255,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             }
 
             // Enable/disable Edit button in browser chrome based on document type
-            const editableDocs = ['1pager', 'threec', 'mece', 'prd', 'wireframe'];
+            const editableDocs = ['1pager', 'threec', 'swot', 'stp', 'mece', 'prd', 'wireframe'];
             const btnEdit = document.getElementById('btn-edit');
             if (btnEdit) {
                 if (generatedDocs && editableDocs.includes(docKey)) {
@@ -5266,8 +5276,29 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 renderWireframesContainer(targetArea);
             } else if (docKey === 'prototype') {
                 renderPrototypeView(targetArea);
-            } else if (docKey === 'console') {
-                renderConsoleView();
+            } else if (docKey === 'swot' || docKey === 'stp') {
+                const mdRaw = generatedDocs ? (generatedDocs[docKey] || '') : '';
+                if (mdRaw) {
+                    targetArea.innerHTML = `
+                        <div class="document-wrapper markdown-body">
+                            ${marked.parse(mdRaw)}
+                        </div>
+                    `;
+                } else {
+                    const labelMap = { 'swot': 'SWOT', 'stp': 'STP' };
+                    targetArea.innerHTML = `
+                        <div class="document-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center;">
+                            <i class="fa-solid ${docKey === 'swot' ? 'fa-scale-balanced' : 'fa-bullseye'}" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px; opacity: 0.4;"></i>
+                            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; color: var(--text-secondary); margin-bottom: 8px;">${labelMap[docKey]} Analysis</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); max-width: 320px; line-height: 1.6;">
+                                ${t(
+                                    labelMap[docKey] + ' 분석 기능은 향후 업데이트에서 자동 생성이 지원될 예정입니다.<br>현재는 기획 수정 모드에서 직접 작성할 수 있습니다.',
+                                    labelMap[docKey] + ' analysis auto-generation will be supported in a future update.<br>You can manually write content using the edit mode.'
+                                )}
+                            </p>
+                        </div>
+                    `;
+                }
             } else {
                 const mdRaw = generatedDocs[docKey] || '';
                 targetArea.innerHTML = `
@@ -5366,6 +5397,8 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             const nextStageMap = {
                 '1pager': 'prd',
                 'threec': 'prd',
+                'swot': 'prd',
+                'stp': 'prd',
                 'mece': 'prd',
                 'prd': 'wireframe',
                 'wireframe': 'audit'
@@ -5464,16 +5497,16 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             document.getElementById('btn-submit-planning').disabled = true;
             document.getElementById('idea-textarea').disabled = true;
 
-            // Lock browser tabs except live terminal
+            // Lock browser tabs
             document.querySelectorAll('.chrome-tab').forEach(el => {
                 el.classList.add('disabled');
                 el.classList.remove('active');
             });
-            const navConsole = document.getElementById('nav-console');
-            navConsole.classList.remove('disabled');
-            navConsole.classList.add('active');
+            const navFirst5 = document.getElementById('nav-1pager');
+            navFirst5.classList.remove('disabled');
+            navFirst5.classList.add('active');
 
-            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/live-terminal';
+            document.getElementById('mock-browser-url').value = 'pitl.ai/workspace/strategist-1pager';
 
             // Add cascading start log in middle panel
             const stageLabels = {
