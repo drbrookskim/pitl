@@ -803,6 +803,42 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
+        /* Resizable Panels Column Separator Bar */
+        .resizer-bar {
+            width: 6px;
+            background: transparent;
+            cursor: col-resize;
+            user-select: none;
+            z-index: 100;
+            flex-shrink: 0;
+            position: relative;
+            transition: background 0.2s ease;
+        }
+
+        .resizer-bar::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 2px;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 36px;
+            border-radius: 1px;
+            background: var(--border-color);
+            transition: background 0.2s ease, height 0.2s ease, width 0.2s ease;
+        }
+
+        .resizer-bar:hover::after, .resizer-bar.dragging::after {
+            background: var(--accent-neon);
+            height: 64px;
+            width: 3px;
+            left: 1.5px;
+        }
+
+        .resizer-bar:hover, .resizer-bar.dragging {
+            background: rgba(16, 185, 129, 0.08);
+        }
+
         .history-card-meta {
             display: flex;
             justify-content: space-between;
@@ -2613,7 +2649,7 @@
         <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
         
         <!-- PANEL 1: LEFT SIDEBAR (History, Actions, Reset) -->
-        <aside class="sidebar-panel">
+        <aside class="sidebar-panel" id="panel-sidebar">
             <div class="sidebar-logo-container">
                 <div class="sidebar-logo-icon">
                     <i class="fa-solid fa-arrows-spin fa-spin" style="--fa-animation-duration: 3s;" id="brand-logo-icon"></i>
@@ -2624,13 +2660,11 @@
                         <span class="status-dot-pulse"></span> <span data-i18n="agent_status_active">AGENTS ACTIVE</span>
                     </span>
                 </div>
-            </div>
-
-            <!-- 테마 변경 및 API 설정 퀵 액션 버튼 (PITL Agent 로고 바로 밑 위치) -->
-            <div class="sidebar-quick-actions">
-                <button class="theme-toggle-btn btn-quick-action" onclick="toggleTheme()" title="테마 변경">
+                
+                <button class="btn-quick-action" id="btn-theme-toggle-sidebar" onclick="toggleTheme()" title="테마 전환" style="margin-left: auto;">
                     <i class="fa-solid fa-moon"></i>
                 </button>
+                
                 <button class="btn-quick-action" id="btn-api-settings-sidebar" onclick="openSettingsModal()" title="API 설정">
                     <i class="fa-solid fa-key"></i>
                     <span id="proxy-badge-sidebar" style="display:none;position:absolute;top:-3px;right:-3px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--bg-primary,#0a0a0f);"></span>
@@ -2649,8 +2683,11 @@
             </div>
         </aside>
 
+        <!-- Left-Middle Resizer Bar -->
+        <div class="resizer-bar" id="resizer-left" title="좌측 히스토리 패널 너비 조절"></div>
+
         <!-- PANEL 2: MIDDLE PANEL (Timeline - AI Agent Thoughts) -->
-        <section class="chat-panel">
+        <section class="chat-panel" id="panel-chat">
             
             <!-- Dynamic workflow progressive checklist -->
             <div class="stepper-container">
@@ -2698,8 +2735,11 @@
             </div>
         </section>
 
+        <!-- Middle-Right Resizer Bar -->
+        <div class="resizer-bar" id="resizer-middle" title="중앙 챗 패널 너비 조절"></div>
+
         <!-- PANEL 3: RIGHT PANEL (Manus's Computer Browser Mockup) -->
-        <main class="computer-panel">
+        <main class="computer-panel" id="panel-computer">
             
             <!-- Browser Chrome Frame -->
             <div class="computer-chrome">
@@ -6604,8 +6644,72 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 icons.forEach(icon => {
                     icon.className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
                 });
+                
+                // Initialize Resizable Column Panels
+                initResizablePanels();
             });
         })();
+
+        // Resizable Columns Script
+        function initResizablePanels() {
+            const sidebar = document.getElementById('panel-sidebar');
+            const chatPanel = document.getElementById('panel-chat');
+            const resizerLeft = document.getElementById('resizer-left');
+            const resizerMiddle = document.getElementById('resizer-middle');
+
+            if (!resizerLeft || !resizerMiddle) return;
+
+            // Restore saved column widths from localStorage
+            const savedSidebarWidth = localStorage.getItem('pitl_sidebar_width');
+            const savedChatWidth = localStorage.getItem('pitl_chat_width');
+            if (savedSidebarWidth && sidebar) sidebar.style.width = savedSidebarWidth + 'px';
+            if (savedChatWidth && chatPanel) chatPanel.style.width = savedChatWidth + 'px';
+
+            function setupDrag(resizer, targetPanel, isSidebar) {
+                let isDragging = false;
+                let startX = 0;
+                let startWidth = 0;
+
+                resizer.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    startX = e.clientX;
+                    startWidth = targetPanel.offsetWidth;
+                    resizer.classList.add('dragging');
+                    document.body.style.cursor = 'col-resize';
+                    document.body.style.userSelect = 'none';
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+                    const dx = e.clientX - startX;
+                    let newWidth = startWidth + dx;
+
+                    const minW = isSidebar ? 200 : 260;
+                    const maxW = isSidebar ? 480 : 640;
+
+                    if (newWidth >= minW && newWidth <= maxW) {
+                        targetPanel.style.width = newWidth + 'px';
+                        if (isSidebar) {
+                            localStorage.setItem('pitl_sidebar_width', newWidth);
+                        } else {
+                            localStorage.setItem('pitl_chat_width', newWidth);
+                        }
+                    }
+                });
+
+                document.addEventListener('mouseup', () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        resizer.classList.remove('dragging');
+                        document.body.style.cursor = '';
+                        document.body.style.userSelect = '';
+                    }
+                });
+            }
+
+            setupDrag(resizerLeft, sidebar, true);
+            setupDrag(resizerMiddle, chatPanel, false);
+        }
     </script>
 </body>
 </html>
