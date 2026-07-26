@@ -544,12 +544,41 @@
             line-height: var(--lh);
         }
 
-        .landing-history-grid {
-            display: grid;
-            /* 4-column modular grid within landing content */
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--sp-2); /* 16px = 2bl */
+        /* ── Landing History Marquee (Credit Roll) ── */
+        .landing-history-section {
             width: 100%;
+            overflow: hidden;
+        }
+
+        .landing-history-marquee-wrapper {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+        }
+
+        .landing-history-grid {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 16px;
+            width: max-content;
+            animation: marquee-scroll 28s linear infinite;
+            padding: 4px 0;
+        }
+
+        .landing-history-grid:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes marquee-scroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .landing-history-card {
+            flex: 0 0 220px;
+            width: 220px;
         }
 
         .landing-history-card {
@@ -881,16 +910,17 @@
             background: rgba(16, 185, 129, 0.08);
         }
 
-        /* Circular Step Nodes Container & Liquid Bottom-to-Top Fill Animation */
+        /* ── Circular Step Nodes — SVG Ring Progress + Percent Overlay ── */
         .circle-steps-container {
             display: flex;
             align-items: center;
-            justify-content: space-around;
-            gap: 6px;
-            margin-bottom: 32px;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 28px;
             flex-wrap: nowrap;
             width: 100%;
-            padding: 6px 0;
+            padding: 8px 0;
+            overflow: visible;
         }
 
         .circle-step-item {
@@ -908,11 +938,48 @@
             transform: translateY(-3px);
         }
 
+        /* Outer wrapper that holds SVG ring + inner content */
         .circle-step-node {
-            width: 58px;
-            height: 58px;
+            width: 95px;
+            height: 95px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* SVG ring sits absolutely over the node */
+        .circle-step-node .ring-svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            transform: rotate(-90deg);
+            overflow: visible;
+        }
+
+        .circle-step-node .ring-track {
+            fill: none;
+            stroke: rgba(255,255,255,0.08);
+            stroke-width: 5;
+        }
+
+        .circle-step-node .ring-fill {
+            fill: none;
+            stroke: var(--accent-neon);
+            stroke-width: 5;
+            stroke-linecap: round;
+            /* r=56 → circumference = 2πr ≈ 351.86 */
+            stroke-dasharray: 267.04;
+            stroke-dashoffset: 267.04;
+            transition: stroke-dashoffset 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: drop-shadow(0 0 3px var(--accent-neon));
+        }
+
+        /* Inner circle disc */
+        .circle-step-node .node-inner {
+            width: 74px;
+            height: 74px;
             border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.15);
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -920,74 +987,120 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden;
-            color: #94a3b8;
-            font-size: 22px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        .circle-step-node .node-icon {
-            position: relative;
             z-index: 2;
-            color: #cbd5e1;
-            transition: color 0.3s ease;
+            overflow: hidden;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* Liquid fill element inside circle node - Fills from bottom to top (0% -> 100%) */
-        .circle-step-node .liquid-fill {
+        /* Liquid fill — rises from bottom 0 → 100% */
+        .circle-step-node .node-liquid {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 0%;
-            background: linear-gradient(180deg, var(--accent-neon), #059669);
-            transition: height 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 1;
-            border-radius: 0 0 50% 50%;
+            height: 0%;                                /* animated by JS */
+            background: linear-gradient(0deg,
+                rgba(5, 150, 105, 0.85)  0%,
+                rgba(16, 185, 129, 0.65) 60%,
+                rgba(52, 211, 153, 0.4)  100%);
+            transition: height 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 0;
+            /* Wave top edge */
+            border-radius: 48% 52% 0 0 / 18% 18% 0 0;
         }
 
-        .circle-step-item.active .circle-step-node {
-            border-color: var(--accent-neon);
-            box-shadow: 0 0 24px rgba(16, 185, 129, 0.5);
-            transform: scale(1.06);
+        /* Subtle wave shimmer on active nodes */
+        .circle-step-item.active .node-liquid {
+            animation: liquid-wave 2.4s ease-in-out infinite;
         }
 
-        .circle-step-item.active .circle-step-node .node-icon {
+        @keyframes liquid-wave {
+            0%, 100% { border-radius: 48% 52% 0 0 / 18% 18% 0 0; }
+            33%       { border-radius: 54% 46% 0 0 / 12% 24% 0 0; }
+            66%       { border-radius: 44% 56% 0 0 / 22% 14% 0 0; }
+        }
+
+
+        .circle-step-node .node-icon {
+            font-size: 26px;
+            color: #94a3b8;
+            transition: color 0.3s ease, opacity 0.3s ease;
+            position: absolute;
+            z-index: 2;
+        }
+
+        /* Percent label — hidden by default, shown when active/completed */
+        .circle-step-node .node-percent {
+            position: absolute;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
             color: #ffffff;
-            font-weight: bold;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            letter-spacing: -0.5px;
+            z-index: 3;
         }
 
-        .circle-step-item.completed .circle-step-node {
-            border-color: var(--accent-neon);
-            box-shadow: 0 0 16px rgba(16, 185, 129, 0.3);
+        /* ACTIVE state */
+        .circle-step-item.active .ring-fill {
+            stroke: var(--accent-neon);
+            filter: drop-shadow(0 0 3px var(--accent-neon));
         }
+        .circle-step-item.active .node-inner {
+            background: transparent;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4), inset 0 0 10px rgba(16,185,129,0.1);
+        }
+        .circle-step-item.active .node-icon { opacity: 0; }
+        .circle-step-item.active .node-percent { opacity: 1; color: var(--accent-neon); }
 
-        .circle-step-item.completed .circle-step-node .node-icon {
-            color: #ffffff;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+        /* COMPLETED state */
+        .circle-step-item.completed .ring-fill {
+            stroke-dashoffset: 0 !important;
+            stroke: var(--accent-neon);
         }
+        .circle-step-item.completed .node-inner {
+            background: transparent;
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.3);
+        }
+        .circle-step-item.completed .node-icon { opacity: 0; }
+        .circle-step-item.completed .node-percent { opacity: 1; color: #ffffff; }
+        .circle-step-item.completed .node-liquid { height: 100% !important; border-radius: 0; }
 
-        .circle-step-item.completed .circle-step-node .liquid-fill {
-            height: 100% !important;
-            border-radius: 0;
-        }
+        /* PENDING state */
+        .circle-step-item.pending .ring-fill { stroke-dashoffset: 267.04; }
+        .circle-step-item.pending .node-icon  { opacity: 1; color: #94a3b8; }
+        .circle-step-item.pending .node-percent { opacity: 0; }
+        .circle-step-item.pending .node-liquid { height: 0% !important; }
 
         .circle-step-label {
-            font-size: 11px;
+            font-size: 14px;
             font-weight: 700;
-            color: #cbd5e1;
+            color: #94a3b8;
             letter-spacing: 0.5px;
             transition: color 0.3s ease;
+            text-align: center;
         }
+        .circle-step-item.active   .circle-step-label { color: var(--accent-neon); }
+        .circle-step-item.completed .circle-step-label { color: var(--text-primary); }
 
-        .circle-step-item.active .circle-step-label {
+        .circle-step-sublabel {
+            font-size: 10px;
+            font-weight: 600;
             color: var(--accent-neon);
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: opacity 0.35s ease, height 0.35s ease, margin-top 0.35s ease;
+            text-align: center;
+            white-space: nowrap;
+            letter-spacing: -0.3px;
         }
-
-        .circle-step-item.active .circle-step-label,
-        .circle-step-item.completed .circle-step-label {
-            color: var(--text-primary);
+        .circle-step-item.organizing .circle-step-sublabel {
+            opacity: 1;
+            height: 14px;
+            margin-top: 4px;
         }
 
         .history-card-meta {
@@ -1000,7 +1113,7 @@
         .sidebar-empty-state {
             text-align: center;
             padding: 20px;
-            font-size: 11px;
+            font-size: 14px;
             color: var(--text-muted);
             border: 1px dashed var(--border-color);
             border-radius: 8px;
@@ -1384,7 +1497,7 @@
 
         .chrome-url-box i {
             color: var(--text-muted);
-            font-size: 11px;
+            font-size: 14px;
         }
 
         .chrome-url-box input {
@@ -1410,7 +1523,7 @@
             color: var(--accent-green);
             padding: 4px 10px;
             border-radius: 12px;
-            font-size: 11px;
+            font-size: 14px;
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -2456,7 +2569,7 @@
         }
         
         .password-title {
-            font-size: 22px;
+            font-size: 15px;
             font-weight: 700;
             color: #121211;
             margin-bottom: 8px;
@@ -2729,23 +2842,20 @@
         
         <!-- Minimal Top Navigation -->
         <div class="landing-top-bar">
-            <div class="landing-logo">
+            <div class="landing-logo" onclick="showPipelineProgressView()" style="cursor: pointer;" title="진행률 뷰로 이동">
                 <i class="fa-solid fa-arrows-spin"></i>
-                <span>PITL Agent</span>
+                <span>PITL Workspace</span>
             </div>
             <div class="landing-top-actions">
-                <button class="btn-minimal lang-toggle-btn" onclick="toggleLanguage()" title="Change Language / 언어 변경">
-                    <i class="fa-solid fa-globe"></i> <span class="current-lang-label">KR</span>
-                </button>
-                <button class="btn-minimal theme-toggle-btn" onclick="toggleTheme()" title="테마 변경">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
                 <button class="btn-minimal" id="btn-api-settings-nav" onclick="openSettingsModal()" title="API 설정" data-i18n="landing_nav_api_settings">
                     <i class="fa-solid fa-key"></i> API 설정
                     <span id="proxy-badge-nav" style="display:none;margin-left:4px;background:#10b981;color:#fff;font-size:9px;padding:1px 5px;border-radius:8px;vertical-align:middle;">로컬</span>
                 </button>
+                <button class="btn-minimal theme-toggle-btn" onclick="toggleTheme()" title="테마 변경">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
                 <button class="btn-minimal" onclick="goToWorkspaceDashboard()">
-                    <i class="fa-solid fa-desktop"></i> 워크스페이스 대시보드
+                    <i class="fa-solid fa-desktop"></i> 워크스페이스
                 </button>
                 <button class="btn-minimal" onclick="logout()" title="로그아웃">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
@@ -2760,43 +2870,26 @@
             </div>
             
             <div class="landing-header">
-                <h1 class="landing-title" data-i18n="landing_title">Planning-in-the-Loop <span>Agent</span></h1>
-                <p class="landing-subtitle" data-i18n="landing_subtitle">
-                    4인의 전용 AI 에이전트 협업 팀이 아이디어 하나로 비즈니스 전략 기획서(1-pager),<br>
-                    요구사항 정의서(PRD), 와이어프레임 3안 시안 및 삼각 정합성 검수서를 실시간 완공합니다.
-                </p>
+                <h1 class="landing-title">Planning-in-the-Loop <span>Workspace</span></h1>
             </div>
 
             <!-- Glowing Centered Prompt Input Box (Supports 3D Card Tilt) -->
             <div class="manus-prompt-container">
                 <div class="prompt-box-inner">
                     <textarea id="idea-textarea" placeholder="기획하고 싶으신 상품이나 피처 아이디어를 제출하세요. (예: 구글 뉴스 API 기반의 온디맨드 뉴스 큐레이션 플랫폼 설계해줘.)" data-i18n-placeholder="prompt_placeholder" onkeydown="handleLandingKeydown(event)"></textarea>
-                    <button class="prompt-submit-btn" onclick="startPlanningFromLanding()" id="btn-submit-planning">
-                        <i class="fa-solid fa-arrow-up"></i>
+                    <button class="prompt-submit-btn" onclick="startPlanningFromLanding()" id="btn-submit-planning" title="기획 생성 시작">
+                        <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Suggestion Pills -->
-            <div class="suggestions-container">
-                <button class="suggestion-pill" onclick="populateSuggestion('news_api')" data-i18n="suggestion_news_api">
-                    📰 뉴스 API 기반 큐레이션 툴
-                </button>
-                <button class="suggestion-pill" onclick="populateSuggestion('wellness_app')" data-i18n="suggestion_wellness_app">
-                    🧘 구독형 스트레칭 가이드 앱
-                </button>
-                <button class="suggestion-pill" onclick="populateSuggestion('kanban_dashboard')" data-i18n="suggestion_kanban_dashboard">
-                    📊 에이전트 칸반 대시보드 툴
-                </button>
-            </div>
-
-
-
-            <!-- Recent Planning Runs Divider & Grid -->
+            <!-- Recent Planning Runs Divider & Marquee -->
             <div class="landing-history-section">
                 <div class="section-divider-title" data-i18n="history_section_title">최근 생성된 완공 기획안 히스토리</div>
-                <div class="landing-history-grid" id="landing-history-list">
-                    <!-- History cards injected here -->
+                <div class="landing-history-marquee-wrapper">
+                    <div class="landing-history-grid" id="landing-history-list">
+                        <!-- History cards injected here (doubled for seamless loop) -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -2811,12 +2904,12 @@
         
         <!-- PANEL 1: LEFT SIDEBAR (History, Actions, Reset) -->
         <aside class="sidebar-panel" id="panel-sidebar">
-            <div class="sidebar-logo-container">
+            <div class="sidebar-logo-container" onclick="showPipelineProgressView()" style="cursor: pointer;" title="파이프라인 진행률 뷰로 이동">
                 <div class="sidebar-logo-icon">
                     <i class="fa-solid fa-arrows-spin fa-spin" style="--fa-animation-duration: 3s;" id="brand-logo-icon"></i>
                 </div>
                 <div class="sidebar-logo-meta">
-                    <h3>PITL Agent</h3>
+                    <h3>PITL Workspace</h3>
                     <span class="agent-status-tag">
                         <span class="status-dot-pulse"></span> <span data-i18n="agent_status_active">AGENTS ACTIVE</span>
                     </span>
@@ -2915,17 +3008,11 @@
                         </span>
                         
                         <button class="btn-minimal lang-toggle-btn" onclick="toggleLanguage()" title="Change Language / 언어 변경">
-                            <i class="fa-solid fa-globe"></i> <span class="current-lang-label">KR</span>
+                            <i class="fa-solid fa-globe"></i>
                         </button>
                         
-                        <button class="btn-minimal" onclick="toggleEditMode()" id="btn-edit" disabled style="opacity: 0.5; cursor: not-allowed;" data-i18n="btn_edit">
-                            <i class="fa-regular fa-pen-to-square"></i> 기획 수정
-                        </button>
                         <button class="btn-minimal" onclick="copyActiveDocument()" id="btn-copy" disabled style="opacity: 0.5; cursor: not-allowed;" data-i18n="btn_copy">
                             <i class="fa-regular fa-copy"></i> 마크다운 복사
-                        </button>
-                        <button class="btn-minimal" onclick="simulatePDFDownload()" id="btn-pdf" disabled style="opacity: 0.5; cursor: not-allowed;" data-i18n="btn_pdf">
-                            <i class="fa-regular fa-file-pdf"></i> PDF 내보내기
                         </button>
                     </div>
                 </div>
@@ -2957,7 +3044,7 @@
                 landing_nav_dashboard: '<i class="fa-solid fa-desktop"></i> 워크스페이스 대시보드',
                 badge_autonomous_agent: '<i class="fa-solid fa-wand-magic-sparkles"></i> Autonomous AI Agent Team',
                 landing_title: 'Planning-in-the-Loop <span>Agent</span>',
-                landing_subtitle: '전문 AI 에이전트 4팀이 아이디어 하나로 사업 전략(1-Pager), 요구사항(PRD),<br>와이어프레임 3안, 정합성 검수서까지 한 번에 완성합니다.',
+                landing_subtitle: '',
                 prompt_placeholder: '기획하고 싶은 제품이나 기능 아이디어를 입력해 보세요. (예: 구글 뉴스 API 기반 온디맨드 뉴스 큐레이션 플랫폼)',
                 suggestion_news_api: '📰 뉴스 API 기반 큐레이션 툴',
                 suggestion_wellness_app: '🧘 구독형 스트레칭 가이드 앱',
@@ -3985,41 +4072,159 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
             localStorage.setItem('pitl_client_history', JSON.stringify(clientHistory));
         }
 
-        // Helper to update animated pipeline progress bar & percentage globally
+        // Smooth Progressive Pipeline Progress Animator
+        window.pitlProgressTimer = null;
+        window.pitlCurrentProgress = 0;
+
         window.updatePipelineProgress = function(percent, activeKey) {
             try {
+                if (window.pitlProgressTimer) {
+                    clearInterval(window.pitlProgressTimer);
+                    window.pitlProgressTimer = null;
+                }
+
+                const CIRCUMFERENCE = 267.04; // 2π × r=42.5
                 const fillEl = document.getElementById('pipeline-progress-fill');
                 const percentEl = document.getElementById('progress-percent-label');
-                
-                if (fillEl) fillEl.style.width = percent + '%';
-                if (percentEl) percentEl.innerText = percent + '%';
 
-                // Update circular step nodes liquid fill height & states
-                if (activeKey) {
-                    const stepKeys = ['1pager', 'threec', 'swot', 'stp', 'mece', 'prd', 'wireframe', 'prototype', 'audit'];
-                    const activeIdx = stepKeys.indexOf(activeKey);
+                const stepKeys = ['1pager', 'threec', 'swot', 'stp', 'mece', 'prd', 'wireframe', 'prototype', 'audit'];
+                const activeIdx = activeKey === 'completed_all' ? 9 : stepKeys.indexOf(activeKey);
 
-                    stepKeys.forEach((key, idx) => {
-                        const itemEl = document.getElementById(`circle-node-${key}`);
-                        const fillNode = document.getElementById(`liquid-fill-${key}`);
+                // Overall pipeline progress updates ONLY when a step is completed (0/9, 1/9, 2/9 ... 9/9)
+                const completedSteps = activeKey === 'completed_all' ? 9 : Math.max(0, activeIdx);
+                const overallTarget = Math.min(100, Math.round((completedSteps / 9) * 100));
 
-                        if (itemEl && fillNode) {
-                            if (idx < activeIdx) {
-                                // Completed steps: 100% liquid fill
-                                itemEl.className = 'circle-step-item completed';
-                                fillNode.style.height = '100%';
-                            } else if (idx === activeIdx) {
-                                // Currently active step: liquid animation rising from bottom (0% -> 100%)
-                                itemEl.className = 'circle-step-item active';
-                                setTimeout(() => { fillNode.style.height = '100%'; }, 50);
-                            } else {
-                                // Pending steps
-                                itemEl.className = 'circle-step-item pending';
-                                fillNode.style.height = '0%';
-                            }
-                        }
-                    });
+                const startPercent = window.pitlCurrentProgress || 0;
+                let currentOverall = startPercent;
+                const duration = 300;
+                const intervalTime = 20;
+                const steps = Math.max(1, Math.round(duration / intervalTime));
+                const overallIncrement = (overallTarget - startPercent) / steps;
+
+                let count = 0;
+                const overallTimer = setInterval(() => {
+                    count++;
+                    currentOverall += overallIncrement;
+                    if (count >= steps || (overallIncrement >= 0 && currentOverall >= overallTarget)) {
+                        currentOverall = overallTarget;
+                        clearInterval(overallTimer);
+                    }
+                    window.pitlCurrentProgress = currentOverall;
+                    const roundedOverall = Math.min(100, Math.max(0, Math.round(currentOverall)));
+                    if (fillEl) fillEl.style.width = roundedOverall + '%';
+                    if (percentEl) percentEl.innerText = roundedOverall + '%';
+                }, intervalTime);
+
+                if (!activeKey || activeKey === 'completed_all') {
+                    if (activeKey === 'completed_all') {
+                        stepKeys.forEach(key => {
+                            const itemEl   = document.getElementById(`circle-node-${key}`);
+                            const ringEl   = document.getElementById(`ring-fill-${key}`);
+                            const pctEl    = document.getElementById(`node-pct-${key}`);
+                            const liquidEl = document.getElementById(`node-liquid-${key}`);
+                            if (itemEl) itemEl.className = 'circle-step-item completed';
+                            if (ringEl) ringEl.style.strokeDashoffset = '0';
+                            if (pctEl) pctEl.textContent = '100%';
+                            if (liquidEl) liquidEl.style.height = '100%';
+                        });
+                    }
+                    return;
                 }
+
+                // 2) Update node states (Past = completed/100%, Future = pending/0%)
+                stepKeys.forEach((key, idx) => {
+                    const itemEl   = document.getElementById(`circle-node-${key}`);
+                    const ringEl   = document.getElementById(`ring-fill-${key}`);
+                    const pctEl    = document.getElementById(`node-pct-${key}`);
+                    let   liquidEl = document.getElementById(`node-liquid-${key}`);
+
+                    if (!itemEl) return;
+
+                    if (!liquidEl) {
+                        const nodeInner = itemEl.querySelector('.node-inner');
+                        if (nodeInner) {
+                            liquidEl = document.createElement('div');
+                            liquidEl.className = 'node-liquid';
+                            liquidEl.id = `node-liquid-${key}`;
+                            nodeInner.insertBefore(liquidEl, nodeInner.firstChild);
+                        }
+                    }
+
+                    let sublabelEl = document.getElementById(`node-sublabel-${key}`);
+                    if (!sublabelEl && itemEl) {
+                        sublabelEl = document.createElement('span');
+                        sublabelEl.className = 'circle-step-sublabel';
+                        sublabelEl.id = `node-sublabel-${key}`;
+                        sublabelEl.textContent = '생성된 내용을 정리하고 있습니다.';
+                        itemEl.appendChild(sublabelEl);
+                    }
+
+                    if (idx < activeIdx) {
+                        itemEl.className = 'circle-step-item completed';
+                        if (ringEl)   ringEl.style.strokeDashoffset = '0';
+                        if (pctEl)    pctEl.textContent = '100%';
+                        if (liquidEl) liquidEl.style.height = '100%';
+                    } else if (idx > activeIdx) {
+                        itemEl.className = 'circle-step-item pending';
+                        if (ringEl)   ringEl.style.strokeDashoffset = String(CIRCUMFERENCE);
+                        if (pctEl)    pctEl.textContent = '0%';
+                        if (liquidEl) liquidEl.style.height = '0%';
+                    }
+                });
+
+                // 3) Smoothly fill current Active Step node from 0% -> 100% while AI is working
+                const activeItemEl   = document.getElementById(`circle-node-${activeKey}`);
+                const activeRingEl   = document.getElementById(`ring-fill-${activeKey}`);
+                const activePctEl    = document.getElementById(`node-pct-${activeKey}`);
+                const activeLiquidEl = document.getElementById(`node-liquid-${activeKey}`);
+
+                if (activeItemEl) {
+                    activeItemEl.className = 'circle-step-item active';
+                }
+
+                let stepPct = 0;
+                const activeSublabelEl = document.getElementById(`node-sublabel-${activeKey}`);
+
+                const updateActiveStepUI = (val) => {
+                    const clampedVal = Math.min(99, Math.max(0, val));
+                    const offset = CIRCUMFERENCE * (1 - clampedVal / 100);
+                    if (activeRingEl)   activeRingEl.style.strokeDashoffset = String(offset);
+                    if (activePctEl)    activePctEl.textContent = Math.round(clampedVal) + '%';
+                    if (activeLiquidEl) activeLiquidEl.style.height = clampedVal + '%';
+
+                    if (activeItemEl) {
+                        activeItemEl.classList.add('organizing');
+                    }
+
+                    // Dynamic Pacing Sublabel Messages
+                    if (activeSublabelEl) {
+                        if (clampedVal < 35) {
+                            activeSublabelEl.textContent = '아이디어 및 데이터 분석 중...';
+                        } else if (clampedVal < 70) {
+                            activeSublabelEl.textContent = '프레임워크 기획안 도출 중...';
+                        } else if (clampedVal < 92) {
+                            activeSublabelEl.textContent = '생성된 내용을 정리하고 있습니다.';
+                        } else {
+                            activeSublabelEl.textContent = '최종 검수 및 렌더링 중...';
+                        }
+                    }
+                };
+
+                updateActiveStepUI(0);
+                window.pitlProgressTimer = setInterval(() => {
+                    if (stepPct < 99) {
+                        let inc = 0;
+                        if (stepPct < 35)      inc = 1.8;
+                        else if (stepPct < 70) inc = 1.2;
+                        else if (stepPct < 92) inc = 0.6;
+                        else                   inc = 0.25;
+
+                        stepPct += inc;
+                        if (stepPct > 99) stepPct = 99;
+                        updateActiveStepUI(stepPct);
+                    }
+                }, 100);
+
             } catch (e) {
                 console.warn('[Progress] Update failed:', e);
             }
@@ -4041,18 +4246,20 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
             generatedDocs = null;
             currentConsoleLogs = [];
             currentActiveStep = 0;
-            document.getElementById('badge-qa-status').style.display = 'none';
-            document.getElementById('btn-copy').disabled = true;
-            document.getElementById('btn-pdf').disabled = true;
-            document.getElementById('btn-edit').disabled = true;
+            function setBtnState(id, disabled, opacity, cursor) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (disabled !== undefined) el.disabled = disabled;
+                if (opacity !== undefined) el.style.opacity = opacity;
+                if (cursor !== undefined) el.style.cursor = cursor;
+            }
 
-            // Opacity and styling lock of buttons
-            document.getElementById('btn-copy').style.opacity = '0.5';
-            document.getElementById('btn-pdf').style.opacity = '0.5';
-            document.getElementById('btn-edit').style.opacity = '0.5';
-            document.getElementById('btn-copy').style.cursor = 'not-allowed';
-            document.getElementById('btn-pdf').style.cursor = 'not-allowed';
-            document.getElementById('btn-edit').style.cursor = 'not-allowed';
+            const badgeQa = document.getElementById('badge-qa-status');
+            if (badgeQa) badgeQa.style.display = 'none';
+
+            setBtnState('btn-copy', true, '0.5', 'not-allowed');
+            setBtnState('btn-pdf', true, '0.5', 'not-allowed');
+            setBtnState('btn-edit', true, '0.5', 'not-allowed');
 
             // Disable prompt submission button on landing
             document.getElementById('btn-submit-planning').disabled = true;
@@ -4086,73 +4293,137 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
             const targetArea = document.getElementById('viewer-main-content');
             targetArea.innerHTML = `
                 <div class="document-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 160px); padding: 40px 20px; text-align: center;">
-                    <div style="background: rgba(15, 18, 26, 0.85); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); padding: 44px 32px; width: 98%; max-width: 1080px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; margin-top: -6vh;">
+                    <div style="background: rgba(15, 18, 26, 0.85); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); padding: 30px 30px; width: 150%; max-width: 1500px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; margin-top: -6vh;">
                         
-                        <!-- Circular Step Node Tabs (Positioned directly above progress bar) -->
+                        <!-- Circular Step Node Tabs with SVG ring progress -->
                         <div class="circle-steps-container">
+
                             <div class="circle-step-item active" id="circle-node-1pager" title="1-Pager 비즈니스 요약">
                                 <div class="circle-step-node">
-                                    <i class="fa-solid fa-file-invoice node-icon"></i>
-                                    <div class="liquid-fill" id="liquid-fill-1pager" style="height: 0%;"></div>
+                                    <svg class="ring-svg" viewBox="0 0 95 95">
+                                        <circle class="ring-track" cx="47.5" cy="47.5" r="42.5"/>
+                                        <circle class="ring-fill" id="ring-fill-1pager" cx="47.5" cy="47.5" r="42.5"/>
+                                    </svg>
+                                    <div class="node-inner">
+                                        <i class="fa-solid fa-file-invoice node-icon"></i>
+                                        <span class="node-percent" id="node-pct-1pager">0%</span>
+                                    </div>
                                 </div>
                                 <span class="circle-step-label">1-Pager</span>
                             </div>
+
                             <div class="circle-step-item pending" id="circle-node-threec" title="3C 환경 분석">
                                 <div class="circle-step-node">
-                                    <i class="fa-solid fa-chart-pie node-icon"></i>
-                                    <div class="liquid-fill" id="liquid-fill-threec" style="height: 0%;"></div>
+                                    <svg class="ring-svg" viewBox="0 0 95 95">
+                                        <circle class="ring-track" cx="47.5" cy="47.5" r="42.5"/>
+                                        <circle class="ring-fill" id="ring-fill-threec" cx="47.5" cy="47.5" r="42.5"/>
+                                    </svg>
+                                    <div class="node-inner">
+                                        <i class="fa-solid fa-chart-pie node-icon"></i>
+                                        <span class="node-percent" id="node-pct-threec">0%</span>
+                                    </div>
                                 </div>
                                 <span class="circle-step-label">3C</span>
                             </div>
+
                             <div class="circle-step-item pending" id="circle-node-swot" title="SWOT 전략">
                                 <div class="circle-step-node">
-                                    <i class="fa-solid fa-scale-balanced node-icon"></i>
-                                    <div class="liquid-fill" id="liquid-fill-swot" style="height: 0%;"></div>
+                                    <svg class="ring-svg" viewBox="0 0 95 95">
+                                        <circle class="ring-track" cx="47.5" cy="47.5" r="42.5"/>
+                                        <circle class="ring-fill" id="ring-fill-swot" cx="47.5" cy="47.5" r="42.5"/>
+                                    </svg>
+                                    <div class="node-inner">
+                                        <i class="fa-solid fa-scale-balanced node-icon"></i>
+                                        <span class="node-percent" id="node-pct-swot">0%</span>
+                                    </div>
                                 </div>
                                 <span class="circle-step-label">SWOT</span>
                             </div>
+
                             <div class="circle-step-item pending" id="circle-node-stp" title="STP 타깃 포지셔닝">
                                 <div class="circle-step-node">
-                                    <i class="fa-solid fa-bullseye node-icon"></i>
-                                    <div class="liquid-fill" id="liquid-fill-stp" style="height: 0%;"></div>
+                                    <svg class="ring-svg" viewBox="0 0 95 95">
+                                        <circle class="ring-track" cx="47.5" cy="47.5" r="42.5"/>
+                                        <circle class="ring-fill" id="ring-fill-stp" cx="47.5" cy="47.5" r="42.5"/>
+                                    </svg>
+                                    <div class="node-inner">
+                                        <i class="fa-solid fa-bullseye node-icon"></i>
+                                        <span class="node-percent" id="node-pct-stp">0%</span>
+                                    </div>
                                 </div>
                                 <span class="circle-step-label">STP</span>
                             </div>
+
                             <div class="circle-step-item pending" id="circle-node-mece" title="MECE 구조화">
                                 <div class="circle-step-node">
-                                    <i class="fa-solid fa-network-wired node-icon"></i>
-                                    <div class="liquid-fill" id="liquid-fill-mece" style="height: 0%;"></div>
+                                    <svg class="ring-svg" viewBox="0 0 95 95">
+                                        <circle class="ring-track" cx="47.5" cy="47.5" r="42.5"/>
+                                        <circle class="ring-fill" id="ring-fill-mece" cx="47.5" cy="47.5" r="42.5"/>
+                                    </svg>
+                                    <div class="node-inner">
+                                        <i class="fa-solid fa-network-wired node-icon"></i>
+                                        <span class="node-percent" id="node-pct-mece">0%</span>
+                                    </div>
                                 </div>
                                 <span class="circle-step-label">MECE</span>
                             </div>
+
                             <div class="circle-step-item pending" id="circle-node-prd" title="PRD 요구사항 명세">
                                 <div class="circle-step-node">
-                                    <i class="fa-solid fa-file-shield node-icon"></i>
-                                    <div class="liquid-fill" id="liquid-fill-prd" style="height: 0%;"></div>
+                                    <svg class="ring-svg" viewBox="0 0 95 95">
+                                        <circle class="ring-track" cx="47.5" cy="47.5" r="42.5"/>
+                                        <circle class="ring-fill" id="ring-fill-prd" cx="47.5" cy="47.5" r="42.5"/>
+                                    </svg>
+                                    <div class="node-inner">
+                                        <i class="fa-solid fa-file-shield node-icon"></i>
+                                        <span class="node-percent" id="node-pct-prd">0%</span>
+                                    </div>
                                 </div>
                                 <span class="circle-step-label">PRD</span>
                             </div>
+
                             <div class="circle-step-item pending" id="circle-node-wireframe" title="와이어프레임 3안">
                                 <div class="circle-step-node">
-                                    <i class="fa-solid fa-crop-simple node-icon"></i>
-                                    <div class="liquid-fill" id="liquid-fill-wireframe" style="height: 0%;"></div>
+                                    <svg class="ring-svg" viewBox="0 0 95 95">
+                                        <circle class="ring-track" cx="47.5" cy="47.5" r="42.5"/>
+                                        <circle class="ring-fill" id="ring-fill-wireframe" cx="47.5" cy="47.5" r="42.5"/>
+                                    </svg>
+                                    <div class="node-inner">
+                                        <i class="fa-solid fa-crop-simple node-icon"></i>
+                                        <span class="node-percent" id="node-pct-wireframe">0%</span>
+                                    </div>
                                 </div>
                                 <span class="circle-step-label">Wireframe</span>
                             </div>
+
                             <div class="circle-step-item pending" id="circle-node-prototype" title="인터랙티브 데모">
                                 <div class="circle-step-node">
-                                    <i class="fa-solid fa-display node-icon"></i>
-                                    <div class="liquid-fill" id="liquid-fill-prototype" style="height: 0%;"></div>
+                                    <svg class="ring-svg" viewBox="0 0 95 95">
+                                        <circle class="ring-track" cx="47.5" cy="47.5" r="42.5"/>
+                                        <circle class="ring-fill" id="ring-fill-prototype" cx="47.5" cy="47.5" r="42.5"/>
+                                    </svg>
+                                    <div class="node-inner">
+                                        <i class="fa-solid fa-display node-icon"></i>
+                                        <span class="node-percent" id="node-pct-prototype">0%</span>
+                                    </div>
                                 </div>
-                                <span class="circle-step-label">Demo</span>
+                                <span class="circle-step-label">Prototype</span>
                             </div>
+
                             <div class="circle-step-item pending" id="circle-node-audit" title="QA 정합성 검수">
                                 <div class="circle-step-node">
-                                    <i class="fa-solid fa-clipboard-check node-icon"></i>
-                                    <div class="liquid-fill" id="liquid-fill-audit" style="height: 0%;"></div>
+                                    <svg class="ring-svg" viewBox="0 0 95 95">
+                                        <circle class="ring-track" cx="47.5" cy="47.5" r="42.5"/>
+                                        <circle class="ring-fill" id="ring-fill-audit" cx="47.5" cy="47.5" r="42.5"/>
+                                    </svg>
+                                    <div class="node-inner">
+                                        <i class="fa-solid fa-clipboard-check node-icon"></i>
+                                        <span class="node-percent" id="node-pct-audit">0%</span>
+                                    </div>
                                 </div>
                                 <span class="circle-step-label">QA Audit</span>
                             </div>
+
                         </div>
 
                         <!-- Overall Pipeline Progress Bar Only -->
@@ -4174,7 +4445,7 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
             `;
 
             try {
-                safeUpdateProgress(10, '1pager');
+                safeUpdateProgress(0, '1pager');
                 logAgentClientSide('system', `상품기획 자동화 프로세스 가동 (Client-Side Direct Mode 감지됨).`);
                 logAgentClientSide('system', `에이전트 4인 팀 및 오케스트레이션 스폰 완료 (strategist, analyst, architect, reviewer).`);
                 
@@ -4220,7 +4491,7 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 }
                 logAgentClientSide('strategist', `비즈니스 문제 정의 및 정량 목표 수립 성공. 1-pager 요약 기획안 적재 완료.`);
                 
-                await sleep(2000);
+                await sleep(50);
 
                 // STAGE 1.1: 3C
                 safeUpdateProgress(22, 'threec');
@@ -4287,11 +4558,40 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 } catch (threeCErr) {
                     console.warn('[3C Fallback] Generating fallback 3C analysis:', threeCErr);
                     logAgentClientSide('strategist', `[ℹ️ 3C 백업 모드 실행] 표준 3C 분석 프레임워크로 즉시 대체 보완되었습니다.`);
-                    threeCContent = generateFallback3C ? generateFallback3C(cleanTitle) : `# [전략 기획] 3C 프레임워크 기반 분석: ${cleanTitle}\n\n## 1. 3C 분석 개요\nCustomer, Competitor, Company 요소를 고려한 전략 분석서입니다.`;
+                    const dateStr3c = new Date().toISOString().slice(0,10).replace(/-/g,'.');
+                    threeCContent = `# [전략 기획] 3C 프레임워크 기반 입체적 환경 분석: ${cleanTitle}
+
+## 1. 3C 및 전략 요약
+지속 가능한 차별화 공간 = Customer 니즈(구독 혜택/돈돀 절약 동기) ∩ Competitor 공백(문제 해결의 직관성 부족) ∩ Company 강점(AI 에이전트 기반 자동화 역량)
+
+## 2. Customer 니즈 분석
+| 세그먼트 | 핵심 니즈 | JTBD |
+| :--- | :--- | :--- |
+| 실무자 (30대 직장인) | 빠른 정보 합성 | “돈 안 들이고 시간 단축 하고 싶다” |
+| 개인 프리랜서 (20대말) | 전문 콘텐츠 조각 | “내가 관심가질 뉴스만 모아서 보고 싶다” |
+
+## 3. Competitor 경쟁 분석
+| 구분 | 대표 경쟁사 | 컨텐츠 공백 |
+| :--- | :--- | :--- |
+| 직접 경쟁 | 네이버 뉴스, Google 뉴스 | 개인화 미흡, 브랜드 중심 피드 |
+| 간접 경쟁 | 마케팅 에이전트 | 뉴스 연동 미흡 |
+
+## 4. Company 역량 분석
+| 핵심 역량 | 활용 방안 |
+| :--- | :--- |
+| AI API 기술 스택 | 맞춤형 플로우 자동화 |
+| 디자인 시스템 | 빠른 프로토타입 도출 |
+
+## 5. 3C 연결 매트릭스
+| 3C 렌즈 | 핵심 발견 | MVP 우선순위 |
+| :--- | :--- | :--- |
+| Customer | 개인화 피드 수요 확인 | Must Have |
+| Competitor | 개인화 기능 공백 존재 | Must Have |
+| Company | AI 에이전트 작성 역량 | Must Have |`;
                 }
                 logAgentClientSide('strategist', `3C 프레임워크 기반 환경 분석서 적재 완료.`);
                 
-                await sleep(1500); // Prevent API Rate Limits
+                await sleep(50); // Prevent API Rate Limits
 
                 // STAGE 1.1.1: SWOT
                 safeUpdateProgress(34, 'swot');
@@ -4341,11 +4641,11 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 } catch (swotErr) {
                     console.warn('[SWOT Fallback] Generating fallback SWOT analysis:', swotErr);
                     logAgentClientSide('strategist', `[ℹ️ SWOT 백업 모드 실행] 표준 SWOT 매트릭스로 즉시 대체 보완되었습니다.`);
-                    swotContent = generateFallbackSWOT ? generateFallbackSWOT(cleanTitle) : `# [전략 분석] SWOT 분석 및 교차 매트릭스: ${cleanTitle}\n\n## 1. SWOT 요약\n내부 강점/약점 및 외부 기회/위협 전략 매트릭스입니다.`;
+                    swotContent = generateFallbackDoc('swot', cleanTitle, idea);
                 }
                 logAgentClientSide('strategist', `SWOT 및 교차 전략 분석 보고서 적재 완료.`);
                 
-                await sleep(1500); // Prevent API Rate Limits
+                await sleep(50); // Prevent API Rate Limits
 
                 // STAGE 1.1.2: STP
                 safeUpdateProgress(46, 'stp');
@@ -4386,11 +4686,11 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 } catch (stpErr) {
                     console.warn('[STP Fallback] Generating fallback STP analysis:', stpErr);
                     logAgentClientSide('strategist', `[ℹ️ STP 백업 모드 실행] 표준 STP 명세서로 즉시 대체 보완되었습니다.`);
-                    stpContent = generateFallbackSTP ? generateFallbackSTP(cleanTitle) : `# [전략 기획] STP 마케팅 명세서: ${cleanTitle}\n\n## 1. Segmentation\n시장 세분화 및 포지셔닝 전략서입니다.`;
+                    stpContent = generateFallbackDoc('stp', cleanTitle, idea);
                 }
                 logAgentClientSide('strategist', `STP 전략 분석 및 포지셔닝 명세서 적재 완료.`);
                 
-                await sleep(1500); // Prevent API Rate Limits
+                await sleep(50); // Prevent API Rate Limits
                 
                 // STAGE 1.2: MECE
                 safeUpdateProgress(58, 'mece');
@@ -4464,7 +4764,7 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 logAgentClientSide('strategist', `맥킨지 MECE 전략 분석 보고서 적재 완료.`);
                 logAgentClientSide('strategist', `→ [SendMessage to prd-analyst] 기획 사양 및 기능 도출 협업 요청.`);
                 
-                await sleep(2000);
+                await sleep(50);
 
                 // STAGE 2: PRD Analyst (PRD)
                 safeUpdateProgress(70, 'prd');
@@ -4507,7 +4807,7 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 logAgentClientSide('analyst', `REQ 사양 식별 완료 및 예외/보안 정책 수립 완료. PRD 명세서 적재 완료.`);
                 logAgentClientSide('analyst', `→ [SendMessage to ux-architect] UX 레이아웃 스케치 협업 요청.`);
 
-                await sleep(2000);
+                await sleep(50);
 
                 // STAGE 3: UX Architect (ASCII Wireframes)
                 safeUpdateProgress(82, 'wireframe');
@@ -4537,7 +4837,7 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 logAgentClientSide('architect', `Type A, B, C 3가지 상이한 가치 지향 레이아웃 ASCII 제도 완료. 와이어프레임 문서 적재 완료.`);
                 logAgentClientSide('architect', `→ [SendMessage to product-reviewer] 삼각 정합성 크로스 검수 의뢰.`);
 
-                await sleep(2000);
+                await sleep(50);
 
                 // STAGE 4: Product Reviewer (QA Audit)
                 safeUpdateProgress(92, 'prototype');
@@ -4577,7 +4877,7 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 }
                 logAgentClientSide('reviewer', `검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`);
 
-                await sleep(2000);
+                await sleep(50);
 
                 // STAGE 5: Prototype Generator (Interactive HTML)
                 logAgentClientSide('architect', `QA 검수 완료. PRD 및 와이어프레임을 분석하여 인터랙티브 HTML 프로토타입을 생성합니다...`);
@@ -4853,7 +5153,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                     logAgentClientSide('architect', `기존 와이어프레임 문서 적재 상태 로딩 완료. 정합성이 유지됩니다.`);
                 }
 
-                await sleep(1500); // Prevent API Rate Limits
+                await sleep(50); // Prevent API Rate Limits
 
                 // STAGE 4: Product Reviewer (QA Audit)
                 logAgentClientSide('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`);
@@ -4886,7 +5186,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 generatedDocs['audit'] = auditContent;
                 logAgentClientSide('reviewer', `검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`);
 
-                await sleep(1500); // Prevent API Rate Limits
+                await sleep(50); // Prevent API Rate Limits
 
                 // STAGE 5: Prototype Generator (Interactive HTML)
                 logAgentClientSide('architect', `QA 검수 완료. PRD 및 와이어프레임을 분석하여 인터랙티브 HTML 프로토타입을 다시 생성합니다...`);
@@ -5999,6 +6299,30 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 }
             }
 
+            const stageTitleMap = {
+                '1pager': t('1-Pager 비즈니스 요약', '1-Pager Business Strategy'),
+                'threec': t('3C 입체적 환경 분석', '3C Strategic Environment Analysis'),
+                'swot': t('SWOT 전략 교차 분석', 'SWOT Cross Strategy Matrix'),
+                'stp': t('STP 타깃 포지셔닝 명세', 'STP Target Positioning Spec'),
+                'mece': t('MECE 구조화 분석', 'MECE Structural Analysis'),
+                'prd': t('PRD 상세 요구사항 명세서', 'PRD Product Requirements Spec'),
+                'wireframe': t('와이어프레임 3안 시안', '3 Wireframe Layout Options'),
+                'prototype': t('인터랙티브 데모 프로토타입', 'Interactive Demo Prototype'),
+                'audit': t('QA 정합성 검수 보고서', 'Consistency QA Audit Report')
+            };
+
+            const stageDescMap = {
+                '1pager': t('제품의 본질과 비즈니스 문제, 정량적 목표를 한 페이지로 정밀 정의하는 비즈니스 요약 프레임워크입니다.', 'A framework to concisely define product essence, business problems, and metric goals in one page.'),
+                'threec': t('고객(Customer), 경쟁사(Competitor), 자사(Company) 3축의 교집합 전략 공간을 포착하는 환경 분석 프레임워크입니다.', 'A framework capturing strategic intersection among Customer needs, Competitor gaps, and Company strengths.'),
+                'swot': t('내부의 강점·약점과 외부의 기회·위협 요인을 교차 분석하여 SO/ST/WO/WT 전략 로드맵을 도출하는 분석 프레임워크입니다.', 'Cross-analyzes internal strengths/weaknesses and external opportunities/threats for strategic action roadmaps.'),
+                'stp': t('시장 세분화(Segmentation), 목표 타깃 선정(Targeting), 차별화 포지셔닝(Positioning)을 명세화하는 마케팅 프레임워크입니다.', 'Framework for market segmentation, target customer selection, and value positioning.'),
+                'mece': t('상호 배타적이고 전체 포괄적인(Mutually Exclusive, Collectively Exhaustive) 구조로 문제 영역을 분해하는 McKinsey 분석 프레임워크입니다.', 'McKinsey framework to break down problem domains without overlap or omission.'),
+                'prd': t('기능 요구사항, MoSCoW 우선순위, KPI 및 예외 정책을 상세 정의하는 제품 요구사항 명세서입니다.', 'Detailed specification of functional requirements, MoSCoW priorities, KPIs, and edge-case policies.'),
+                'wireframe': t('전략과 요구사항을 바탕으로 3가지 타입(안정형/격자형/최소형)의 화면 구조 및 레이아웃을 시각화한 와이어프레임 시안입니다.', 'Visualized screen layouts across 3 design approaches based on strategy and PRD requirements.'),
+                'prototype': t('사용자가 직접 상호작용하며 실시간 동적 플로우를 경험할 수 있는 인터랙티브 프로토타입 시안입니다.', 'Interactive prototype demo enabling hands-on user flow testing.'),
+                'audit': t('전 단계 기획 산출물 간 모순과 누락을 교차 검수하고 수용 가능성을 평가한 최종 정합성 QA 보고서입니다.', 'Final QA audit report evaluating consistency and catching logic gaps across all planning deliverables.')
+            };
+
             const targetArea = document.getElementById('viewer-main-content');
             if (!targetArea) return;
 
@@ -6010,8 +6334,20 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 renderPrototypeView(targetArea);
             } else {
                 const mdRaw = generatedDocs ? (generatedDocs[docKey] || '') : '';
+                const titleText = stageTitleMap[docKey] || docKey;
+                const descText = stageDescMap[docKey] || '';
+
                 targetArea.innerHTML = `
                     <div class="document-wrapper markdown-body">
+                        <div class="stage-methodology-header" style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; border-bottom: none; padding-bottom: 0;">
+                                <span style="display: inline-block; width: 6px; height: 24px; background: var(--accent-neon); border-radius: 3px; flex-shrink: 0;"></span>
+                                ${titleText}
+                            </h1>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.6; font-weight: 500;">
+                                ${descText}
+                            </p>
+                        </div>
                         ${marked.parse(mdRaw)}
                     </div>
                 `;
@@ -6129,7 +6465,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                     " onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='var(--accent-neon)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='none'; this.style.borderColor='var(--border-color)'; this.style.boxShadow='none';">
                         <div>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                <span style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 700; color: var(--accent-neon); letter-spacing: 1px;">
+                                <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: var(--accent-neon); letter-spacing: 1px;">
                                     ${tile.num}. ${tile.code}
                                 </span>
                                 <span style="font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: ${isReady ? 'rgba(16, 185, 129, 0.1)' : 'rgba(148, 163, 184, 0.1)'}; color: ${isReady ? 'var(--accent-neon)' : 'var(--text-muted)'}; border: 1px solid ${isReady ? 'rgba(16, 185, 129, 0.2)' : 'transparent'};">
@@ -6145,7 +6481,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                             </p>
                         </div>
                         <div style="display: flex; justify-content: flex-end; align-items: center; font-size: 12px; font-weight: 600; color: var(--text-primary); margin-top: 6px;">
-                            <span>${t('상세 서류 보기', 'View Document')} <i class="fa-solid fa-arrow-right" style="font-size: 11px; margin-left: 4px; color: var(--accent-neon);"></i></span>
+                            <span>${t('상세 서류 보기', 'View Document')} <i class="fa-solid fa-arrow-right" style="font-size: 14px; margin-left: 4px; color: var(--accent-neon);"></i></span>
                         </div>
                     </div>
                 `;
@@ -6154,7 +6490,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             targetArea.innerHTML = `
                 <div class="document-wrapper" style="padding: 24px;">
                     <div style="margin-bottom: 24px;">
-                        <span style="font-size: 11px; font-weight: 700; color: var(--accent-neon); letter-spacing: 1.5px; text-transform: uppercase;">
+                        <span style="font-size: 14px; font-weight: 700; color: var(--accent-neon); letter-spacing: 1.5px; text-transform: uppercase;">
                             <i class="fa-solid fa-layer-group"></i> Architecture Overview
                         </span>
                         <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: var(--text-primary); margin-top: 4px; margin-bottom: 6px;">
@@ -6665,12 +7001,23 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
 
             targetArea.innerHTML = `
                 <div style="display:flex; flex-direction:column; height:100%; background:var(--bg-base);">
+                    <!-- Stage Methodology Header -->
+                    <div style="padding: 16px 20px; background: var(--bg-sidebar); border-bottom: 1px solid var(--border-color); flex-shrink: 0;">
+                        <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 10px;">
+                            <span style="display: inline-block; width: 6px; height: 20px; background: var(--accent-neon); border-radius: 3px; flex-shrink: 0;"></span>
+                            ${t("인터랙티브 데모 프로토타입", "Interactive Demo Prototype")}
+                        </h1>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.5; font-weight: 500;">
+                            ${t("사용자가 직접 상호작용하며 실시간 동적 플로우를 경험할 수 있는 인터랙티브 프로토타입 시안입니다.", "Interactive prototype demo enabling hands-on user flow testing.")}
+                        </p>
+                    </div>
+
                     <!-- Prototype toolbar -->
-                    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:var(--bg-sidebar); border-bottom:1px solid var(--border-color); flex-shrink:0;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:var(--bg-chat); border-bottom:1px solid var(--border-color); flex-shrink:0;">
                         <div style="display:flex; align-items:center; gap:10px;">
                             <i class="fa-solid fa-display" style="color:var(--accent-neon); font-size:15px;"></i>
                             <span style="font-size:14px; font-weight:600; color:var(--text-primary);">${t('인터랙티브 HTML 프로토타입', 'Interactive HTML Prototype')}</span>
-                            <span style="font-size:12px; color:var(--text-muted); background:var(--bg-chat); padding:2px 8px; border-radius:12px; border:1px solid var(--border-color);">Live Preview</span>
+                            <span style="font-size:12px; color:var(--text-muted); background:var(--bg-sidebar); padding:2px 8px; border-radius:12px; border:1px solid var(--border-color);">Live Preview</span>
                         </div>
                         <div style="display:flex; gap:8px;">
                             <button onclick="downloadPrototype()" style="display:flex; align-items:center; gap:6px; background:none; border:1px solid var(--border-color); color:var(--text-secondary); padding:6px 12px; border-radius:6px; font-size:13px; cursor:pointer; transition:all 0.15s;">
@@ -6710,11 +7057,17 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
 
         // Render interactive ASCII wireframe container
         function renderWireframesContainer(targetArea) {
-
             targetArea.innerHTML = `
-                <div class="document-wrapper" style="padding: 20px;">
-                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">${t("와이어프레임 구조 설계 3안", "Wireframe Structural Design (3 Options)")}</h2>
-                    <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 24px;">${t("기획 요구사항에 매핑하여 아키텍트 에이전트가 자동 모델링한 ASCII 레이아웃 구조안입니다.", "ASCII layout options modeled automatically by the architect agent mapping to product requirements.")}</p>
+                <div class="document-wrapper" style="padding: 24px;">
+                    <div class="stage-methodology-header" style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; border-bottom: none; padding-bottom: 0;">
+                            <span style="display: inline-block; width: 6px; height: 24px; background: var(--accent-neon); border-radius: 3px; flex-shrink: 0;"></span>
+                            ${t("와이어프레임 3안 시안", "3 Wireframe Layout Options")}
+                        </h1>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.6; font-weight: 500;">
+                            ${t("전략과 요구사항을 바탕으로 3가지 타입(안정형/격자형/최소형)의 화면 구조 및 레이아웃을 시각화한 와이어프레임 시안입니다.", "Visualized screen layouts across 3 design approaches based on strategy and PRD requirements.")}
+                        </p>
+                    </div>
                     
                     <div class="wireframe-selector-bar">
                         <button class="wf-tab-btn active" id="btn-wf-a" onclick="switchWireframe('A')">${t("Type A (현실/안정성 안)", "Type A (Realistic/Stable Option)")}</button>
@@ -6878,10 +7231,12 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 }
             }
             
-            // 2. Landing Recent history grid
+            // 2. Landing Recent history marquee (credit roll)
             const landingGrid = document.getElementById('landing-history-list');
+            const marqueeWrapper = landingGrid ? landingGrid.closest('.landing-history-marquee-wrapper') : null;
             if (landingGrid) {
                 if (!data || data.length === 0) {
+                    landingGrid.style.animation = 'none';
                     landingGrid.innerHTML = `
                         <div class="landing-history-empty">
                             <i class="fa-regular fa-folder-open"></i>
@@ -6889,8 +7244,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                         </div>
                     `;
                 } else {
-                    const recents = data.slice(0, 3);
-                    landingGrid.innerHTML = recents.map(item => {
+                    const buildCard = (item) => {
                         const fullIdeaText = item.idea || item.displayTitle || '';
                         return `
                         <div class="landing-history-card" onclick="loadHistoryItem('${item.title}', '${item.date}')">
@@ -6903,15 +7257,20 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                                         <i class="fa-regular fa-trash-can"></i>
                                     </button>
                                 </div>
-                                ${fullIdeaText ? `<div style="font-size:12px; color:var(--text-secondary); margin:6px 0 4px; line-height:1.5; white-space:normal; word-break:break-word; user-select:text; cursor:text;" onclick="event.stopPropagation()">${fullIdeaText}</div>` : ''}
+                                ${fullIdeaText ? `<div style="font-size:12px; color:var(--text-secondary); margin:6px 0 4px; line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:188px;" onclick="event.stopPropagation()">${fullIdeaText}</div>` : ''}
                                 <div class="landing-card-footer">
                                     <span style="user-select:text;" onclick="event.stopPropagation()">${item.displayDate}</span>
                                     <span class="landing-card-badge">${item.types.length}${t("개 파일 완료", " files completed")}</span>
                                 </div>
                             </div>
-                        </div>
-                        `;
-                    }).join('');
+                        </div>`;
+                    };
+                    // Duplicate cards for seamless infinite scroll
+                    const cardHTML = data.map(buildCard).join('');
+                    landingGrid.innerHTML = cardHTML + cardHTML; // doubled for seamless loop
+                    // Adjust animation speed based on item count
+                    const duration = Math.max(18, data.length * 5);
+                    landingGrid.style.animationDuration = duration + 's';
                 }
             }
             
