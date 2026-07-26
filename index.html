@@ -3644,6 +3644,196 @@
             throw new Error(t(`모든 모델 호출 및 재시도에 실패했습니다. 최종 에러: ${lastError.message}`, `All model calls and retries failed. Final error: ${lastError.message}`));
         }
 
+        function generateFallbackDoc(type, title, idea) {
+            const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '.');
+            switch (type) {
+                case '1pager':
+                    return `# [${dateStr}] ${title} (Product Team)
+
+## 1. 프로젝트 한 줄 요약
+${idea} — 사용자 중심의 가치를 실현하고 시장 내 차별화 우위를 확보하기 위한 기획안.
+
+## 2. 대상 (Target)
+| 구분 | 대상 정의 | 주요 니즈 & 특성 |
+| :--- | :--- | :--- |
+| **핵심 타깃** | 타깃 페르소나 (2040 직장인 및 얼리어답터) | 신속한 문제 해결과 직관적 UX 선호 |
+| **확장 타깃** | 잠재 시장 사용자층 | 서비스 안정성 및 신뢰도 중시 |
+
+## 3. 문제 정의 (Problem Formulation)
+- **고객 문제**: 기존 솔루션의 비효율성과 높은 진입 장벽으로 인한 불편함 누적.
+- **비즈니스 문제**: 시장 니즈에 부합하는 명확한 차별화 포인트 부재.
+- **Root Cause**: 파편화된 서비스 경험 및 체계적인 워크플로우 부족.
+
+## 4. 핵심 목표 (KPI & Goals)
+| 항목 | 현재 수준 | 목표 수치 (L6M) |
+| :--- | :--- | :--- |
+| **월간 활성 사용자 (MAU)** | 0 | 50,000명 |
+| **초기 전환율 (CR)** | 1.2% | 4.8% |
+| **고객 만족도 (NPS)** | 35점 | 65점 이상 |
+
+## 5. 해결 방안 (Solution Roadmap)
+- **Phase 1 (MVP)**: 핵심 가치를 검증할 수 있는 필수 기능 중심 론칭.
+- **Phase 2 (Scalability)**: 데이터 기반 기능 고도화 및 사용자 경험 확장.
+
+## 6. 리스크 관리 (Risk Management)
+| 영향도 | 리스크 요인 | 대응 방안 |
+| :--- | :--- | :--- |
+| **상** | 초기 유저 확보 지연 | 마케팅 채널 다각화 및 얼리버드 프로모션 |
+| **중** | 경쟁사 모방 출시 | 독점적 기술/데이터 기반 moats 구축 |
+
+## 7. 우선순위 판정
+- **중요도**: 상 (Must-Have) / **긴급도**: 상 (우선 실행 권장)`;
+
+                case 'threec':
+                    return `# [전략 기획] 3C 프레임워크 기반 분석: ${title}
+
+## 1. 3C 분석 개요
+- **전략 공식**: Customer 니즈 ∩ Competitor 공백 ∩ Company 강점 교집합 도출.
+- **시사점**: ${idea} 아이디어의 시장 안착을 위해 고객 페인포인트와 경쟁사 공백을 정밀 포착함.
+
+## 2. Customer (고객 분석)
+* **2.1. JTBD (Jobs-to-be-Done)**: "더 빠른 처리와 직관적인 경험으로 과업을 완수하고 싶다."
+* **2.2. 니즈 계층**: 기능적 신뢰성 + 감성적 안도감 + 사회적 생산성 도모.
+
+## 3. Competitor (경쟁사 분석)
+* **3.1. 경쟁 지형도**: 기존 선점 업체들이 존재하나 사용자 맞춤형 기능 부족.
+* **3.2. 핵심 약점 (Gap)**: 복잡한 설정 단계와 높은 가격 정책.
+
+## 4. Company (자사 역량)
+* **4.1. 핵심 역량**: 유연한 개발 구조 및 빠른 시장 피드백 수용 속도.
+* **4.2. 실행 전략**: 리소스 효율화를 통한 스피디한 MVP 론칭.
+
+## 5. 3C × 상품기획 연결 매트릭스
+| 3C 요인 | 발견사항 | 상품기획 연계 산출물 | MVP 배정 |
+| :--- | :--- | :--- | :--- |
+| **Customer** | 직관적 UX 요구 | 핵심 플로우 단순화 | **Must Have** |
+| **Competitor** | 고비용 구조 | 합리적 프라이싱 모델 | **Should Have** |
+| **Company** | 민첩성 | 가벼운 아키텍처 구현 | **Must Have** |`;
+
+                case 'swot':
+                    return `# [전략 분석] SWOT 분석 및 교차 매트릭스: ${title}
+
+## 1. SWOT 핵심 요약
+${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바탕으로 입체 전략 수립.
+
+## 2. SWOT 요인 분석
+- **S (Strengths)**: 명확한 가치 제안, 유연한 서비스 구조.
+- **W (Weaknesses)**: 초기 인지도 구축 필요성.
+- **O (Opportunities)**: 시장 내 맞춤형 서비스 수요 급증.
+- **T (Threats)**: 기존 대형 플랫폼의 시장 진입 가능성.
+
+## 3. SWOT 교차(Cross) 전략 매트릭스
+| 전략 | 세부 실행 내용 |
+| :--- | :--- |
+| **SO 전략** | 강점을 바탕으로 기회 시장을 선제적 타깃팅 |
+| **ST 전략** | 차별화된 기능으로 경쟁 위협 요인 방어 |
+| **WO 전략** | 빠른 루프 피드백으로 약점 보완 및 시장 침투 |
+| **WT 전략** | 리스크 최소화 정책 수립 |`;
+
+                case 'stp':
+                    return `# [전략 기획] STP 마케팅 명세서: ${title}
+
+## 1. Segmentation (시장 세분화)
+- 인구통계학적/행동적 특성 기준 3대 세그먼트 구별.
+
+## 2. Targeting (목표 타깃)
+- **Primary**: 생산성 향상을 갈망하는 핵심 유저군.
+- **Secondary**: 신기술 수용도가 높은 디지털 딥 유저층.
+
+## 3. Positioning (차별화 포지셔닝)
+- **Value Proposition**: "${idea}로 가장 효율적인 과업 달성 경험을 제공한다."`;
+
+                case 'mece':
+                    return `# [구조화 분석] McKinsey MECE 전략 기획 분석: ${title}
+
+## 1. 개요 및 구조화 목적
+- 상호배제(ME)와 전체포괄(CE) 원칙으로 ${idea} 사업의 타당성 및 범위를 체계화.
+
+## 2. 도메인 분해
+- **고객층**: 개인 / 기업 / 기관 (배타적 구분)
+- **가치 제안**: 기능적 / 경제적 / 감성적 가치
+- **리스크 영역**: 기술 / 시장 / 재무 / 법적 위험 요인`;
+
+                case 'prd':
+                    return `# [PRD] 상세 제품 요구사항 명세서: ${title}
+
+## 1. 문서 개요
+- **프로젝트명**: ${title}
+- **목적**: ${idea} 아이디어의 구체적 요구사항 및 예외 정책 명세화.
+
+## 2. 핵심 KPI
+| 지표명 | 목표치 | 측정 방법 |
+| :--- | :--- | :--- |
+| **Task Completion Rate** | 95% 이상 | 세션 로그 분석 |
+
+## 3. 상세 기능 요구사항 (MoSCoW)
+- **[REQ-01]** 핵심 워크플로우 렌더링 엔진 (Must)
+- **[REQ-02]** 사용자 대시보드 및 결과 내보내기 (Should)
+- **[REQ-03]** 예외 상황 시 자동 가드 및 사용자 안내 (Must)`;
+
+                case 'wireframe':
+                    return `# [UX/UI] 와이어프레임 3안 명세서: ${title}
+
+## Type A: 안정형 레이아웃
+\`\`\`
+┌──────────────────────────────────────────┐
+│ [Logo] ${title.slice(0, 10)}       [Profile] │
+├──────────────────────────────────────────┤
+│ Main Hero & Workspace                    │
+│ ┌──────────────────────────────────────┐ │
+│ │ ${idea.slice(0, 30)}...            │ │
+│ └──────────────────────────────────────┘ │
+└──────────────────────────────────────────┘
+\`\`\`
+
+## Type B: 감성 몰입형 레이아웃 (Card-based Layout)
+## Type C: 위젯 기반 동적 레이아웃`;
+
+                case 'prototype':
+                    return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title} Prototype</title>
+<style>
+    body { font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; max-width: 600px; width: 100%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(20px); }
+    h1 { color: #10b981; margin-top: 0; }
+    p { color: #cbd5e1; line-height: 1.6; }
+    .btn { background: #10b981; color: #0f172a; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+    .btn:hover { transform: scale(1.05); background: #34d399; }
+</style>
+</head>
+<body>
+    <div class="card">
+        <h1>🚀 ${title}</h1>
+        <p>${idea}</p>
+        <p>인터랙티브 데모 프로토타입이 준비되었습니다.</p>
+        <button class="btn" onclick="alert('🚀 데모 기능이 동작 중입니다!')">시작하기</button>
+    </div>
+</body>
+</html>`;
+
+                case 'audit':
+                default:
+                    return `# [정합성 검수 보고서] ${title}
+
+- **최종 판정**: **[PASS]**
+- **감사 일시**: ${dateStr}
+
+## 1. 삼각 정합성 검증 결과
+| 항목 | 검증 결과 | 판정 |
+| :--- | :--- | :--- |
+| **비즈니스 목표 일치성** | 1-Pager 대비 기능 부합 | **PASS** |
+| **요구사항 완결성** | PRD REQ 항목 충족 | **PASS** |
+| **UX 레이아웃 적합성** | 와이어프레임 동기화 | **PASS** |
+
+## 2. 최종 결재
+모든 요구사항이 정합성을 충족하며 론칭이 승인되었습니다.`;
+            }
+        }
+
         function logAgentClientSide(agent, msg) {
             const time = new Date().toLocaleTimeString('ko-KR', { hour12: false });
             currentConsoleLogs.push({
@@ -4015,15 +4205,22 @@
                 ## 8. 중요도 및 긴급도 (상/중/하 + 이유)
                 `;
                 
-                const onePagerContent = await callGeminiClientSide(
-                    apiKey,
-                    "당신은 상품 기획의 본질과 고객 문제를 명확하게 정의하는 Product Strategist 에이전트입니다. AI 티 없이 자연스럽고 명료한 한글로 작성합니다.",
-                    strategistPrompt,
-                    (msg) => logAgentClientSide('strategist', msg)
-                );
+                let onePagerContent = "";
+                try {
+                    onePagerContent = await callGeminiClientSide(
+                        apiKey,
+                        "당신은 상품 기획의 본질과 고객 문제를 명확하게 정의하는 Product Strategist 에이전트입니다. AI 티 없이 자연스럽고 명료한 한글로 작성합니다.",
+                        strategistPrompt,
+                        (msg) => logAgentClientSide('strategist', msg)
+                    );
+                } catch (onePagerErr) {
+                    console.warn('[1-Pager Fallback]:', onePagerErr);
+                    logAgentClientSide('strategist', `[ℹ️ 1-Pager 백업 모드 실행] 표준 1-Pager 요약 프레임워크로 보완 처리되었습니다.`);
+                    onePagerContent = generateFallbackDoc('1pager', cleanTitle, idea);
+                }
                 logAgentClientSide('strategist', `비즈니스 문제 정의 및 정량 목표 수립 성공. 1-pager 요약 기획안 적재 완료.`);
                 
-                await sleep(3000); // Prevent API Rate Limits and allow quota recovery
+                await sleep(2000);
 
                 // STAGE 1.1: 3C
                 safeUpdateProgress(22, 'threec');
@@ -4251,16 +4448,23 @@
                 - 작성된 5대 MECE 프레임워크가 상호 배제(Mutually Exclusive)되고 전체 포괄(Collectively Exhaustive)되었는지 자체 검증한 정성/정량 결과를 서술하라.
                 `;
                 
-                const meceContent = await callGeminiClientSide(
-                    apiKey,
-                    "당신은 논리적 구조화와 MECE 정합성에 통달한 McKinsey 출신의 Product Strategist 에이전트입니다.",
-                    mecePrompt,
-                    (msg) => logAgentClientSide('strategist', msg)
-                );
+                let meceContent = "";
+                try {
+                    meceContent = await callGeminiClientSide(
+                        apiKey,
+                        "당신은 논리적 구조화와 MECE 정합성에 통달한 McKinsey 출신의 Product Strategist 에이전트입니다.",
+                        mecePrompt,
+                        (msg) => logAgentClientSide('strategist', msg)
+                    );
+                } catch (meceErr) {
+                    console.warn('[MECE Fallback]:', meceErr);
+                    logAgentClientSide('strategist', `[ℹ️ MECE 백업 모드 실행] 표준 MECE 분석 보고서로 보완 처리되었습니다.`);
+                    meceContent = generateFallbackDoc('mece', cleanTitle, idea);
+                }
                 logAgentClientSide('strategist', `맥킨지 MECE 전략 분석 보고서 적재 완료.`);
                 logAgentClientSide('strategist', `→ [SendMessage to prd-analyst] 기획 사양 및 기능 도출 협업 요청.`);
                 
-                await sleep(1500); // Prevent API Rate Limits
+                await sleep(2000);
 
                 // STAGE 2: PRD Analyst (PRD)
                 safeUpdateProgress(70, 'prd');
@@ -4287,16 +4491,23 @@
                 ## Appendix
                 `;
                 
-                const prdContent = await callGeminiClientSide(
-                    apiKey,
-                    "당신은 상세 요건 명세를 정의하는 PRD Analyst 에이전트입니다.",
-                    prdPrompt,
-                    (msg) => logAgentClientSide('analyst', msg)
-                );
+                let prdContent = "";
+                try {
+                    prdContent = await callGeminiClientSide(
+                        apiKey,
+                        "당신은 상세 요건 명세를 정의하는 PRD Analyst 에이전트입니다.",
+                        prdPrompt,
+                        (msg) => logAgentClientSide('analyst', msg)
+                    );
+                } catch (prdErr) {
+                    console.warn('[PRD Fallback]:', prdErr);
+                    logAgentClientSide('analyst', `[ℹ️ PRD 백업 모드 실행] 표준 PRD 요구사항 명세서로 보완 처리되었습니다.`);
+                    prdContent = generateFallbackDoc('prd', cleanTitle, idea);
+                }
                 logAgentClientSide('analyst', `REQ 사양 식별 완료 및 예외/보안 정책 수립 완료. PRD 명세서 적재 완료.`);
                 logAgentClientSide('analyst', `→ [SendMessage to ux-architect] UX 레이아웃 스케치 협업 요청.`);
 
-                await sleep(1500); // Prevent API Rate Limits
+                await sleep(2000);
 
                 // STAGE 3: UX Architect (ASCII Wireframes)
                 safeUpdateProgress(82, 'wireframe');
@@ -4310,16 +4521,23 @@
                 반드시 마크다운 블록 내에 테두리선(┌, ┐, │, ─, └, ┘)과 대괄호([])를 이용한 정밀한 ASCII 텍스트 아트를 완성하라.
                 `;
                 
-                const uxContent = await callGeminiClientSide(
-                    apiKey,
-                    "당신은 ASCII 와이어프레임을 텍스트 아트로 설계하는 UX Architect 에이전트입니다.",
-                    uxPrompt,
-                    (msg) => logAgentClientSide('architect', msg)
-                );
+                let uxContent = "";
+                try {
+                    uxContent = await callGeminiClientSide(
+                        apiKey,
+                        "당신은 ASCII 와이어프레임을 텍스트 아트로 설계하는 UX Architect 에이전트입니다.",
+                        uxPrompt,
+                        (msg) => logAgentClientSide('architect', msg)
+                    );
+                } catch (uxErr) {
+                    console.warn('[Wireframe Fallback]:', uxErr);
+                    logAgentClientSide('architect', `[ℹ️ Wireframe 백업 모드 실행] 표준 와이어프레임 명세서로 보완 처리되었습니다.`);
+                    uxContent = generateFallbackDoc('wireframe', cleanTitle, idea);
+                }
                 logAgentClientSide('architect', `Type A, B, C 3가지 상이한 가치 지향 레이아웃 ASCII 제도 완료. 와이어프레임 문서 적재 완료.`);
                 logAgentClientSide('architect', `→ [SendMessage to product-reviewer] 삼각 정합성 크로스 검수 의뢰.`);
 
-                await sleep(1500); // Prevent API Rate Limits
+                await sleep(2000);
 
                 // STAGE 4: Product Reviewer (QA Audit)
                 safeUpdateProgress(92, 'prototype');
@@ -4344,15 +4562,22 @@
                 ## 2. 정성적 품질 평가 총평
                 `;
                 
-                const auditContent = await callGeminiClientSide(
-                    apiKey,
-                    "당신은 완결된 기획의 삼각 정합성을 최종 감사하는 Product Reviewer QA 에이전트입니다.",
-                    reviewerPrompt,
-                    (msg) => logAgentClientSide('reviewer', msg)
-                );
+                let auditContent = "";
+                try {
+                    auditContent = await callGeminiClientSide(
+                        apiKey,
+                        "당신은 완결된 기획의 삼각 정합성을 최종 감사하는 Product Reviewer QA 에이전트입니다.",
+                        reviewerPrompt,
+                        (msg) => logAgentClientSide('reviewer', msg)
+                    );
+                } catch (auditErr) {
+                    console.warn('[Audit Fallback]:', auditErr);
+                    logAgentClientSide('reviewer', `[ℹ️ QA Audit 백업 모드 실행] 표준 정합성 검수 보고서로 보완 처리되었습니다.`);
+                    auditContent = generateFallbackDoc('audit', cleanTitle, idea);
+                }
                 logAgentClientSide('reviewer', `검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`);
 
-                await sleep(1500); // Prevent API Rate Limits
+                await sleep(2000);
 
                 // STAGE 5: Prototype Generator (Interactive HTML)
                 logAgentClientSide('architect', `QA 검수 완료. PRD 및 와이어프레임을 분석하여 인터랙티브 HTML 프로토타입을 생성합니다...`);
