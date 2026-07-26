@@ -912,21 +912,24 @@
             width: 58px;
             height: 58px;
             border-radius: 50%;
-            border: 2.5px solid var(--border-color);
-            background: var(--bg-card);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
-            color: var(--text-muted);
-            font-size: 24px;
+            color: #94a3b8;
+            font-size: 22px;
             transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
         }
 
         .circle-step-node .node-icon {
             position: relative;
             z-index: 2;
+            color: #cbd5e1;
             transition: color 0.3s ease;
         }
 
@@ -945,22 +948,24 @@
 
         .circle-step-item.active .circle-step-node {
             border-color: var(--accent-neon);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.45);
-            transform: scale(1.05);
+            box-shadow: 0 0 24px rgba(16, 185, 129, 0.5);
+            transform: scale(1.06);
         }
 
         .circle-step-item.active .circle-step-node .node-icon {
-            color: #0f172a;
+            color: #ffffff;
             font-weight: bold;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
         }
 
         .circle-step-item.completed .circle-step-node {
             border-color: var(--accent-neon);
-            box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.3);
         }
 
         .circle-step-item.completed .circle-step-node .node-icon {
-            color: #0f172a;
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
         }
 
         .circle-step-item.completed .circle-step-node .liquid-fill {
@@ -971,9 +976,13 @@
         .circle-step-label {
             font-size: 11px;
             font-weight: 700;
-            color: var(--text-muted);
+            color: #cbd5e1;
             letter-spacing: 0.5px;
             transition: color 0.3s ease;
+        }
+
+        .circle-step-item.active .circle-step-label {
+            color: var(--accent-neon);
         }
 
         .circle-step-item.active .circle-step-label,
@@ -1440,7 +1449,7 @@
            line-height locked to --lh (24px = 3×8px).
            ========================================================================== */
         .markdown-body {
-            color: var(--text-secondary);
+            color: #e2e8f0;
             font-size: var(--type-14);
             line-height: var(--lh); /* 24px — exact 3×bl */
             font-family: 'Noto Sans KR', 'Space Grotesk', sans-serif;
@@ -2557,7 +2566,7 @@
         }
     </style>
 </head>
-<body class="state-landing light-theme">
+<body class="state-landing dark-theme">
 
     <!-- Password Lock Screen Overlay -->
     <div id="pitl-password-overlay" class="password-overlay-wrapper" style="display: none;">
@@ -3887,7 +3896,7 @@
             const targetArea = document.getElementById('viewer-main-content');
             targetArea.innerHTML = `
                 <div class="document-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 160px); padding: 40px 20px; text-align: center;">
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 44px 32px; width: 98%; max-width: 1080px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; margin-top: -6vh;">
+                    <div style="background: rgba(15, 18, 26, 0.85); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); padding: 44px 32px; width: 98%; max-width: 1080px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; margin-top: -6vh;">
                         
                         <!-- Circular Step Node Tabs (Positioned directly above progress bar) -->
                         <div class="circle-steps-container">
@@ -6870,14 +6879,14 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
 
         // Early Theme restorer to avoid flicker on page load
         (function() {
-            // Light is the default — no class needed on body
-            // Only apply dark-theme if user explicitly set it before
             const saved = localStorage.getItem('pitl-theme');
-            if (saved === 'dark') {
+            if (saved === 'light') {
+                document.body.classList.remove('dark-theme');
+                document.body.classList.add('light-theme');
+            } else {
                 document.body.classList.add('dark-theme');
+                document.body.classList.remove('light-theme');
             }
-            // Remove any stale light-theme class from prior version
-            document.body.classList.remove('light-theme');
             
             window.addEventListener('DOMContentLoaded', () => {
                 const isDark = document.body.classList.contains('dark-theme');
