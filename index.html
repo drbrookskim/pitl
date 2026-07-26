@@ -4456,24 +4456,30 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 // Store idea in resultDocs for history
                 const ideaText = idea;
                 const strategistPrompt = `
-                사용자의 상품 아이디어를 분석하여 '이 제품이 왜 필요한가'를 1장으로 정리하는 1-pager 요약서를 작성하라.
-                
+                사용자의 상품 아이디어를 바탕으로 DHK 개념·시나리오 기획 방법론(detailed-planning) 5단계 파이프라인을 적용하여 1-pager 요약서를 작성하라.
+
                 아이디어: ${idea}
-                
-                [문체 작성 지침 (Humanize Korean)]
-                - AI 특유의 상투어구('혁신적인', '선도하는', '면밀히', '지평을 열다' 등)와 번역투('~에 대해', '~를 통해'), 과도한 접속사('또한', '하지만')를 전면 배제하라.
-                - 능동태 중심의 단정하고 직관적인 문장으로 작성하여 사람이 직접 쓴 것처럼 명확하게 전달하라.
-                
-                반드시 다음 마크다운 형식을 따르고, 빈 칸 없이 완벽히 메트릭과 테이블 수치를 합리적으로 유추하여 채워라:
-                # [YY.MM.DD] {아이디어 기반 제목} (Product Team)
-                ## 1. 프로젝트 한 줄 요약
-                ## 2. 대상 (테이블: 대상, 상황/특징)
-                ## 3. 문제 정의 (고객 문제, 비즈니스 문제, 데이터 기반 현황 테이블, Root Cause)
-                ## 4. 목표 (테이블: 항목, 목표 수치)
-                ## 5. 현황 및 분석 (VOC 인용 등)
-                ## 6. 해결방안 (Phase 1, Phase 2...)
-                ## 7. 리스크 (테이블: 영향도, 리스크, 대응 방안)
-                ## 8. 중요도 및 긴급도 (상/중/하 + 이유)
+
+                [DHK 기획 5단계 파이프라인 적용 지침]
+                1. Stage 0 (왜 - Why): 5 Why 탐구로 표면적 요청 너머의 본질적 Unmet Need와 의사결정 기준 명확화.
+                2. Stage 1 (개념 - Concept): 이상 공간 정의 (핵심 가치 User Value, 사용자 이점 User Benefit, 한 줄 메시지 "말 되네", 명분/근거, 포지셔닝 렌즈: 새로움vs개선 / 대체재vs보완재 / 보편성vs차별성).
+                3. Stage 2 (시나리오 - Scenario): 현실 공간 구체화 ("특정 상황을 가정하여 사용자는 ___한 상황을 접하고..."), 단순 증상 대처가 아닌 '개념 전환 해결책' 수립, Must-have vs Nice-to-have 구분.
+                4. Stage 3 (가지치기 & 가치 검증): 오컴의 면도날 본질 추출, "사용자에게 주려는 가치가 정말 이게 맞는가?" 검증 관문, 핍진성(구체성·진정성·일관성) 확보.
+                5. Stage 4 (스토리텔링): "음, 말 되네" 톤앤매너로 설득력 있게 마무리.
+
+                [문체 작성 지침 (Humanize Korean & Reflective Voice)]
+                - AI 특유의 상투어구('혁신적인', '선도하는', '면밀히' 등)와 번역투, 과도한 접속사를 배제하라.
+                - 현장 관찰에서 원칙으로 올라가는 단정하고 성찰적인 어조로 작성하라.
+
+                반드시 다음 마크다운 형식을 준수하라 (타이틀 줄에 [] 대괄호는 금지함):
+                ## 1. 프로젝트 한 줄 요약 (핵심 메시지)
+                ## 2. 왜(Why) — 본질적 니즈 및 5 Why 분석
+                ## 3. 개념 (Concept) — 핵심 가치, 이점 및 포지셔닝 렌즈
+                ## 4. 시나리오 (Scenario) — 사용자 여정, 페인포인트 및 개념 전환 해결책
+                ## 5. 핵심 목표 (KPI & 메트릭 테이블)
+                ## 6. 가지치기 (Pruning) & 가치 검증 (Must-have vs Nice-to-have)
+                ## 7. 실행 로드맵 & 리스크 대응 방안
+                ## 8. 기획 검증 및 스토리텔링 결언
                 `;
                 
                 let onePagerContent = "";
@@ -4839,8 +4845,62 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
 
                 await sleep(50);
 
-                // STAGE 4: Product Reviewer (QA Audit)
-                safeUpdateProgress(92, 'prototype');
+                // STAGE 4: Prototype Generator (Interactive HTML)
+                safeUpdateProgress(83, 'prototype');
+                logAgentClientSide('architect', `와이어프레임 3안 완공. 인터랙티브 HTML 프로토타입 생성을 시작합니다...`);
+
+                let prototypeContent = '';
+                try {
+                    const prdTrimmed = prdContent.slice(0, 2500);
+                    const uxTrimmed = uxContent.slice(0, 2000);
+
+                    const prototypePromptClient = `You are a senior frontend developer. Based on the product requirements and wireframe below, generate a clean, interactive HTML prototype.
+
+[Product Requirements (PRD Summary)]
+${prdTrimmed}
+
+[Wireframe Layout (Type A reference)]
+${uxTrimmed}
+
+[Requirements]
+- Single complete self-contained HTML file (CDN allowed e.g. fonts.googleapis.com, font-awesome)
+- Inline CSS in <style> tag, inline JavaScript in <script> tag
+- Modern polished UI with CSS variables and gradients
+- Interactive: tab switching, modals, form inputs, button click effects
+- Realistic Korean dummy data and text throughout
+- Include navigation header, main content sections, and footer
+
+IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no code fences, no explanation text.`;
+
+                    let rawProto = await callGeminiClientSide(
+                        apiKey,
+                        "당신은 PRD와 와이어프레임을 실제 동작하는 인터랙티브 HTML 프로토타입으로 변환하는 프론트엔드 개발 에이전트입니다.",
+                        prototypePromptClient,
+                        (msg) => logAgentClientSide('architect', msg),
+                        4096
+                    );
+
+                    const doctypeIdx = rawProto.search(/<!doctype/i);
+                    if (doctypeIdx > 0) rawProto = rawProto.slice(doctypeIdx);
+                    rawProto = rawProto.replace(/```\s*$/i, '').trim();
+
+                    if (rawProto && rawProto.toLowerCase().includes('<!doctype')) {
+                        prototypeContent = rawProto;
+                        logAgentClientSide('architect', `인터랙티브 HTML 프로토타입 생성 완료. 브라우저에서 즉시 실행 가능합니다.`);
+                    } else {
+                        prototypeContent = rawProto || generateFallbackDoc('prototype', cleanTitle, idea);
+                        logAgentClientSide('architect', `프로토타입 생성 완공.`);
+                    }
+                } catch (protoErr) {
+                    console.warn('[Prototype] Generation fallback:', protoErr);
+                    logAgentClientSide('architect', `[ℹ️ 프로토타입 백업 모드 실행] 표준 프로토타입으로 보완 처리되었습니다.`);
+                    prototypeContent = generateFallbackDoc('prototype', cleanTitle, idea);
+                }
+
+                await sleep(50);
+
+                // STAGE 5: Product Reviewer (QA Audit)
+                safeUpdateProgress(92, 'audit');
                 logAgentClientSide('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`);
                 const reviewerPrompt = `
                 다음 3종의 기획 패키지(1-pager, PRD, 와이어프레임)를 분석하여 비즈니스-명세-디자인 정합성을 감사하라.
@@ -4877,66 +4937,8 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 }
                 logAgentClientSide('reviewer', `검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`);
 
-                await sleep(50);
-
-                // STAGE 5: Prototype Generator (Interactive HTML)
-                logAgentClientSide('architect', `QA 검수 완료. PRD 및 와이어프레임을 분석하여 인터랙티브 HTML 프로토타입을 생성합니다...`);
-
-                let prototypeContent = '';
-                try {
-                    // Trim inputs to avoid input token limit (each doc can be 10k+ chars)
-                    const prdTrimmed = prdContent.slice(0, 4000);
-                    const uxTrimmed = uxContent.slice(0, 3000);
-
-                    const prototypePromptClient = `You are a senior frontend developer. Based on the product requirements and wireframe below, generate a complete, interactive HTML prototype.
-
-[Product Requirements (PRD Summary)]
-${prdTrimmed}
-
-[Wireframe Layout (Type A reference)]
-${uxTrimmed}
-
-[Requirements]
-- Single complete self-contained HTML file (CDN allowed e.g. fonts.googleapis.com)
-- Inline CSS in <style> tag, inline JavaScript in <script> tag
-- Modern polished UI: CSS variables, gradients, smooth hover/click animations
-- Interactive: tab switching, modals, form inputs, button click effects
-- Responsive layout (mobile + desktop breakpoints)
-- Realistic Korean dummy data and text throughout
-- Show all key PRD features visually on screen
-- Include navigation header, main content sections, and footer
-
-IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no code fences, no explanation text before or after.`;
-
-                    // Use callGeminiClientSide with customMaxTokens: 16384 for long HTML generation
-                    let rawProto = await callGeminiClientSide(
-                        apiKey,
-                        "당신은 PRD와 와이어프레임을 실제 동작하는 인터랙티브 HTML 프로토타입으로 변환하는 프론트엔드 개발 에이전트입니다.",
-                        prototypePromptClient,
-                        (msg) => logAgentClientSide('architect', msg),
-                        16384
-                    );
-
-                    // Strip everything before <!DOCTYPE (handles any prefix/fences)
-                    const doctypeIdx = rawProto.search(/<!doctype/i);
-                    if (doctypeIdx > 0) rawProto = rawProto.slice(doctypeIdx);
-                    rawProto = rawProto.replace(/```\s*$/i, '').trim();
-
-                    if (rawProto && rawProto.toLowerCase().includes('<!doctype')) {
-                        prototypeContent = rawProto;
-                        logAgentClientSide('architect', `인터랙티브 HTML 프로토타입 생성 완료. 브라우저에서 즉시 실행 가능합니다.`);
-                    } else {
-                        console.warn('[Prototype] Unexpected output:', rawProto.slice(0, 300));
-                        prototypeContent = rawProto;
-                        logAgentClientSide('architect', `프로토타입 생성 완료 (HTML 추출 중...).`);
-                    }
-                } catch (protoErr) {
-                    console.error('[Prototype] Generation failed:', protoErr);
-                    logAgentClientSide('architect', `[⚠️ 프로토타입 생성 실패] 에러: ${protoErr.message}`);
-                }
-
                 // STAGE 6: Complete & Save
-                safeUpdateProgress(100, 'audit');
+                safeUpdateProgress(100, 'completed_all');
                 logAgentClientSide('system', `최종 배포 프로세스 진입. 파일명 보안 정제 적용 중...`);
                 
                 const resultDocs = {
@@ -6333,7 +6335,9 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             } else if (docKey === 'prototype') {
                 renderPrototypeView(targetArea);
             } else {
-                const mdRaw = generatedDocs ? (generatedDocs[docKey] || '') : '';
+                let mdRaw = generatedDocs ? (generatedDocs[docKey] || '') : '';
+                // Strip any H1 title lines or section headers containing '[' and ']' brackets (e.g. # [전략 기획] ... or # [YY.MM.DD] ...)
+                mdRaw = mdRaw.replace(/^#\s*\[[^\]]+\][^\n]*\n?/gm, '').replace(/^\[[^\]]+\]\s*/gm, '').trim();
                 const titleText = stageTitleMap[docKey] || docKey;
                 const descText = stageDescMap[docKey] || '';
 
