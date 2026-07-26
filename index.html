@@ -3466,12 +3466,19 @@
                 const currentLangP = localStorage.getItem('pitl_lang') || 'ko';
                 let finalPromptP = userPrompt;
                 if (currentLangP === 'en') finalPromptP += '\n\nCRITICAL: You must write the entire output/content/report in English. Do not write any Korean.';
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 35000); // 35s strict client-side timeout
+
                 try {
                     const res = await fetch('/api/proxy-gemini', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ systemInstruction, userPrompt: finalPromptP, maxTokens: customMaxTokens })
+                        body: JSON.stringify({ systemInstruction, userPrompt: finalPromptP, maxTokens: customMaxTokens }),
+                        signal: controller.signal
                     });
+                    clearTimeout(timeoutId);
+
                     if (!res.ok) {
                         const errData = await res.json().catch(() => ({}));
                         throw new Error(errData.error || `Proxy error: ${res.status}`);
@@ -3480,8 +3487,11 @@
                     if (!data.text) throw new Error('프록시 서버에서 응답 텍스트를 받지 못했습니다.');
                     return data.text;
                 } catch (proxyErr) {
-                    if (logCallback) logCallback(`[로컬 프록시 오류] ${proxyErr.message}`);
-                    throw proxyErr;
+                    clearTimeout(timeoutId);
+                    const isAbort = proxyErr.name === 'AbortError';
+                    const errMsg = isAbort ? '프록시 서버 응답 시간 초과 (35초 경과). 백업 템플릿으로 전환합니다.' : proxyErr.message;
+                    if (logCallback) logCallback(`[로컬 프록시 경고] ${errMsg}`);
+                    throw new Error(errMsg);
                 }
             }
             // ── Direct Gemini Call (GitHub Pages / API Key mode) ────────────────
@@ -3952,7 +3962,7 @@
                 );
                 logAgentClientSide('strategist', `비즈니스 문제 정의 및 정량 목표 수립 성공. 1-pager 요약 기획안 적재 완료.`);
                 
-                await sleep(1500); // Prevent API Rate Limits
+                await sleep(3000); // Prevent API Rate Limits and allow quota recovery
 
                 // STAGE 1.1: 3C
                 safeUpdateProgress(22, 'threec');

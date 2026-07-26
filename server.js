@@ -41,11 +41,10 @@ async function callGemini(systemInstruction, userPrompt, logCallback = null) {
     for (let offset = 0; offset < modelsToTry.length; offset++) {
         const modelIdx = (preferredModelIndex + offset) % modelsToTry.length;
         const model = modelsToTry[modelIdx];
-        // 2.5-flash requires v1beta; others use stable v1
-        const apiVersion = model.startsWith('gemini-2.5') ? 'v1beta' : 'v1';
+        // 2.5-flash requires v1beta; others use v1beta as well for standard compatibility
+        const apiVersion = model.startsWith('gemini-2.5') ? 'v1beta' : 'v1beta';
         const url = `https://generativelanguage.googleapis.com/${apiVersion}/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
 
-        
         const requestBody = {
             contents: [
                 {
@@ -61,7 +60,8 @@ async function callGemini(systemInstruction, userPrompt, logCallback = null) {
 
         try {
             const response = await axios.post(url, requestBody, {
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
+                timeout: 30000 // 30s strict timeout to prevent indefinite hangs
             });
             
             const candidate = response.data?.candidates?.[0];
@@ -75,13 +75,15 @@ async function callGemini(systemInstruction, userPrompt, logCallback = null) {
             const errMsg = error.response?.data?.error?.message || error.message;
             console.warn(`[Model Fallback] ${model} failed: ${errMsg}`);
             if (logCallback) {
-                logCallback(`[부하/에러 감지] ${model} 모델 호출 실패. 다음 대체 모델로 우회를 진행합니다...`);
+                logCallback(`[부하/에러 감지] ${model} 모델 호출 실패. 다음 대체 모델로 우회 진행 중...`);
             }
             lastError = error;
+            // Short backoff before trying next model to allow rate limit windows to adjust
+            await new Promise(resolve => setTimeout(resolve, 1200));
         }
     }
     
-    throw new Error(`모든 모델 호출에 실패했습니다. 최종 에러: ${lastError.response?.data?.error?.message || lastError.message}`);
+    throw new Error(`모든 모델 호출에 실패했습니다. 최종 에러: ${lastError?.response?.data?.error?.message || lastError?.message || '알 수 없는 에러'}`);
 }
 
 // Security: Sanitize Filenames
