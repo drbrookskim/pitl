@@ -3741,218 +3741,128 @@
             const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '.');
             switch (type) {
                 case '1pager':
-                    return `## 1. 프로젝트 한 줄 요약 (핵심 메시지)
-${idea} — DHK 5단계 파이프라인에 기반하여 사용자 중심의 차별적 가치를 실현하고, 시장 내 독보적 전략 우위를 확보하기 위한 1-Pager 통합 기획서입니다.
+                    return `# [${dateStr}] ${title} (Product Team)
 
-## 2. 왜(Why) — 본질적 니즈 및 5 Why 분석
-* **2.1. 표면적 요청 vs 본질적 Unmet Need**
-  - 표면적 요청: 단순한 기능 추가 및 화면 개편 요청
-  - 본질적 Unmet Need: 파편화된 서비스 경험을 일관되게 연결하여 작업 피로도를 근본적으로 낮추고 즉각적인 안심과 신뢰를 얻고자 함.
-* **2.2. 5 Why 심층 분석**
-  1. *Why 1*: 왜 이 기능이 필요한가? ➔ 기존 솔루션 사용 시 유저의 행동 절차가 복잡하여 중도 이탈률이 높기 때문.
-  2. *Why 2*: 왜 중도 이탈률이 높은가? ➔ 필수 데이터와 주요 실행 버튼이 여러 화면에 분산되어 탐색 비용이 크기 때문.
-  3. *Why 3*: 왜 탐색 비용이 큰가? ➔ 공급자 중심의 정보 배치로 사용자 직관성과 흐름이 단절되어 있기 때문.
-  4. *Why 4*: 왜 구조가 단절되었는가? ➔ 초기 설계 시 핵심 가치(User Value) 중심이 아닌 파편화된 피처 추가 위주로 확장되었기 때문.
-  5. *Why 5*: 근본 원인(Root Cause) ➔ **"단순한 기능 도구가 아니라, 사용자의 본질적 과업(JTBD)을 한곳에서 즉시 완수해 주는 통합 가치 플랫폼"**으로 개념 전환이 시급함.
+## 1. 프로젝트 한 줄 요약
+${idea} — 사용자 중심의 가치를 실현하고 시장 내 차별화 우위를 확보하기 위한 기획안.
 
-## 3. 개념 (Concept) — 이상 공간 정의
-| 핵심 구분 | 정밀 정의 내용 |
-| :--- | :--- |
-| **핵심 가치 (User Value)** | 복잡성 제거를 통한 압도적 작업 효율성 및 직관적 과업 완수 경험 제공 |
-| **사용자 이점 (User Benefit)** | 과업 완료 시간을 60% 이상 단축하고, 결정 장애 없이 한 번의 액션으로 목표 달성 |
-| **핵심 메시지 (Message)** | "복잡한 기획과 판단은 시스템이, 사용자는 오직 핵심 결정에만 집중합니다." |
-| **포지셔닝 렌즈** | **[개선 ➔ 대체재]** 기존 파편화 도구를 대체하고, 보편적 니즈를 극단적 차별화 UX로 전환 |
+## 2. 대상 (Target)
+| 구분 | 대상 정의 | 주요 니즈 & 특성 |
+| :--- | :--- | :--- |
+| **핵심 타깃** | 타깃 페르소나 (2040 직장인 및 얼리어답터) | 신속한 문제 해결과 직관적 UX 선호 |
+| **확장 타깃** | 잠재 시장 사용자층 | 서비스 안정성 및 신뢰도 중시 |
 
-## 4. 시나리오 (Scenario) — 현실 공간 구체화
-* **4.1. 사용자 페르소나 및 여정 (User Journey)**
-  - *상황 가정*: 사용자는 빠른 시간 내에 신규 아이디어를 검증하고 제품 명세를 도출해야 하는 긴박한 상황에 직면함.
-  - *터치포인트*: 단 한 문장의 키워드 입력 ➔ 에이전트 팀의 다차원 자동 기획 ➔ 9종의 완공 기획 산출물 즉시 확인.
-* **4.2. 페인포인트 ➔ 개념 전환 해결책 매핑**
-  - *기존 방식 (증상 대처)*: 템플릿 문서 서식을 다운받아 칸 채우기 ➔ 형식적인 서류 작업 가중.
-  - *개념 전환 (본질 해결)*: **입력 문맥 기반의 AI 삼각 교차 검수 아키텍처**로 기획과 검수를 동시 처리.
+## 3. 문제 정의 (Problem Formulation)
+- **고객 문제**: 기존 솔루션의 비효율성과 높은 진입 장벽으로 인한 불편함 누적.
+- **비즈니스 문제**: 시장 니즈에 부합하는 명확한 차별화 포인트 부재.
+- **Root Cause**: 파편화된 서비스 경험 및 체계적인 워크플로우 부족.
 
-## 5. 핵심 목표 (KPI & 메트릭 테이블)
-| 지표 구분 | 측정 항목 (Metric) | 현재 Baseline | 목표 수치 (Target) | 달성 기한 |
-| :--- | :--- | :--- | :--- | :--- |
-| **성장 지표** | 월간 활성 사용자 (MAU) | 0명 | **50,000명** | 론칭 후 6개월 |
-| **효율 지표** | 평균 기획 완공 시간 (Time-to-Plan) | 3일 (72시간) | **3분 이내** | 즉시 적용 |
-| **리텐션 지표** | 4주 재방문율 (D28 Retention) | 12.5% | **45.0% 이상** | 론칭 후 3개월 |
-| **품질 지표** | 기획 정합성 QA 승인율 | 65.0% | **99.5% [PASS]** | continuous |
+## 4. 핵심 목표 (KPI & Goals)
+| 항목 | 현재 수준 | 목표 수치 (L6M) |
+| :--- | :--- | :--- |
+| **월간 활성 사용자 (MAU)** | 0 | 50,000명 |
+| **초기 전환율 (CR)** | 1.2% | 4.8% |
+| **고객 만족도 (NPS)** | 35점 | 65점 이상 |
 
-## 6. 가지치기 (Pruning) & 가치 검증 (Must-have vs Nice-to-have)
-* **6.1. 오컴의 면도날 (Pruning list)**: 불필요한 설정 옵션, 3단계 이상 복잡한 대화형 인터뷰, 과도한 레이아웃 테마 제어 기능을 전면 과감히 가지치기함.
-* **6.2. Must-have vs Nice-to-have 구분**
-  - **Must-have**: 1-Pager 비즈니스 정의, 3C/SWOT 분석, PRD 요구사항 명세, 와이어프레임 3안 시안.
-  - **Nice-to-have**: 개별 텍스트 서치 필터, 커스텀 PDF 폰트 설정 (Phase 2로 이관).
-* **6.3. 가치 검증 관문**: *"이 기능이 사용자에게 압도적 효율성이라는 핵심 가치를 제공하는가?"* ➔ 미충족 항목 즉시 제거.
+## 5. 해결 방안 (Solution Roadmap)
+- **Phase 1 (MVP)**: 핵심 가치를 검증할 수 있는 필수 기능 중심 론칭.
+- **Phase 2 (Scalability)**: 데이터 기반 기능 고도화 및 사용자 경험 확장.
 
-## 7. 실행 로드맵 & 리스크 대응 방안
-| 로드맵 단계 | 주요 실행과업 (Deliverables) | 예상 리스크 요인 | 극복 방안 (Mitigation) |
-| :--- | :--- | :--- | :--- |
-| **Phase 1 (MVP)** | 핵심 9종 자동 생성 파이프라인 및 코어 UI | 외부 API 속도 지연 | 비동기 스트리밍 & 최적화 백업 핸들러 적용 |
-| **Phase 2 (Expansion)** | 커스텀 프롬프트 튜닝 및 팀 협업 기능 | 과도한 리소스 소모 | 모듈형 분산 아키텍처 도입 |
+## 6. 리스크 관리 (Risk Management)
+| 영향도 | 리스크 요인 | 대응 방안 |
+| :--- | :--- | :--- |
+| **상** | 초기 유저 확보 지연 | 마케팅 채널 다각화 및 얼리버드 프로모션 |
+| **중** | 경쟁사 모방 출시 | 독점적 기술/데이터 기반 moats 구축 |
 
-## 8. 기획 검증 및 스토리텔링 결언
-"잘 만드는 것만큼이나 잘 전달하는 것이 기획의 본질입니다. 본 기획은 단순한 서류 생성을 넘어, 사용자의 일상에서 기획의 장벽을 근본적으로 허무는 새로운 표준을 제시할 것입니다."`;
+## 7. 우선순위 판정
+- **중요도**: 상 (Must-Have) / **긴급도**: 상 (우선 실행 권장)`;
 
                 case 'threec':
-                    return `## 1. 오마에 겐이치 전략 삼각형 개요 (The 3C Model Overview)
-본 3C 환경 분석은 Customer(고객 니즈 C1), Competitor(경쟁사 공백 C2), Company(자사 역량 C3)의 3축 교집합 전략 공간을 포착합니다. 시장의 비효율성을 기회 요인(KSF)으로 전환하여 독점적 수용성을 확보합니다.
+                    return `# [전략 기획] 3C 프레임워크 기반 분석: ${title}
 
-## 2. Customer (고객 분석) — 수요 측면 (C1)
-* **2.1. 세분화 및 타깃 정의**
-  - *Segment A (Core)*: 빠른 시장 검증이 필요한 PM, PO 및 창업가 (전체 시장의 45%)
-  - *Segment B (Growth)*: 체계적인 기획서 수립이 필요한 대기업/중견기업 기획팀 (35%)
-  - *Segment C (Edge)*: 아이디어를 구체화하고자 하는 1인 크리에이터 (20%)
-* **2.2. Jobs-to-be-Done (JTBD)**: "나는 아이디어가 떠올랐을 때, 문서 양식 작성에 시간을 허비하지 않고 5분 내로 검증 가능한 기획서와 와이어프레임을 얻고 싶다."
-* **2.3. 니즈 계층화**:
-  - *기능적 니즈*: 오류 없는 PRD 명세 및 정밀 와이어프레임 수립
-  - *감성적 니즈*: 기획 누락 및 논리적 오류에 대한 불안감 해소
-  - *사회적 니즈*: 의사결정권자에게 '준비된 기획자'로서의 강한 신뢰 전달
+## 1. 3C 분석 개요
+- **전략 공식**: Customer 니즈 ∩ Competitor 공백 ∩ Company 강점 교집합 도출.
+- **시사점**: ${idea} 아이디어의 시장 안착을 위해 고객 페인포인트와 경쟁사 공백을 정밀 포착함.
 
-## 3. Competitor (경쟁사 분석) — 경쟁 측면 (C2)
-* **3.1. 경쟁 지형도 분석**
-  - *직접 경쟁사*: 범용 AI 문서 작성 도구 (단점: 기획 방법론 부재, 파편화된 서술)
-  - *간접 경쟁사*: 외주 기획 컨설팅 업체 (단점: 막대한 비용, 최소 2~3주 소요)
-* **3.2. 포지셔닝 맵 및 KSF**: 본 서비스는 **[방법론 전문성 100% × 생성 속도 3분]**의 전치 지점에 독점 포지셔닝합니다.
+## 2. Customer (고객 분석)
+* **2.1. JTBD (Jobs-to-be-Done)**: "더 빠른 처리와 직관적인 경험으로 과업을 완수하고 싶다."
+* **2.2. 니즈 계층**: 기능적 신뢰성 + 감성적 안도감 + 사회적 생산성 도모.
 
-## 4. Company (자사 분석) — 역량 측면 (C3)
-* **4.1. 자사 핵심 역량**: DHK 5단계 개념-시나리오 방법론 특화 파이프라인 및 멀티 에이전트 삼각 검수 엔진 보유.
-* **4.2. 가치 사슬 효율화**: R&D 및 운영 비용을 자동화된 렌더링 파이프라인으로 극단적 절감.
+## 3. Competitor (경쟁사 분석)
+* **3.1. 경쟁 지형도**: 기존 선점 업체들이 존재하나 사용자 맞춤형 기능 부족.
+* **3.2. 핵심 약점 (Gap)**: 복잡한 설정 단계와 높은 가격 정책.
+
+## 4. Company (자사 역량)
+* **4.1. 핵심 역량**: 유연한 개발 구조 및 빠른 시장 피드백 수용 속도.
+* **4.2. 실행 전략**: 리소스 효율화를 통한 스피디한 MVP 론칭.
 
 ## 5. 3C × 상품기획 연결 매트릭스
-| 3C 렌즈 | 핵심 발견사항 (Fact & Insight) | 연결 상품기획 산출물 | MVP 배정 |
+| 3C 요인 | 발견사항 | 상품기획 연계 산출물 | MVP 배정 |
 | :--- | :--- | :--- | :--- |
-| **Customer** | 기획서와 디자인 간 정합성 결여 피로 | 와이어프레임 3안 시안 자동 생성 | **Must-Have** |
-| **Competitor** | 단순 텍스트 나열 위주의 빈약함 | 9종 다차원 문서 스위처 대시보드 | **Must-Have** |
-| **Company** | DHK 기획 방법론 보유 | 5Why 및 가치 검증 자동 반영 엔진 | **Must-Have** |`;
+| **Customer** | 직관적 UX 요구 | 핵심 플로우 단순화 | **Must Have** |
+| **Competitor** | 고비용 구조 | 합리적 프라이싱 모델 | **Should Have** |
+| **Company** | 민첩성 | 가벼운 아키텍처 구현 | **Must Have** |`;
 
                 case 'swot':
-                    return `## 1. SWOT 심층 분석 개요
-${idea} 사업의 내부 강점·약점과 외부 기회·위협 요인을 다각도로 분석하여 전략 조합을 도출합니다.
+                    return `# [전략 분석] SWOT 분석 및 교차 매트릭스: ${title}
 
-## 2. SWOT 요인 분석 매트릭스
-| 구분 | Positive (긍정적 요인) | Negative (부정적 요인) |
-| :--- | :--- | :--- |
-| **Internal (내부)** | **Strengths (강점)**<br>- 독보적 DHK 5단계 기획 체계<br>- 빠른 3분 완공 처리 속도<br>- 9종 산출물 삼각 검수 엔진 | **Weaknesses (약점)**<br>- 초기 브랜드 인지도 구축 필요<br>- 고도화된 타깃 특화 템플릿 확장 필요 |
-| **External (외부)** | **Opportunities (기회)**<br>- AI 기반 업무 자동화 시장 급성장<br>- 기획자/PM 인력의 업무 과중 심화 | **Threats (위협)**<br>- 기존 대형 SaaS의 AI 기능 탑재<br>- API 단가 및 외부 인프라 변동성 |
+## 1. SWOT 핵심 요약
+${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바탕으로 입체 전략 수립.
 
-## 3. SWOT 교차(Cross) 전략 실행 매트릭스
-* **SO 전략 (강점 × 기회)**: DHK 기획 체계를 바탕으로 업무 자동화 수요가 높은 PM/PO 시장을 선제적으로 적극 덤핑 점유.
-* **ST 전략 (강점 × 위협)**: 대형 SaaS가 제공하지 못하는 정밀 삼각 교차 검수(QA Audit) 기능으로 진입 장벽(Moat) 구축.
-* **WO 전략 (약점 × 기회)**: 사용자 피드백 루프를 극대화하여 부족한 초기 템플릿 카테고리를 빠르게 세분화 확충.
-* **WT 전략 (약점 × 위협)**: 로컬 캐싱 및 백업 모드 도입으로 외부 API 위협 및 비용 위험 최소화.`;
+## 2. SWOT 요인 분석
+- **S (Strengths)**: 명확한 가치 제안, 유연한 서비스 구조.
+- **W (Weaknesses)**: 초기 인지도 구축 필요성.
+- **O (Opportunities)**: 시장 내 맞춤형 서비스 수요 급증.
+- **T (Threats)**: 기존 대형 플랫폼의 시장 진입 가능성.
+
+## 3. SWOT 교차(Cross) 전략 매트릭스
+| 전략 | 세부 실행 내용 |
+| :--- | :--- |
+| **SO 전략** | 강점을 바탕으로 기회 시장을 선제적 타깃팅 |
+| **ST 전략** | 차별화된 기능으로 경쟁 위협 요인 방어 |
+| **WO 전략** | 빠른 루프 피드백으로 약점 보완 및 시장 침투 |
+| **WT 전략** | 리스크 최소화 정책 수립 |`;
 
                 case 'stp':
-                    return `## 1. Segmentation (시장 세분화)
-| 세그먼트 | 규모 및 비중 | 특성 및 문제점 | 수용 가능성 |
-| :--- | :--- | :--- | :--- |
-| **Seg A: IT 스타트업 기획자** | 40% | 스피디한 요구사항 정의 필요, 리소스 부족 | **최상 (Primary Target)** |
-| **Seg B: 중견/대기업 PM** | 35% | 문서 정합성 및 논리적 5Why 검증 중시 | **상 (Secondary Target)** |
-| **Seg C: 예비 창업가** | 25% | 아이디어의 시각적 와이어프레임화 갈증 | **중 (Expansion Target)** |
+                    return `# [전략 기획] STP 마케팅 명세서: ${title}
 
-## 2. Targeting (목표 타깃 명세)
-- **Primary Target Persona**: 3년 차 IT 서비스 PM 김기획(31세). "매주 반복되는 PRD 작성과 디자인팀 설명회 때문에 밤을 새운다. 검증된 서식과 시안을 5분 내로 얻기를 원함."
-- **시장 규모 유추**: TAM (국내/외 기획 소프트웨어 시장 1.2조원) ➔ SAM (IT/서비스 기획 도구 시장 3,500억원) ➔ SOM (초기 획득 목표 시장 150억원).
+## 1. Segmentation (시장 세분화)
+- 인구통계학적/행동적 특성 기준 3대 세그먼트 구별.
+
+## 2. Targeting (목표 타깃)
+- **Primary**: 생산성 향상을 갈망하는 핵심 유저군.
+- **Secondary**: 신기술 수용도가 높은 디지털 딥 유저층.
 
 ## 3. Positioning (차별화 포지셔닝)
-* **Value Proposition Statement**: "단순히 글을 대신 써주는 AI가 아닌, DHK 방법론에 따라 개념부터 와이어프레임 시안까지 삼각 정합성을 보장하는 유일한 기획 에이전트"
-* **POD (Point of Difference)**: 와이어프레임 3안 시안 및 QA Audit 자동 검수 기능 탑재.`;
+- **Value Proposition**: "${idea}로 가장 효율적인 과업 달성 경험을 제공한다."`;
 
                 case 'mece':
-                    return `## 1. McKinsey MECE 구조화 분석 개요
-상호 배타적이고 전체 포괄적인(Mutually Exclusive, Collectively Exhaustive) 4단계 로직 트리를 통해 ${idea}의 도메인을 빈틈없이 해체 정의합니다.
+                    return `# [구조화 분석] McKinsey MECE 전략 기획 분석: ${title}
 
-## 2. 4단계 MECE 로직 트리 (Logical Tree)
-\`\`\`
-[목표: ${idea} 기획 완공]
- ├── 1. 비즈니스 정합성 (Business Logic)
- │    ├── 1.1. 고객 페인포인트 정의 (Problem)
- │    └── 1.2. 정량적 목표 수치 수립 (KPI)
- ├── 2. 제품 요구사항 명세 (Product Spec)
- │    ├── 2.1. MoSCoW 요구사항 분류 (REQ ID)
- │    └── 2.2. 예외 처리 및 보안 정책 (Security & Exception)
- ├── 3. UX/UI 구조 설계 (Experience Design)
- │    ├── 3.1. 화면 타입별 레이아웃 (Type A/B/C)
- │    └── 3.2. 사용성 및 반응형 가이드라인 (Responsiveness)
- └── 4. 정합성 QA 검수 (Quality Assurance)
-      ├── 4.1. 비즈니스-명세-디자인 3축 매칭률 (Matching Rate)
-      └── 4.2. 최종 결재 승인 [PASS]
-\`\`\`
+## 1. 개요 및 구조화 목적
+- 상호배제(ME)와 전체포괄(CE) 원칙으로 ${idea} 사업의 타당성 및 범위를 체계화.
 
-## 3. MECE 배타적 포괄성 검증 표
-| 분석 차원 | 분해 요소 (Exclusive Sub-domains) | 누락/중복 검증 결과 |
-| :--- | :--- | :--- |
-| **사용자 분류** | 개인(B2C) vs 기업(B2B) vs 정부/기관(B2G) | 100% MECE 성립 (누락 없음) |
-| **요구사항 범주** | 기능(Functional) vs 비기능(Non-functional) | 100% MECE 성립 (중복 없음) |`;
+## 2. 도메인 분해
+- **고객층**: 개인 / 기업 / 기관 (배타적 구분)
+- **가치 제안**: 기능적 / 경제적 / 감성적 가치
+- **리스크 영역**: 기술 / 시장 / 재무 / 법적 위험 요인`;
 
                 case 'prd':
-                    return `## 1. 제품 요구사항 개요 (PRD Summary)
-* **프로젝트명**: ${title}
-* **핵심 목적**: ${idea} 아이디어를 바탕으로 개발자 및 디자이너가 즉시 구현 가능한 수준의 정밀 기술/기능 요구사항을 명세화함.
+                    return `# [PRD] 상세 제품 요구사항 명세서: ${title}
 
-## 2. 코어 KPI 및 성공 지표
-| 요구사항 영역 | 지표명 (Metric) | Target Goal | 측정 및 집계 방식 |
-| :--- | :--- | :--- | :--- |
-| **시스템 성능** | API 응답 처리 속도 | 3.0초 이내 | 서버 렌더링 Latency 측정 |
-| **사용성** | 과업 완수 성공률 | 98.0% 이상 | 사용자 세션 클릭 로그 |
+## 1. 문서 개요
+- **프로젝트명**: ${title}
+- **목적**: ${idea} 아이디어의 구체적 요구사항 및 예외 정책 명세화.
 
-## 3. 상세 기능 요구사항 명세 (MoSCoW Prioritized)
-| REQ ID | 기능 명칭 | 세부 기능 스펙 및 조건 | 우선순위 | 예외 및 보안 처리 정책 |
-| :--- | :--- | :--- | :--- | :--- |
-| **REQ-01** | 핵심 파이프라인 엔진 | DHK 5단계 기획 데이터를 비동기로 생성 | **Must** | API 실패 시 자동 백업 템플릿 즉시 전환 |
-| **REQ-02** | 대비 스위처 UI | 9종 문서를 멀티 탭 구조로 다이렉트 전환 | **Must** | 세션 상태를 로컬 저장소에 실시간 동기화 |
-| **REQ-03** | 와이어프레임 렌더러 | ASCII 기반 3가지 시안 탭 전환 스위처 | **Should** | 특수 문자 깨짐 방지 monospace 폰트 고정 |
-| **REQ-04** | QA Audit 리포트 | 삼각 매칭률 계산 및 PASS 판정 출력 | **Must** | 검수 불일치 시 마크다운 경고 뱃지 노출 |`;
+## 2. 핵심 KPI
+| 지표명 | 목표치 | 측정 방법 |
+| :--- | :--- | :--- |
+| **Task Completion Rate** | 95% 이상 | 세션 로그 분석 |
 
-                case 'wireframe':
-                    return `## 1. 와이어프레임 구조 설계 3안 (Wireframe Layout Options)
-본 와이어프레임 명세는 PRD 요구사항을 바탕으로 정보 우선순위와 사용 목적이 완전히 다른 3가지 시안을 제시합니다.
-
-## 2. 시안별 레이아웃 ASCII 아키텍처
-\`\`\`
-[Type A: 현실/안정형 - Standard Dashboard Layout]
-┌──────────────────────────────────────────────────────────┐
-│ [Logo] PITL Workspace          [Nav] 1-Pager | PRD | QA │
-├──────────────┬───────────────────────────────────────────┤
-│ Sidebar Nav  │ Main Content Area                         │
-│ - 1-Pager    │ ┌───────────────────────────────────────┐ │
-│ - 3C / SWOT  │ │ [Header] Stage Title & Methodology    │ │
-│ - PRD Spec   │ └───────────────────────────────────────┘ │
-│ - Wireframe  │ ┌───────────────────────────────────────┐ │
-│ - Audit QA   │ │ [Card] Interactive Deliverables       │ │
-│              │ └───────────────────────────────────────┘ │
-└──────────────┴───────────────────────────────────────────┘
-\`\`\`
-
-## 3. 화면 요소별 정보 우선순위 매트릭스
-| 화면 구역 | 노출 핵심 컴포넌트 | Primary Action (CTA) | Design System Style |
-| :--- | :--- | :--- | :--- |
-| **Header Zone** | 브랜드 로고, 파이프라인 진행률 원형 노드 | 진행률 뷰 이동 | Dark Neumorphism Glass |
-| **Sidebar Zone**| 9종 문서 목록, 언어 전환 스위처 | 문서 탭 선택 | Vertical Nav Menu |
-| **Main Zone**   | 마크다운 본문, ASCII 와이어프레임 렌더러 | 데이터 편집/다운로드 | Clean Markdown Body |`;
-
-                case 'audit':
-                    return `## 1. 정합성 검수 개요 (QA Audit Summary)
-* **최종 판정**: **[PASS] 100% 삼각 정합성 검증 완료**
-* **검수 일시**: ${dateStr}
-* **검수 대상**: 1-Pager 비즈니스 목표 ↔ PRD 요구사항 ↔ 와이어프레임 3안 시안
-
-## 2. 정량적 일치성 매칭률 검증 결과
-| 검수 평가 항목 | 1-Pager 목표 매칭 | PRD REQ 매칭 | Wireframe 구현 매칭 | 정합성 판정 |
-| :--- | :--- | :--- | :--- | :--- |
-| **비즈니스 정합성** | 100% 반영 | REQ-01 / REQ-02 충족 | Main Zone 대시보드 반영 | **[PASS]** |
-| **기능-UX 연결성** | 100% 반영 | REQ-03 와이어프레임 | Type A/B/C 3안 제도 완료 | **[PASS]** |
-| **예외 정의 충족** | 100% 반영 | REQ-04 백업 핸들러 | 자동 Fallback 경고 뱃지 | **[PASS]** |
-| **보안/안전성** | 100% 반영 | XSS 방지 및 파일 정제 | 특수문자 변환 스키마 적용 | **[PASS]** |
-
-## 3. 정성적 품질 평가 총평
-"본 기획 패키지는 DHK 5단계 기획 파이프라인에 의거하여, 비즈니스 본질 정의부터 정밀 기술 명세 및 시각 와이어프레임 시안에 이르기까지 일관된 가치 체계를 지니고 있음을 최종 확정합니다."`;
-
-                default:
-                    return `# ${title}\n\n${idea}`;
-            }
-        }
+## 3. 상세 기능 요구사항 (MoSCoW)
+- **[REQ-01]** 핵심 워크플로우 렌더링 엔진 (Must)
+- **[REQ-02]** 사용자 대시보드 및 결과 내보내기 (Should)
+- **[REQ-03]** 예외 상황 시 자동 가드 및 사용자 안내 (Must)`;
 
                 case 'wireframe':
                     return `# [UX/UI] 와이어프레임 3안 명세서: ${title}
@@ -4552,13 +4462,9 @@ ${idea} 사업의 내부 강점·약점과 외부 기회·위협 요인을 다�
                 // Store idea in resultDocs for history
                 const ideaText = idea;
                 const strategistPrompt = `
-                사용자의 상품 아이디어를 바탕으로 DHK 개념·시나리오 기획 방법론(detailed-planning) 5단계 파이프라인을 적용하여 깊이 있고 구체적인 1-Pager 요약서를 작성하라.
+                사용자의 상품 아이디어를 바탕으로 DHK 개념·시나리오 기획 방법론(detailed-planning) 5단계 파이프라인을 적용하여 1-pager 요약서를 작성하라.
 
                 아이디어: ${idea}
-
-                [작성 품질 & 깊이(Depth) 지침]
-                - 추상적이거나 요약 위주의 간략한 문장을 엄금하고, 실무 PM이 즉시 보고할 수 있을 수준으로 3~5줄 이상의 정밀 분석과 실질적 데이터 수치를 포함하라.
-                - 반드시 마크다운 표(Table) 및 구체적 메트릭 수치( baseline -> target )를 포함하라.
 
                 [DHK 기획 5단계 파이프라인 적용 지침]
                 1. Stage 0 (왜 - Why): 5 Why 탐구로 표면적 요청 너머의 본질적 Unmet Need와 의사결정 기준 명확화.
@@ -4574,17 +4480,11 @@ ${idea} 사업의 내부 강점·약점과 외부 기회·위협 요인을 다�
                 반드시 다음 마크다운 형식을 준수하라 (타이틀 줄에 [] 대괄호는 금지함):
                 ## 1. 프로젝트 한 줄 요약 (핵심 메시지)
                 ## 2. 왜(Why) — 본질적 니즈 및 5 Why 분석
-                * 2.1. 표면적 요청 vs 본질적 Unmet Need
-                * 2.2. 5 Why 심층 탐구 (Why 1 ~ Why 5 및 Root Cause)
-                ## 3. 개념 (Concept) — 이상 공간 정의
-                * 3.1. 핵심 가치(User Value) & 사용자 이점(User Benefit)
-                * 3.2. 포지셔닝 렌즈 분석 (개선vs대체재, 보편성vs차별성)
-                ## 4. 시나리오 (Scenario) — 현실 공간 구체화
-                * 4.1. 사용자 페르소나 & 여정 시나리오 (Context → Touchpoint → Outcome)
-                * 4.2. 페인포인트 ➔ 개념 전환 해결책 매핑
+                ## 3. 개념 (Concept) — 핵심 가치, 이점 및 포지셔닝 렌즈
+                ## 4. 시나리오 (Scenario) — 사용자 여정, 페인포인트 및 개념 전환 해결책
                 ## 5. 핵심 목표 (KPI & 메트릭 테이블)
                 ## 6. 가지치기 (Pruning) & 가치 검증 (Must-have vs Nice-to-have)
-                ## 7. 실행 로드맵 & 리스크 대응 방안 (테이블)
+                ## 7. 실행 로드맵 & 리스크 대응 방안
                 ## 8. 기획 검증 및 스토리텔링 결언
                 `;
                 
@@ -4592,7 +4492,7 @@ ${idea} 사업의 내부 강점·약점과 외부 기회·위협 요인을 다�
                 try {
                     onePagerContent = await callGeminiClientSide(
                         apiKey,
-                        "당신은 상품 기획의 본질과 고객 문제를 깊이 있게 정의하는 Product Strategist 에이전트입니다. AI 티 없이 자연스럽고 깊이 있는 한국어로 작성합니다.",
+                        "당신은 상품 기획의 본질과 고객 문제를 명확하게 정의하는 Product Strategist 에이전트입니다. AI 티 없이 자연스럽고 명료한 한글로 작성합니다.",
                         strategistPrompt,
                         (msg) => logAgentClientSide('strategist', msg)
                     );
@@ -4609,35 +4509,48 @@ ${idea} 사업의 내부 강점·약점과 외부 기회·위협 요인을 다�
                 safeUpdateProgress(22, 'threec');
                 logAgentClientSide('strategist', `3C 프레임워크(Customer, Competitor, Company)를 활용한 입체적 환경 분석을 시작합니다.`);
                 const threeCPrompt = `
-                다음 상품 아이디어를 기반으로 오마에 겐이치의 3C 전략 삼각형(Customer, Competitor, Company)을 적용하여 매우 심층적이고 구체적인 입체 환경 분석 보고서를 작성하라.
+                다음 상품 아이디어를 기반으로 오마에 겐이치의 3C 전략 삼각형(Customer, Competitor, Company)을 적용하여 심층적이고 입체적인 환경 분석 보고서를 작성하라.
                 
                 아이디어: ${idea}
                 
-                [작성 깊이 지침]
-                - 항목마다 4줄 이상의 상세한 인프라, 비즈니스 및 사용자 심리 분석을 기술하라.
-                - 반드시 마크다운 표와 구체적인 수치 유추(세그먼트 비중 %, WTP 금액, 포지셔닝 좌표)를 포함하라.
+                반드시 다음 'product-planning-framework'의 핵심 전략 로직과 형식을 충실하게 준수하라:
+                
+                # [전략 기획] 3C 프레임워크 기반 입체적 환경 분석: {제목}
                 
                 ## 1. 오마에 겐이치 전략 삼각형 개요 (The 3C Model Overview)
                 - **전략 공식**: 지속 가능한 차별화 공간 = Customer 니즈(C1) ∩ Competitor 공백(C2) ∩ Company 강점(C3) 교집합
-                - Why → So What → How 사고 흐름을 적용하여 상세 서술하라.
+                - Why → So What → How 사고 흐름을 적용하여, 환경 제약을 창의적 기회(KSF)로 치환하는 전략 요약을 3-4문장으로 서술하라.
                 
                 ## 2. Customer (고객 분석) — 수요 측면 (C1)
-                * **2.1. 고객 세분화 및 타깃 정의 (Segmentation)** (Seg A, B, C의 % 비중 및 페르소나)
-                * **2.2. Jobs-to-be-Done (JTBD)** ("나는 ~할 때 ~하고 싶다" 형식)
-                * **2.3. 니즈 계층화 (Needs Hierarchy)** (기능적, 감성적, 사회적 니즈)
-                * **2.4. 구매 의사결정 여정 및 지불 의향 (Customer Journey & WTP)** (가격 민감도 포함)
+                * **2.1. 고객 세분화 및 타깃 정의 (Segmentation)**
+                  - 인구통계학적 특성 및 니즈/행동 기반 세그먼트를 3가지 이상 상세히 정의하라.
+                * **2.2. Jobs-to-be-Done (JTBD)**
+                  - 고객이 이 제품/서비스를 '고용'하는 진짜 본질적 이유와 과제를 "나는 ~라는 과제를 해결하고 싶다" 형식으로 정의하라.
+                * **2.3. 니즈 계층화 (Needs Hierarchy)**
+                  - 기능적 니즈, 감성적 니즈, 잠재적/사회적 니즈로 다차원 구조화하라.
+                * **2.4. 구매 의사결정 여정 및 지불 의향 (Customer Journey & WTP)**
+                  - 인지부터 최종 전환/재구매까지의 여정과 지불 의향(WTP) 및 가격 민감도 분석을 포함하라.
                 
                 ## 3. Competitor (경쟁사 분석) — 경쟁 측면 (C2)
-                * **3.1. 경쟁 지형도 및 포지셔닝 맵** (직접, 간접, 기술대체재 및 2축 포지셔닝)
-                * **3.2. 경쟁사 강·약점 분석 (Competitor Analysis)** (제품, 가격, 유통, 마케팅 공백)
+                * **3.1. 경쟁 지형도 및 포지셔닝 (Positioning Map)**
+                  - 직접 경쟁자, 간접 경쟁자, 잠재적 진입자 및 기술 대체재를 식별하라.
+                  - 주요 속성 2축을 기준으로 포지셔닝 전략을 시각화/설명하라.
+                * **3.2. 경쟁사 강·약점 분석 (Competitor Analysis)**
+                  - 핵심 경쟁자들의 제품, 기술, 유통, 자본력의 강점과 구체적인 약점(공백 영역)을 분석하라.
                 * **3.3. 차별화 우위 전략 및 KSF (Key Success Factor)**
+                  - 경쟁사 대비 독점적 차별화 우위를 확보하기 위한 핵심 성공 요인(KSF)과 전략적 집중도를 도출하라.
                 
                 ## 4. Company (자사 분석) — 역량 측면 (C3)
-                * **4.1. 자사 핵심 역량 (Core Competencies)** (기술, 데이터, 인프라)
-                * **4.2. 자원 제약 및 가치 사슬 (Value Chain)**
-                * **4.3. 12~18개월 역량 확보 로드맵**
+                * **4.1. 자사 핵심 역량 (Core Competencies)**
+                  - 자사가 보유한 독보적인 기술, 데이터, 브랜드, 인프라 역량을 식별하라.
+                * **4.2. 자원 제약 및 가치 사슬 (Value Chain & Resource Constraints)**
+                  - 예산, 인력, 시간 등의 자원 제약 속에서 R&D부터 판매까지의 가치 사슬 효율화 방안을 제시하라.
+                * **4.3. 전략적 방향성 및 확보 가능 역량**
+                  - 기업의 궁극적 비전과의 정합성을 검증하고, 향후 12~18개월 내 확보해야 할 역량을 로드맵화하라.
                 
-                ## 5. 3C × 상품기획 연결 매트릭스 (Integration Matrix Table)
+                ## 5. 3C × 상품기획 연결 매트릭스 (Integration Matrix)
+                - 다음 마크다운 표 형식으로 3C 분석 결과가 어떻게 실제 요구사항 및 MVP 범위에 매핑되는지 정의하라.
+                
                 | 3C 렌즈 요소 | 핵심 발견사항 (Fact & Insight) | 연결 상품기획 산출물 | MVP 우선순위 배정 (Must/Should/Could) |
                 | :--- | :--- | :--- | :--- |
                 | **Customer** | ... | ... | ... |
@@ -4650,63 +4563,101 @@ ${idea} 사업의 내부 강점·약점과 외부 기회·위협 요인을 다�
                 try {
                     threeCContent = await callGeminiClientSide(
                         apiKey,
-                        "당신은 시장 환경 분석을 3C 프레임워크로 전문 설계하는 Product Strategist 에이전트입니다. AI 티 없이 자연스럽고 깊이 있는 한글로 작성합니다.",
+                        "당신은 시장 환경 분석을 3C 프레임워크로 전문 설계하는 Product Strategist 에이전트입니다. AI 티 없이 자연스럽고 명료한 한글로 작성합니다.",
                         threeCPrompt,
                         (msg) => logAgentClientSide('strategist', msg)
                     );
                 } catch (threeCErr) {
-                    console.warn('[3C Fallback]:', threeCErr);
+                    console.warn('[3C Fallback] Generating fallback 3C analysis:', threeCErr);
                     logAgentClientSide('strategist', `[ℹ️ 3C 백업 모드 실행] 표준 3C 분석 프레임워크로 즉시 대체 보완되었습니다.`);
-                    threeCContent = generateFallbackDoc('threec', cleanTitle, idea);
+                    const dateStr3c = new Date().toISOString().slice(0,10).replace(/-/g,'.');
+                    threeCContent = `# [전략 기획] 3C 프레임워크 기반 입체적 환경 분석: ${cleanTitle}
+
+## 1. 3C 및 전략 요약
+지속 가능한 차별화 공간 = Customer 니즈(구독 혜택/돈돀 절약 동기) ∩ Competitor 공백(문제 해결의 직관성 부족) ∩ Company 강점(AI 에이전트 기반 자동화 역량)
+
+## 2. Customer 니즈 분석
+| 세그먼트 | 핵심 니즈 | JTBD |
+| :--- | :--- | :--- |
+| 실무자 (30대 직장인) | 빠른 정보 합성 | “돈 안 들이고 시간 단축 하고 싶다” |
+| 개인 프리랜서 (20대말) | 전문 콘텐츠 조각 | “내가 관심가질 뉴스만 모아서 보고 싶다” |
+
+## 3. Competitor 경쟁 분석
+| 구분 | 대표 경쟁사 | 컨텐츠 공백 |
+| :--- | :--- | :--- |
+| 직접 경쟁 | 네이버 뉴스, Google 뉴스 | 개인화 미흡, 브랜드 중심 피드 |
+| 간접 경쟁 | 마케팅 에이전트 | 뉴스 연동 미흡 |
+
+## 4. Company 역량 분석
+| 핵심 역량 | 활용 방안 |
+| :--- | :--- |
+| AI API 기술 스택 | 맞춤형 플로우 자동화 |
+| 디자인 시스템 | 빠른 프로토타입 도출 |
+
+## 5. 3C 연결 매트릭스
+| 3C 렌즈 | 핵심 발견 | MVP 우선순위 |
+| :--- | :--- | :--- |
+| Customer | 개인화 피드 수요 확인 | Must Have |
+| Competitor | 개인화 기능 공백 존재 | Must Have |
+| Company | AI 에이전트 작성 역량 | Must Have |`;
                 }
                 logAgentClientSide('strategist', `3C 프레임워크 기반 환경 분석서 적재 완료.`);
                 
-                await sleep(50);
+                await sleep(50); // Prevent API Rate Limits
 
                 // STAGE 1.1.1: SWOT
                 safeUpdateProgress(34, 'swot');
                 logAgentClientSide('strategist', `SWOT(강점·약점·기회·위협) 전략 도출 및 교차 매트릭스 수립을 시작합니다.`);
                 const swotPrompt = `
-                다음 상품 아이디어를 기반으로 매우 깊이 있고 세밀한 SWOT 분석 및 교차(Cross) 전략 매트릭스 보고서를 작성하라.
+                다음 상품 아이디어를 기반으로 입체적인 SWOT 분석 및 교차(Cross) 전략 매트릭스 보고서를 작성하라.
                 
                 아이디어: ${idea}
-
-                [작성 깊이 지침]
-                - 단순 단어 나열이 아닌, 강점/약점/기회/위협 항목별 3개 이상의 구체적인 요인을 정밀 서술하라.
-                - Cross 매트릭스(SO, ST, WO, WT) 표에 구체적 실행 액션 플랜을 4줄 이상 포함하라.
+                
+                [문체 작성 지침 (Humanize Korean)]
+                - AI 특유의 상투어구('혁신적인', '선도하는', '면밀히' 등)와 번역투('~에 대해', '~를 통해'), 과도한 접속사('또한', '하지만')를 배제하라.
+                - 단정하고 직관적인 문장으로 정밀하게 작성하라.
+                
+                반드시 다음 마크다운 형식을 충실하게 준수하라:
+                # [전략 분석] SWOT 분석 및 교차 전략 매트릭스: {제목}
                 
                 ## 1. SWOT 핵심 요약
-                ## 2. 내부/외부 환경 다차원 분석
-                ### 2.1. 강점 (Strengths) — 내부적 핵심 우위 (3가지 이상)
-                ### 2.2. 약점 (Weaknesses) — 내부적 한계 및 보완점 (3가지 이상)
-                ### 2.3. 기회 (Opportunities) — 외부적 시장 기회 (3가지 이상)
-                ### 2.4. 위협 (Threats) — 외부적 위험 요소 (3가지 이상)
+                - 서비스의 현재 경쟁 환경과 주요 전략적 시사점을 3-4문장으로 서술하라.
                 
-                ## 3. SWOT 교차(Cross) 전략 실행 매트릭스 (Table)
+                ## 2. 내부/외부 환경 다차원 분석
+                ### 2.1. 강점 (Strengths) — 내부적 핵심 우위
+                - 독보적인 기술, 리소스, 데이터, 브랜드 등 3가지 이상을 명확히 정의하라.
+                ### 2.2. 약점 (Weaknesses) — 내부적 한계 및 보완점
+                - 초기 인지도, 자원 제약, 파트너십 부족 등 3가지 이상을 정직하게 도출하라.
+                ### 2.3. 기회 (Opportunities) — 외부적 시장 기회
+                - 시장 성장세, 사용자 행동 변화, 경쟁사 공백, 규제 완화 등 3가지 이상을 도출하라.
+                ### 2.4. 위협 (Threats) — 외부적 위험 요소
+                - 신규 진입자, 대체 기술, 플랫폼 의존성, 경기 변동 등 3가지 이상을 도출하라.
+                
+                ## 3. SWOT 교차(Cross) 전략 매트릭스
                 | 전략 유형 | 핵심 분석 결합 | 세부 실행 액션 로드맵 |
                 | :--- | :--- | :--- |
-                | **SO 전략 (공격적 성장)** | 강점 × 기회 | ... |
-                | **ST 전략 (위협 회피/다각화)** | 강점 × 위협 | ... |
-                | **WO 전략 (체질 개선)** | 약점 × 기회 | ... |
-                | **WT 전략 (방어 및 위기관리)** | 약점 × 위협 | ... |
+                | **SO 전략 (공격적 성장)** | 강점으로 기회를 극대화 | ... |
+                | **ST 전략 (위협 회피/다각화)** | 강점으로 위협을 완화 | ... |
+                | **WO 전략 (체질 개선)** | 약점을 보완하여 기회 포착 | ... |
+                | **WT 전략 (방어 및 위기관리)** | 약점 최소화 및 위협 회피 | ... |
                 `;
                 
                 let swotContent = "";
                 try {
                     swotContent = await callGeminiClientSide(
                         apiKey,
-                        "당신은 SWOT 분석 및 교차 전략을 전문 수립하는 Product Strategist 에이전트입니다. 깊이 있고 풍부한 마크다운으로 작성합니다.",
+                        "당신은 SWOT 분석 및 교차 전략을 전문 수립하는 Product Strategist 에이전트입니다. AI 티 없이 자연스러운 한국어로 작성합니다.",
                         swotPrompt,
                         (msg) => logAgentClientSide('strategist', msg)
                     );
                 } catch (swotErr) {
-                    console.warn('[SWOT Fallback]:', swotErr);
+                    console.warn('[SWOT Fallback] Generating fallback SWOT analysis:', swotErr);
                     logAgentClientSide('strategist', `[ℹ️ SWOT 백업 모드 실행] 표준 SWOT 매트릭스로 즉시 대체 보완되었습니다.`);
                     swotContent = generateFallbackDoc('swot', cleanTitle, idea);
                 }
                 logAgentClientSide('strategist', `SWOT 및 교차 전략 분석 보고서 적재 완료.`);
                 
-                await sleep(50);
+                await sleep(50); // Prevent API Rate Limits
 
                 // STAGE 1.1.2: STP
                 safeUpdateProgress(46, 'stp');
@@ -4738,79 +4689,82 @@ ${idea} 사업의 내부 강점·약점과 외부 기회·위협 요인을 다�
                 
                 let stpContent = "";
                 try {
-                const stpPrompt = `
-                다음 상품 아이디어를 기반으로 세밀하고 깊이 있는 STP(시장 세분화, 타깃 선정, 포지셔닝) 전략 명세서를 작성하라.
-                
-                아이디어: ${idea}
-
-                [작성 깊이 지침]
-                - 각 세그먼트별 TAM/SAM/SOM 수치 유추, 페르소나의 일상 페인포인트, 2축 포지셔닝 좌표를 표와 구체적 문장으로 서술하라.
-                
-                ## 1. Segmentation (시장 세분화)
-                | 세그먼트명 | 시장 비중 (%) | 핵심 특성 및 페인포인트 | 수용 가능성 |
-                | :--- | :--- | :--- | :--- |
-                | **Seg A: IT 스타트업 PM/PO** | 40% | 빠르게 PRD 및 기획서를 완공해야 하는 극심한 시간 압박 | **최상 (Primary)** |
-                | **Seg B: 대기업/중견 기획팀** | 35% | 문서 정합성 및 논리적 5Why 검증 요구 | **상 (Secondary)** |
-                | **Seg C: 예비 창업가/크리에이터** | 25% | 아이디어의 시각적 와이어프레임화 갈증 | **중 (Expansion)** |
-                
-                ## 2. Targeting (목표 타깃 명세)
-                * **2.1. Primary Target Persona**: 3년 차 IT 서비스 PM 김기획(31세). "매주 반복되는 PRD 작성과 디자인팀 설명회 때문에 야근이 잦음. 5분 내 검증 가능한 기획서 요구."
-                * **2.2. 시장 규모 추산 (TAM / SAM / SOM)** (구체적 수치 포함)
-                
-                ## 3. Positioning (차별화 포지셔닝)
-                * **3.1. Value Proposition Statement**: "단순 텍스트 생성을 넘어 DHK 5단계 파이프라인과 삼각 정합성 QA를 보장하는 유일한 기획 에이전트"
-                * **3.2. POD (Point of Difference) vs POP (Point of Parity)**
-                * **3.3. 2축 포지셔닝 맵 및 차별화 좌표**
-                `;
-                
-                let stpContent = "";
-                try {
                     stpContent = await callGeminiClientSide(
                         apiKey,
-                        "당신은 STP 타깃팅과 포지셔닝 전략을 구체화하는 Product Strategist 에이전트입니다. 깊이 있고 풍부한 내용으로 작성합니다.",
+                        "당신은 STP 타깃팅과 포지셔닝 전략을 구체화하는 Product Strategist 에이전트입니다.",
                         stpPrompt,
                         (msg) => logAgentClientSide('strategist', msg)
                     );
                 } catch (stpErr) {
-                    console.warn('[STP Fallback]:', stpErr);
+                    console.warn('[STP Fallback] Generating fallback STP analysis:', stpErr);
                     logAgentClientSide('strategist', `[ℹ️ STP 백업 모드 실행] 표준 STP 명세서로 즉시 대체 보완되었습니다.`);
                     stpContent = generateFallbackDoc('stp', cleanTitle, idea);
                 }
                 logAgentClientSide('strategist', `STP 전략 분석 및 포지셔닝 명세서 적재 완료.`);
                 
-                await sleep(50);
+                await sleep(50); // Prevent API Rate Limits
                 
                 // STAGE 1.2: MECE
                 safeUpdateProgress(58, 'mece');
                 logAgentClientSide('strategist', `맥킨지 MECE 프레임워크 기반의 구조적 전략 기획 분석을 개시합니다.`);
                 const mecePrompt = `
-                다음 상품 아이디어를 기반으로 맥킨지식 MECE(Mutually Exclusive, Collectively Exhaustive: 상호배제와 전체포괄) 4단계 구조화 분석 보고서를 깊이 있게 작성하라.
+                다음 상품 아이디어를 기반으로 맥킨지식 MECE(Mutually Exclusive, Collectively Exhaustive: 상호배제와 전체포괄) 구조화 분석 보고서를 작성하라.
+                비즈니스 타당성 검증을 위해 상품기획의 5대 핵심 도메인을 누락과 중복 없이 완벽히 분해하고 구조화하라.
                 
                 아이디어: ${idea}
                 
-                [작성 깊이 지침]
-                - 간략한 요약을 피하고 4단계 깊이의 ASCII 로직 트리와 배타적 포괄성 검증 표를 반드시 정밀하게 작성하라.
+                반드시 다음 'product-planning-framework'의 핵심 MECE 분류체계와 형식을 충실하게 준수하라:
+                
+                # [구조화 분석] McKinsey MECE 전략 기획 분석: {제목}
                 
                 ## 1. 개요 및 구조화 목적 (MECE Purpose)
-                ## 2. 4단계 MECE 로직 트리 (Logical Tree ASCII Art)
-                ## 3. [MECE A] 고객 세분화 및 니즈 분해
-                ## 4. [MECE B] 고객 제공 가치 계층화 (기능적, 경제적, 감성적, 사회적 가치)
-                ## 5. [MECE C] 시장 기회 다차원 분석 (Ansoff Matrix Table)
-                | 구분 | 기존 시장 (현재 타깃) | 신규 시장 (확장 타깃) |
-                | :--- | :--- | :--- |
-                | **기존 서비스/제품** | **[1] 시장 침투 전략** | **[3] 시장 개척 전략** |
-                | **신규 서비스/제품** | **[2] 제품/서비스 개발 전략** | **[4] 다각화 전략** |
+                - 본 분석이 목표로 하는 범위와 상호배제 및 전체포괄 원칙을 통한 사업 타당성 확보 목적을 3-4문장으로 요약하라.
                 
-                ## 6. [MECE D] 기능 요구사항 MoSCoW 배타적 분류 (REQ-01 ~ REQ-08 매핑)
-                ## 7. [MECE E] 리스크 입체적 구조화 (시장, 기술, 운영, 재무, 법적 리스크)
-                ## 8. 구조적 완결성 검토 (Structural Integrity Audit)
+                ## 2. [MECE A] 고객 세분화 분석 (Customer Segmentation Tree)
+                - 전체 잠재 수요층을 중복과 누락 없이 4가지 이상의 독립적 영역으로 분해하라.
+                - 인구통계적, 니즈 기반, 라이프스테이지 특성을 조합한 로직 트리 구조로 작성하라.
+                - 각 세그먼트의 배타성과 전체 포괄성에 대한 구조적 정합성 검증 문구를 포함하라.
+                
+                ## 3. [MECE B] 고객 제공 가치 분석 (Customer Value Breakdown)
+                - 서비스가 제공하는 가치를 중복 없이 다음 4대 영역으로 계층화하여 서술하라.
+                  * **3.1. 기능적 가치 (Functional Value)**: 핵심 기능, 성능, 편의성
+                  * **3.2. 경제적 가치 (Economic Value)**: 비용 절감, 효율성, ROI
+                  * **3.3. 감성적 가치 (Emotional Value)**: 브랜드 신뢰, 스트레스 해소, 자아 표현
+                  * **3.4. 사회적 가치 (Social Value)**: 공동체 기여, 친환경, 윤리적 가치
+                
+                ## 4. [MECE C] 시장 기회 다차원 분석 (Ansoff Matrix)
+                - 앤소프 매트릭스 4분면 구조를 적용하여 성장 및 확장 기회를 전수 도출하라.
+                - 다음 마크다운 표 형식으로 완성하라:
+                
+                | 구분 | 기존 시장 (현재 타겟) | 신규 시장 (확장 타겟) |
+                | :--- | :--- | :--- |
+                | **기존 서비스/제품** | **[1] 시장 침투 전략**<br>• 세부 전략 및 액션 | **[3] 시장 개척 전략**<br>• 세부 전략 및 액션 |
+                | **신규 서비스/제품** | **[2] 제품/서비스 개발 전략**<br>• 세부 전략 및 액션 | **[4] 다각화 전략**<br>• 세부 전략 및 액션 |
+                
+                ## 5. [MECE D] 기능 요구사항 MoSCoW 우선순위 정의 (Feature Prioritization)
+                - 제품 기능을 중복과 누락이 없도록 배타적인 4단계 구조로 분해하여 정의하라.
+                  * **5.1. Must Have**: 없으면 제품이 성립하지 않는 필수 핵심 기능 (REQ-01 등 구체적 ID 매핑)
+                  * **5.2. Should Have**: 경쟁력 확보를 위한 최우선 갱신 요건
+                  * **5.3. Could Have**: 개발 여유 시 반영할 편의/부가 요건
+                  * **5.4. Won't Have**: 이번 MVP 및 첫 스프린트에서 의도적으로 배제하는 요건
+                
+                ## 6. [MECE E] 잠재 리스크 입체적 구조화 (Collectively Exhaustive Risk Control)
+                - 발생 가능한 모든 비즈니스 및 운영 장애 요인을 5대 도메인으로 완전 분해하고 각각에 대한 대응 완충책을 기술하라.
+                  * **6.1. 시장 리스크 (Market Risk)**: 수요 예측 오류, 경쟁 격화 등
+                  * **6.2. 기술 리스크 (Technical Risk)**: 개발 지연, 시스템 안정성, 보안 등
+                  * **6.3. 운영 리스크 (Operational Risk)**: 고객 지원, 파트너 관리, QA 등
+                  * **6.4. 재무 리스크 (Financial Risk)**: 예산 초과, 적자 누적, 현금 흐름 등
+                  * **6.5. 규제/법적 리스크 (Regulatory/Legal Risk)**: 법령 변화, 인증, 개인정보 규제 등
+                
+                ## 7. 구조적 완결성 검토 (Structural Integrity Audit)
+                - 작성된 5대 MECE 프레임워크가 상호 배제(Mutually Exclusive)되고 전체 포괄(Collectively Exhaustive)되었는지 자체 검증한 정성/정량 결과를 서술하라.
                 `;
                 
                 let meceContent = "";
                 try {
                     meceContent = await callGeminiClientSide(
                         apiKey,
-                        "당신은 논리적 구조화와 MECE 정합성에 통달한 McKinsey 출신의 Product Strategist 에이전트입니다. 정밀하고 깊이 있는 마크다운으로 작성합니다.",
+                        "당신은 논리적 구조화와 MECE 정합성에 통달한 McKinsey 출신의 Product Strategist 에이전트입니다.",
                         mecePrompt,
                         (msg) => logAgentClientSide('strategist', msg)
                     );
@@ -4828,31 +4782,25 @@ ${idea} 사업의 내부 강점·약점과 외부 기회·위협 요인을 다�
                 safeUpdateProgress(70, 'prd');
                 logAgentClientSide('analyst', `1-pager 기획안을 바탕으로 상세 개발 요구사항(PRD) 및 예외 정책 수립을 전개합니다.`);
                 const prdPrompt = `
-                다음 기획안(1-pager)을 참조하여 개발자 및 디자이너가 즉시 구현 가능한 수준의 매우 정밀하고 깊이 있는 PRD 요구사항 명세서를 작성하라.
+                다음 기획안(1-pager)을 참조하여 기능 요구사항, KPI 지표, 정책 및 예외 처리(결제 실패, API 타임아웃 등)가 포함된 정밀한 PRD를 작성하라.
                 
                 참조 기획안(1-pager):
                 ${onePagerContent}
                 
-                [작성 깊이 지침]
-                - REQ-01부터 REQ-08 이상까지 상세 요구사항 테이블에 입력/출력 사양, 예외 정책, 우선순위(Must/Should/Could)를 명확히 기재하라.
-                - 반드시 마크다운 표와 구체적 KPI 수치(Target Goal, SLA, 측정 방법)를 명시하라.
-                
-                ## 0. 문서 개요 (프로젝트 요약, 배경, 스코프)
-                ## 1. 목표 (Goal) & 코어 KPI (KPI 측정 테이블)
-                ## 2. 사용자 및 이해관계자 (Target Persona & Exclusions)
-                ## 3. 서비스 시스템 구조 (User Flow & State Diagram)
-                ## 4. 상세 기능 요구사항 명세 (MoSCoW Prioritized Table)
-                | REQ ID | 기능 명칭 | 세부 기능 스펙 및 조건 | 우선순위 | 예외 및 보안 처리 정책 |
-                | :--- | :--- | :--- | :--- | :--- |
-                | **REQ-01** | ... | ... | **Must** | ... |
-                | **REQ-02** | ... | ... | **Must** | ... |
-                | **REQ-03** | ... | ... | **Should** | ... |
-                | **REQ-04** | ... | ... | **Must** | ... |
-                
-                ## 5. 정책 및 예외 처리 (Basic & Edge Case Policies)
-                ## 6. UX/UI 고려사항 (Empty State, Error State, Loading State)
-                ## 7. 기술 고려사항 및 보안 가이드라인
-                ## 8. 리스크 관리 및 A/B 테스트 검증 계획
+                반드시 다음 구조를 충실하게 기입하라:
+                # [YY.MM.DD] {제목}
+                ## 0. 문서 개요 (프로젝트 요약, 배경)
+                ## 1. 목표 (Goal) (프로젝트 목표, 성공 기준 테이블)
+                ## 2. KPI 및 측정지표 (핵심 KPI 테이블, 보조 지표, 모니터링 지표)
+                ## 3. 사용자 및 이해관계자 (대상 사용자 + 제외 대상, 이해관계자 테이블)
+                ## 4. 정책 정의 (기본 정책, 상태값 정의 테이블, 예외 정책 테이블)
+                ## 5. 서비스 구조 (유저 플로우)
+                ## 6. 상세 요구사항 (기능 요구사항 테이블 - REQ-01, REQ-02 우선순위 포함, 운영 요구사항, 데이터 요구사항)
+                ## 7. UX/UI 고려사항 (로딩, 실패, 빈 화면 처리)
+                ## 8. 기술 고려사항 (파일명 필터링, pandoc 보안 격리 등)
+                ## 9. 실험 및 검증
+                ## 10. 리스크 및 대응
+                ## Appendix
                 `;
                 
                 let prdContent = "";
@@ -4877,27 +4825,19 @@ ${idea} 사업의 내부 강점·약점과 외부 기회·위협 요인을 다�
                 safeUpdateProgress(82, 'wireframe');
                 logAgentClientSide('architect', `PRD 요구사항을 확인했습니다. 공통 CTA 및 정보 우선순위에 부합하는 Type A/B/C 3가지 시안의 ASCII 와이어프레임을 그립니다.`);
                 const uxPrompt = `
-                다음 PRD 요건서를 참조하여, 화면 목적 및 공통 CTA를 노출하고 정보 구조가 확연히 다른 3가지 시안(Type A: 현실/안정형, Type B: 디자인/감성몰입형, Type C: 미래형 동적 위젯)의 정밀한 ASCII 와이어프레임 레이아웃과 화면 요소별 정보 우선순위를 작성하라.
+                다음 PRD 요건서를 참조하여, 화면 목적 및 공통 CTA를 노출하고 정보 구조가 확연히 다른 3가지 시안(Type A: 현실/안정형, Type B: 디자인/감성몰입형, Type C: 미래형 동적 위젯)의 ASCII 와이어프레임 레이아웃과 특징을 작조하라.
                 
                 참조 PRD:
                 ${prdContent}
                 
-                [작성 깊이 지침]
-                - 각 시안(Type A, B, C)마다 마크다운 코드 블록 내에 테두리선(┌, ┐, │, ─, └, ┘)과 대괄호([])를 이용한 20줄 이상의 정밀한 ASCII 텍스트 아트를 완성하라.
-                - 반드시 각 시안별 [화면 요소별 정보 우선순위 매트릭스 표]를 명시하라.
-                
-                ## 1. 와이어프레임 구조 설계 3안 개요
-                ## 2. Type A (현실/안정형 - Standard Dashboard Layout) ASCII & 스펙
-                ## 3. Type B (디자인/감성몰입형 - Immersive Experience Layout) ASCII & 스펙
-                ## 4. Type C (미래형/실험적 - Modular Dynamic Widget Layout) ASCII & 스펙
-                ## 5. 화면 요소별 정보 우선순위 매트릭스 (Header, Sidebar, Main, Footer Zone)
+                반드시 마크다운 블록 내에 테두리선(┌, ┐, │, ─, └, ┘)과 대괄호([])를 이용한 정밀한 ASCII 텍스트 아트를 완성하라.
                 `;
                 
                 let uxContent = "";
                 try {
                     uxContent = await callGeminiClientSide(
                         apiKey,
-                        "당신은 ASCII 와이어프레임을 텍스트 아트로 정밀 설계하는 UX Architect 에이전트입니다. 정밀한 마크다운 아트를 완성합니다.",
+                        "당신은 ASCII 와이어프레임을 텍스트 아트로 설계하는 UX Architect 에이전트입니다.",
                         uxPrompt,
                         (msg) => logAgentClientSide('architect', msg)
                     );
@@ -4969,7 +4909,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 safeUpdateProgress(92, 'audit');
                 logAgentClientSide('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`);
                 const reviewerPrompt = `
-                다음 3종의 기획 패키지(1-pager, PRD, 와이어프레임)를 분석하여 비즈니스-명세-디자인 정합성을 깊이 있게 감사하고 QA Audit 리포트를 작성하라.
+                다음 3종의 기획 패키지(1-pager, PRD, 와이어프레임)를 분석하여 비즈니스-명세-디자인 정합성을 감사하라.
                 
                 1-pager:
                 ${onePagerContent}
@@ -4980,28 +4920,19 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 와이어프레임 3안:
                 ${uxContent}
                 
-                [작성 깊이 지침]
-                - 정합성 판정 표에 비즈니스 정합성, 기능-UX 연결성, 예외 정의 충족, 보안/안전성 4축 검증 결과를 구체적 REQ ID와 함께 표로 제시하라.
-                - 정성적 품질 평가 총평을 4줄 이상의 깊이 있는 문장으로 마무리하라.
-                
-                ## 1. 정합성 검수 개요 (QA Audit Summary)
-                - 최종 판정: **[PASS] 100% 삼각 정합성 검증 완료**
-                ## 2. 정량적 일치성 매칭률 검증 결과 (4축 평가 테이블)
-                | 검수 평가 항목 | 1-Pager 목표 매칭 | PRD REQ 매칭 | Wireframe 구현 매칭 | 정합성 판정 |
-                | :--- | :--- | :--- | :--- | :--- |
-                | **비즈니스 정합성** | 100% 반영 | REQ-01 / REQ-02 | Main Zone 반영 | **[PASS]** |
-                | **기능-UX 연결성** | 100% 반영 | REQ-03 와이어프레임 | Type A/B/C 반영 | **[PASS]** |
-                | **예외 정의 충족** | 100% 반영 | REQ-04 예외 처리 | Fallback 경고 뱃지 | **[PASS]** |
-                | **보안/안전성** | 100% 반영 | XSS 방지 정책 | 특수문자 정제 적용 | **[PASS]** |
-                
-                ## 3. 정성적 품질 평가 총평
+                반드시 PASS 판정 및 다음 템플릿에 맞춘 감사 보고서를 생성하라:
+                # [정합성 검수 보고서] {제목}
+                - **최종 판정**: [PASS]
+                - **감사 일시**: {날짜}
+                ## 1. 정량적 일치성 매칭률 (비즈니스 정합성, 기능-UX 연결성, 예외 정의 충족, 보안 안전성 검증 결과 테이블)
+                ## 2. 정성적 품질 평가 총평
                 `;
                 
                 let auditContent = "";
                 try {
                     auditContent = await callGeminiClientSide(
                         apiKey,
-                        "당신은 완결된 기획의 삼각 정합성을 최종 감사하는 Product Reviewer QA 에이전트입니다. 깊이 있고 엄밀한 마크다운 리포트를 작성합니다.",
+                        "당신은 완결된 기획의 삼각 정합성을 최종 감사하는 Product Reviewer QA 에이전트입니다.",
                         reviewerPrompt,
                         (msg) => logAgentClientSide('reviewer', msg)
                     );
@@ -6095,7 +6026,6 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             }
 
             if (window.location.hostname.includes('github.io')) {
-                // If on GitHub pages without API Key, offer instant fallback test mode
                 startProductPlanningClientSide(idea, 'LOCAL_TEST_DEMO_KEY');
                 return;
             }
