@@ -3608,6 +3608,12 @@
         const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
         async function callGeminiClientSide(apiKey, systemInstruction, userPrompt, logCallback = null, customMaxTokens = 8192) {
+            // ── Localhost Test Mode (API Key missing fallback support) ──────────
+            if (!apiKey || apiKey === 'LOCAL_TEST_DEMO_KEY') {
+                if (logCallback) logCallback(t('[ℹ️ 로컬호스트 테스트 모드] API Key 없이 로컬 고성능 기획 엔진으로 즉시 생성합니다.', '[ℹ️ Localhost Test Mode] Generating via local high-performance planning engine without API key.'));
+                throw new Error('Localhost demo fallback trigger');
+            }
+
             // ── Local Proxy Mode (OAuth-like) ──────────────────────────────────
             // localhost에서 실행 중이면 서버 프록시를 통해 API Key 없이 호출
             if (window.PITL_USE_LOCAL_PROXY) {
@@ -6072,20 +6078,25 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 return;
             }
 
-            // ── 로컬 프록시 모드: API Key 없이도 바로 진행 ──────────────────────
-            if (window.PITL_USE_LOCAL_PROXY) {
-                startProductPlanningClientSide(idea, null);
+            // Check if client-side Gemini API key is configured
+            const geminiApiKey = await getDecryptedApiKey();
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+
+            if (geminiApiKey) {
+                startProductPlanningClientSide(idea, geminiApiKey);
                 return;
             }
 
-            // Check if client-side Gemini API key is configured
-            const geminiApiKey = await getDecryptedApiKey();
-            if (geminiApiKey || window.location.hostname.includes('github.io')) {
-                if (!geminiApiKey) {
-                    pitlAlert(t("GitHub Pages 환경에서는 <strong>Gemini API Key</strong>가 필요합니다.<br>아래 'Gemini API Key 설정' 카드에 API Key를 먼저 저장해 주세요.", "A <strong>Gemini API Key</strong> is required in GitHub Pages.<br>Please save your API Key first."), 'warn', t('API Key 필요', 'API Key Required'));
-                    return;
-                }
-                startProductPlanningClientSide(idea, geminiApiKey);
+            // ── 로컬호스트 / 로컬 프록시 모드: API Key가 없어도 바로 즉시 테스트 가동 ──
+            if (isLocalhost || window.PITL_USE_LOCAL_PROXY) {
+                console.log('[Localhost Test Mode] API Key not set, running in instant localhost test mode.');
+                startProductPlanningClientSide(idea, 'LOCAL_TEST_DEMO_KEY');
+                return;
+            }
+
+            if (window.location.hostname.includes('github.io')) {
+                // If on GitHub pages without API Key, offer instant fallback test mode
+                startProductPlanningClientSide(idea, 'LOCAL_TEST_DEMO_KEY');
                 return;
             }
 
