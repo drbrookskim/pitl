@@ -4674,12 +4674,20 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
             localStorage.setItem('pitl_client_history', JSON.stringify(clientHistory));
         }
 
-        // Dark / Light Theme Toggle Handler
+        // ─────────────────────────────────────────────────────
+        // MASTER Theme Toggle — single source of truth
+        // Applies data-theme attribute (for CSS selectors) AND
+        // body class (for legacy overrides). Consistent key: pitl_theme
+        // ─────────────────────────────────────────────────────
         function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme') || (document.body.classList.contains('light-theme') ? 'light' : 'dark');
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme') || 'dark';
             const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            document.documentElement.setAttribute('data-theme', nextTheme);
+
+            // Apply theme attribute — this is what the CSS [data-theme] selectors use
+            html.setAttribute('data-theme', nextTheme);
+
+            // Sync body classes too (for any legacy body.light-theme / body.dark-theme rules)
             if (nextTheme === 'light') {
                 document.body.classList.add('light-theme');
                 document.body.classList.remove('dark-theme');
@@ -4687,23 +4695,38 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 document.body.classList.add('dark-theme');
                 document.body.classList.remove('light-theme');
             }
-            
+
+            // Persist (single key, no mismatch)
             localStorage.setItem('pitl_theme', nextTheme);
-            
-            const btn = document.getElementById('theme-toggle-btn');
-            if (btn) {
-                btn.innerHTML = nextTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
-            }
+
+            // Sync ALL theme toggle button icons throughout the page
+            const isLight = nextTheme === 'light';
+            document.querySelectorAll(
+                '#theme-toggle-btn, .theme-toggle-btn, #btn-theme-toggle-sidebar'
+            ).forEach(btn => {
+                btn.innerHTML = isLight
+                    ? '<i class="fa-solid fa-moon"></i>'
+                    : '<i class="fa-solid fa-sun"></i>';
+            });
         }
 
-        // Initialize Theme from localStorage on page load
+        // Initialize Theme from localStorage immediately (no flicker)
         (function initTheme() {
+            // Migrate legacy key 'pitl-theme' to 'pitl_theme' if needed
+            const legacyVal = localStorage.getItem('pitl-theme');
+            if (legacyVal) {
+                localStorage.setItem('pitl_theme', legacyVal);
+                localStorage.removeItem('pitl-theme');
+            }
             const savedTheme = localStorage.getItem('pitl_theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', savedTheme);
+            const html = document.documentElement;
+            html.setAttribute('data-theme', savedTheme);
             if (savedTheme === 'light') {
                 document.body.classList.add('light-theme');
+                document.body.classList.remove('dark-theme');
             } else {
                 document.body.classList.add('dark-theme');
+                document.body.classList.remove('light-theme');
             }
         })();
 
@@ -8172,47 +8195,21 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             pitlAlert(t(`'<strong>${displayIdea}</strong>' 기획서 세션이 성공적으로 로드되었습니다.<br>기획안 수정 모드를 통해 연쇄 자동 갱신이 지원됩니다.`, `'<strong>${displayIdea}</strong>' planning session loaded successfully.<br>Cascade auto-updates supported via edit mode.`), 'success', t('히스토리 로드 완료', 'History Loaded'));
         }
 
-        // DYNAMIC THEME SWITCHER IMPLEMENTATION
-        function toggleTheme() {
-            const isDark = document.body.classList.toggle('dark-theme');
-            localStorage.setItem('pitl-theme', isDark ? 'dark' : 'light');
-            
-            // Sync all theme toggle icons
-            const icons = document.querySelectorAll('.theme-toggle-btn i');
-            icons.forEach(icon => {
-                if (isDark) {
-                    icon.className = 'fa-solid fa-moon';
-                } else {
-                    icon.className = 'fa-solid fa-sun';
-                }
+        // Removed duplicate toggleTheme — master version lives above at initTheme block.
+        // Initialize Resizable Column Panels on DOMContentLoaded
+        window.addEventListener('DOMContentLoaded', () => {
+            initResizablePanels();
+            // Sync theme icons after DOM is ready
+            const savedTheme = localStorage.getItem('pitl_theme') || 'dark';
+            const isLight = savedTheme === 'light';
+            document.querySelectorAll(
+                '#theme-toggle-btn, .theme-toggle-btn, #btn-theme-toggle-sidebar'
+            ).forEach(btn => {
+                btn.innerHTML = isLight
+                    ? '<i class="fa-solid fa-moon"></i>'
+                    : '<i class="fa-solid fa-sun"></i>';
             });
-            
-            // Re-initialize star field with theme-aligned colors
-            initStars();
-        }
-
-        // Early Theme restorer to avoid flicker on page load
-        (function() {
-            const saved = localStorage.getItem('pitl-theme');
-            if (saved === 'light') {
-                document.body.classList.remove('dark-theme');
-                document.body.classList.add('light-theme');
-            } else {
-                document.body.classList.add('dark-theme');
-                document.body.classList.remove('light-theme');
-            }
-            
-            window.addEventListener('DOMContentLoaded', () => {
-                const isDark = document.body.classList.contains('dark-theme');
-                const icons = document.querySelectorAll('.theme-toggle-btn i');
-                icons.forEach(icon => {
-                    icon.className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-                });
-                
-                // Initialize Resizable Column Panels
-                initResizablePanels();
-            });
-        })();
+        });
 
         // Resizable Columns Script (2-Column Layout: Sidebar & Main Viewer)
         function initResizablePanels() {
