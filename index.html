@@ -1356,14 +1356,18 @@
             box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 16px 40px rgba(0, 0, 0, 0.6);
         }
 
-        /* Chrome Top Title Bar & Nav Dots */
+        /* Chrome Top Title Bar & Circle Node Tabs (첨부 이미지 100% 반영) */
         .chrome-title-bar {
-            height: 42px;
+            height: 72px;
             display: flex;
             align-items: center;
             padding: 0 16px;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(12, 14, 20, 0.92);
+            backdrop-filter: blur(20px);
+            position: relative;
+            z-index: 50;
         }
 
         .chrome-title-bar-actions {
@@ -1395,53 +1399,200 @@
             transform: scale(1.1);
         }
 
-        /* Document view selector as browser tabs! */
-        .chrome-tab-container {
+        /* Top Bar Circle Progress Node Tabs Container */
+        .circle-tab-bar-container {
             display: flex;
-            gap: 4px;
+            align-items: flex-end;
+            justify-content: space-around;
+            gap: 8px;
             flex: 1;
             min-width: 0;
-            justify-content: flex-start;
+            height: 100%;
+            padding-bottom: 0px;
             overflow-x: auto;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
-        .chrome-tab-container::-webkit-scrollbar {
-            display: none;
-        }
+        .circle-tab-bar-container::-webkit-scrollbar { display: none; }
 
-        .chrome-tab {
-            background: transparent;
-            border: 1px solid transparent;
-            border-bottom: none;
-            color: var(--text-muted);
-            padding: 8px 16px;
-            border-radius: 10px 10px 0 0;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
+        .circle-tab-item {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 3px;
+            cursor: pointer;
+            position: relative;
+            padding: 6px 8px 8px 8px;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            height: 38px;
-            margin-top: 8px;
-            white-space: nowrap;
+            user-select: none;
             flex-shrink: 0;
         }
-
-        .chrome-tab:hover:not(.disabled) {
-            color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.04);
+        .circle-tab-item:hover:not(.disabled) {
+            transform: translateY(-2px);
+        }
+        .circle-tab-item.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
-        .chrome-tab.active {
-            background: rgba(16, 185, 129, 0.08);
-            border-color: rgba(16, 185, 129, 0.2);
-            color: var(--accent-neon);
-            font-weight: 600;
-            box-shadow: 0 -1px 0 var(--accent-neon) inset, 0 4px 16px rgba(16, 185, 129, 0.08);
+        /* Circle Node styling for top bar */
+        .circle-tab-node {
+            width: 38px;
+            height: 38px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        .circle-tab-node .ring-svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            transform: rotate(-90deg);
+            overflow: visible;
+        }
+        .circle-tab-node .ring-track {
+            fill: none;
+            stroke: rgba(255,255,255,0.08);
+            stroke-width: 3.5;
+        }
+        .circle-tab-node .ring-fill {
+            fill: none;
+            stroke: var(--accent-neon);
+            stroke-width: 3.5;
+            stroke-linecap: round;
+            /* r=17 -> circumference = 2 * PI * 17 = 106.81 */
+            stroke-dasharray: 106.81;
+            stroke-dashoffset: 106.81;
+            transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: drop-shadow(0 0 3px var(--accent-neon));
+        }
+
+        .circle-tab-node .node-inner {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .circle-tab-node .node-liquid {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(0deg,
+                rgba(5, 150, 105, 0.85)  0%,
+                rgba(16, 185, 129, 0.65) 60%,
+                rgba(52, 211, 153, 0.4)  100%);
+            transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 0;
+            border-radius: 48% 52% 0 0 / 18% 18% 0 0;
+        }
+
+        .circle-tab-node .node-icon {
+            font-size: 13px;
+            color: #94a3b8;
+            transition: color 0.3s ease, opacity 0.3s ease;
+            position: absolute;
+            z-index: 2;
+        }
+
+        .circle-tab-node .node-percent {
+            position: absolute;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            color: #ffffff;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .circle-tab-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 0.2px;
+            transition: color 0.3s ease;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* ACTIVE State & 첨부 이미지 삼각형 지시침 (Indicator Pointer Triangle Notch) */
+        .circle-tab-item.active .ring-fill {
+            stroke: var(--accent-neon);
+            filter: drop-shadow(0 0 4px var(--accent-neon));
+        }
+        .circle-tab-item.active .node-inner {
+            background: transparent;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.5), inset 0 0 6px rgba(16, 185, 129, 0.2);
+        }
+        .circle-tab-item.active .node-icon { opacity: 0; }
+        .circle-tab-item.active .node-percent { opacity: 1; color: var(--accent-neon); }
+        .circle-tab-item.active .circle-tab-label { color: var(--accent-neon); }
+
+        /* 첨부 이미지 화살표 지시침 (Indicator Notch) */
+        .active-indicator-triangle {
+            display: none;
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-bottom: 8px solid rgba(255, 255, 255, 0.12);
+            z-index: 100;
+        }
+        .active-indicator-triangle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: -6px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 7px solid #0f121a;
+        }
+        .circle-tab-item.active .active-indicator-triangle {
+            display: block;
+            animation: indicator-bounce 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes indicator-bounce {
+            0% { transform: translate(-50%, -4px) scale(0.6); opacity: 0; }
+            100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+        }
+
+        /* COMPLETED State */
+        .circle-tab-item.completed .ring-fill {
+            stroke-dashoffset: 0 !important;
+            stroke: var(--accent-neon);
+        }
+        .circle-tab-item.completed .node-inner {
+            background: transparent;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        }
+        .circle-tab-item.completed .node-icon { opacity: 0; }
+        .circle-tab-item.completed .node-percent { opacity: 1; color: #ffffff; }
+        .circle-tab-item.completed .node-liquid { height: 100% !important; border-radius: 0; }
+        .circle-tab-item.completed .circle-tab-label { color: var(--text-primary); }
+
+        /* PENDING State */
+        .circle-tab-item.pending .ring-fill { stroke-dashoffset: 106.81; }
+        .circle-tab-item.pending .node-icon { opacity: 1; color: #94a3b8; }
+        .circle-tab-item.pending .node-percent { opacity: 0; }
+        .circle-tab-item.pending .node-liquid { height: 0% !important; }
 
         .chrome-tab.disabled {
             opacity: 0.25;
@@ -2948,40 +3099,157 @@
                 
                 <!-- Chrome top title bar with navigation controls & tabs -->
                 <div class="chrome-title-bar">
-                    <div style="width: 40px;"></div> <!-- left spacing instead of dots to balance layout slightly -->
+                    <!-- Left spacer for balance -->
+                    <div style="width: 24px;"></div>
                     
-                    <!-- Tabs mapping each document view -->
-                    <div class="chrome-tab-container">
-                        <button class="chrome-tab active nav-item" id="nav-1pager" onclick="switchDocument('1pager')" data-i18n="tab_1pager">
-                            <i class="fa-solid fa-file-invoice"></i> 1-Pager
-                        </button>
-                        <button class="chrome-tab disabled nav-item" id="nav-threec" onclick="switchDocument('threec')" data-i18n="tab_threec">
-                            <i class="fa-solid fa-chart-pie"></i> 3C 분석
-                        </button>
-                        <button class="chrome-tab disabled nav-item" id="nav-swot" onclick="switchDocument('swot')" data-i18n="tab_swot">
-                            <i class="fa-solid fa-scale-balanced"></i> SWOT
-                        </button>
-                        <button class="chrome-tab disabled nav-item" id="nav-stp" onclick="switchDocument('stp')" data-i18n="tab_stp">
-                            <i class="fa-solid fa-bullseye"></i> STP
-                        </button>
-                        <button class="chrome-tab disabled nav-item" id="nav-mece" onclick="switchDocument('mece')" data-i18n="tab_mece">
-                            <i class="fa-solid fa-network-wired"></i> MECE 분석
-                        </button>
-                        <button class="chrome-tab disabled nav-item" id="nav-prd" onclick="switchDocument('prd')" data-i18n="tab_prd">
-                            <i class="fa-solid fa-file-shield"></i> PRD Spec
-                        </button>
-                        <button class="chrome-tab disabled nav-item" id="nav-wireframe" onclick="switchDocument('wireframe')" data-i18n="tab_wireframe">
-                            <i class="fa-solid fa-crop-simple"></i> Wireframe
-                        </button>
-                        <button class="chrome-tab disabled nav-item" id="nav-prototype" onclick="switchDocument('prototype')" data-i18n="tab_prototype">
-                            <i class="fa-solid fa-display"></i> Prototype
-                        </button>
-                        <button class="chrome-tab disabled nav-item" id="nav-audit" onclick="switchDocument('audit')" data-i18n="tab_audit">
-                            <i class="fa-solid fa-clipboard-check"></i> QA Audit
-                        </button>
+                    <!-- Circle Progress Node Tabs Bar (Attached image reference matched 100%) -->
+                    <div class="circle-tab-bar-container" id="circle-tabs-bar">
+                        <div class="circle-tab-item active nav-item" id="nav-1pager" onclick="switchDocument('1pager')" title="1-Pager 비즈니스 요약">
+                            <div class="circle-tab-node">
+                                <svg class="ring-svg" viewBox="0 0 40 40">
+                                    <circle class="ring-track" cx="20" cy="20" r="17"/>
+                                    <circle class="ring-fill" id="ring-fill-1pager" cx="20" cy="20" r="17"/>
+                                </svg>
+                                <div class="node-inner">
+                                    <div class="node-liquid" id="node-liquid-1pager"></div>
+                                    <i class="fa-solid fa-file-invoice node-icon"></i>
+                                    <span class="node-percent" id="node-pct-1pager">0%</span>
+                                </div>
+                            </div>
+                            <span class="circle-tab-label">1-Pager</span>
+                            <div class="active-indicator-triangle"></div>
+                        </div>
+
+                        <div class="circle-tab-item pending disabled nav-item" id="nav-threec" onclick="switchDocument('threec')" title="3C 분석">
+                            <div class="circle-tab-node">
+                                <svg class="ring-svg" viewBox="0 0 40 40">
+                                    <circle class="ring-track" cx="20" cy="20" r="17"/>
+                                    <circle class="ring-fill" id="ring-fill-threec" cx="20" cy="20" r="17"/>
+                                </svg>
+                                <div class="node-inner">
+                                    <div class="node-liquid" id="node-liquid-threec"></div>
+                                    <i class="fa-solid fa-chart-pie node-icon"></i>
+                                    <span class="node-percent" id="node-pct-threec">0%</span>
+                                </div>
+                            </div>
+                            <span class="circle-tab-label">3C</span>
+                            <div class="active-indicator-triangle"></div>
+                        </div>
+
+                        <div class="circle-tab-item pending disabled nav-item" id="nav-swot" onclick="switchDocument('swot')" title="SWOT">
+                            <div class="circle-tab-node">
+                                <svg class="ring-svg" viewBox="0 0 40 40">
+                                    <circle class="ring-track" cx="20" cy="20" r="17"/>
+                                    <circle class="ring-fill" id="ring-fill-swot" cx="20" cy="20" r="17"/>
+                                </svg>
+                                <div class="node-inner">
+                                    <div class="node-liquid" id="node-liquid-swot"></div>
+                                    <i class="fa-solid fa-scale-balanced node-icon"></i>
+                                    <span class="node-percent" id="node-pct-swot">0%</span>
+                                </div>
+                            </div>
+                            <span class="circle-tab-label">SWOT</span>
+                            <div class="active-indicator-triangle"></div>
+                        </div>
+
+                        <div class="circle-tab-item pending disabled nav-item" id="nav-stp" onclick="switchDocument('stp')" title="STP">
+                            <div class="circle-tab-node">
+                                <svg class="ring-svg" viewBox="0 0 40 40">
+                                    <circle class="ring-track" cx="20" cy="20" r="17"/>
+                                    <circle class="ring-fill" id="ring-fill-stp" cx="20" cy="20" r="17"/>
+                                </svg>
+                                <div class="node-inner">
+                                    <div class="node-liquid" id="node-liquid-stp"></div>
+                                    <i class="fa-solid fa-bullseye node-icon"></i>
+                                    <span class="node-percent" id="node-pct-stp">0%</span>
+                                </div>
+                            </div>
+                            <span class="circle-tab-label">STP</span>
+                            <div class="active-indicator-triangle"></div>
+                        </div>
+
+                        <div class="circle-tab-item pending disabled nav-item" id="nav-mece" onclick="switchDocument('mece')" title="MECE 분석">
+                            <div class="circle-tab-node">
+                                <svg class="ring-svg" viewBox="0 0 40 40">
+                                    <circle class="ring-track" cx="20" cy="20" r="17"/>
+                                    <circle class="ring-fill" id="ring-fill-mece" cx="20" cy="20" r="17"/>
+                                </svg>
+                                <div class="node-inner">
+                                    <div class="node-liquid" id="node-liquid-mece"></div>
+                                    <i class="fa-solid fa-network-wired node-icon"></i>
+                                    <span class="node-percent" id="node-pct-mece">0%</span>
+                                </div>
+                            </div>
+                            <span class="circle-tab-label">MECE</span>
+                            <div class="active-indicator-triangle"></div>
+                        </div>
+
+                        <div class="circle-tab-item pending disabled nav-item" id="nav-prd" onclick="switchDocument('prd')" title="PRD Spec">
+                            <div class="circle-tab-node">
+                                <svg class="ring-svg" viewBox="0 0 40 40">
+                                    <circle class="ring-track" cx="20" cy="20" r="17"/>
+                                    <circle class="ring-fill" id="ring-fill-prd" cx="20" cy="20" r="17"/>
+                                </svg>
+                                <div class="node-inner">
+                                    <div class="node-liquid" id="node-liquid-prd"></div>
+                                    <i class="fa-solid fa-file-shield node-icon"></i>
+                                    <span class="node-percent" id="node-pct-prd">0%</span>
+                                </div>
+                            </div>
+                            <span class="circle-tab-label">PRD Spec</span>
+                            <div class="active-indicator-triangle"></div>
+                        </div>
+
+                        <div class="circle-tab-item pending disabled nav-item" id="nav-wireframe" onclick="switchDocument('wireframe')" title="Wireframe">
+                            <div class="circle-tab-node">
+                                <svg class="ring-svg" viewBox="0 0 40 40">
+                                    <circle class="ring-track" cx="20" cy="20" r="17"/>
+                                    <circle class="ring-fill" id="ring-fill-wireframe" cx="20" cy="20" r="17"/>
+                                </svg>
+                                <div class="node-inner">
+                                    <div class="node-liquid" id="node-liquid-wireframe"></div>
+                                    <i class="fa-solid fa-crop-simple node-icon"></i>
+                                    <span class="node-percent" id="node-pct-wireframe">0%</span>
+                                </div>
+                            </div>
+                            <span class="circle-tab-label">Wireframe</span>
+                            <div class="active-indicator-triangle"></div>
+                        </div>
+
+                        <div class="circle-tab-item pending disabled nav-item" id="nav-prototype" onclick="switchDocument('prototype')" title="Prototype">
+                            <div class="circle-tab-node">
+                                <svg class="ring-svg" viewBox="0 0 40 40">
+                                    <circle class="ring-track" cx="20" cy="20" r="17"/>
+                                    <circle class="ring-fill" id="ring-fill-prototype" cx="20" cy="20" r="17"/>
+                                </svg>
+                                <div class="node-inner">
+                                    <div class="node-liquid" id="node-liquid-prototype"></div>
+                                    <i class="fa-solid fa-display node-icon"></i>
+                                    <span class="node-percent" id="node-pct-prototype">0%</span>
+                                </div>
+                            </div>
+                            <span class="circle-tab-label">Prototype</span>
+                            <div class="active-indicator-triangle"></div>
+                        </div>
+
+                        <div class="circle-tab-item pending disabled nav-item" id="nav-audit" onclick="switchDocument('audit')" title="QA Audit">
+                            <div class="circle-tab-node">
+                                <svg class="ring-svg" viewBox="0 0 40 40">
+                                    <circle class="ring-track" cx="20" cy="20" r="17"/>
+                                    <circle class="ring-fill" id="ring-fill-audit" cx="20" cy="20" r="17"/>
+                                </svg>
+                                <div class="node-inner">
+                                    <div class="node-liquid" id="node-liquid-audit"></div>
+                                    <i class="fa-solid fa-clipboard-check node-icon"></i>
+                                    <span class="node-percent" id="node-pct-audit">0%</span>
+                                </div>
+                            </div>
+                            <span class="circle-tab-label">QA Audit</span>
+                            <div class="active-indicator-triangle"></div>
+                        </div>
                     </div>
                     
-                    <!-- Moved theme, api settings, logout actions to the right of the QA Report tab -->
+                    <!-- Title Bar Actions -->
                     <div class="chrome-title-bar-actions">
                         <button onclick="logout()" title="로그아웃">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
@@ -4089,7 +4357,7 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                     window.pitlProgressTimer = null;
                 }
 
-                const CIRCUMFERENCE = 267.04; // 2π × r=42.5
+                const CIRCUMFERENCE = 106.81; // 2π × r=17
                 const fillEl = document.getElementById('pipeline-progress-fill');
                 const percentEl = document.getElementById('progress-percent-label');
 
@@ -4124,11 +4392,14 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 if (!activeKey || activeKey === 'completed_all') {
                     if (activeKey === 'completed_all') {
                         stepKeys.forEach(key => {
-                            const itemEl   = document.getElementById(`circle-node-${key}`);
+                            const itemEl   = document.getElementById(`nav-${key}`);
                             const ringEl   = document.getElementById(`ring-fill-${key}`);
                             const pctEl    = document.getElementById(`node-pct-${key}`);
                             const liquidEl = document.getElementById(`node-liquid-${key}`);
-                            if (itemEl) itemEl.className = 'circle-step-item completed';
+                            if (itemEl) {
+                                itemEl.className = 'circle-tab-item completed nav-item';
+                                itemEl.classList.remove('disabled');
+                            }
                             if (ringEl) ringEl.style.strokeDashoffset = '0';
                             if (pctEl) pctEl.textContent = '100%';
                             if (liquidEl) liquidEl.style.height = '100%';
@@ -4137,9 +4408,9 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                     return;
                 }
 
-                // 2) Update node states (Past = completed/100%, Future = pending/0%)
+                // Update top bar circle node tab states
                 stepKeys.forEach((key, idx) => {
-                    const itemEl   = document.getElementById(`circle-node-${key}`);
+                    const itemEl   = document.getElementById(`nav-${key}`);
                     const ringEl   = document.getElementById(`ring-fill-${key}`);
                     const pctEl    = document.getElementById(`node-pct-${key}`);
                     let   liquidEl = document.getElementById(`node-liquid-${key}`);
@@ -4156,40 +4427,32 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                         }
                     }
 
-                    let sublabelEl = document.getElementById(`node-sublabel-${key}`);
-                    if (!sublabelEl && itemEl) {
-                        sublabelEl = document.createElement('span');
-                        sublabelEl.className = 'circle-step-sublabel';
-                        sublabelEl.id = `node-sublabel-${key}`;
-                        sublabelEl.textContent = '생성된 내용을 정리하고 있습니다.';
-                        itemEl.appendChild(sublabelEl);
-                    }
-
                     if (idx < activeIdx) {
-                        itemEl.className = 'circle-step-item completed';
+                        itemEl.className = 'circle-tab-item completed nav-item';
+                        itemEl.classList.remove('disabled');
                         if (ringEl)   ringEl.style.strokeDashoffset = '0';
                         if (pctEl)    pctEl.textContent = '100%';
                         if (liquidEl) liquidEl.style.height = '100%';
                     } else if (idx > activeIdx) {
-                        itemEl.className = 'circle-step-item pending';
+                        itemEl.className = 'circle-tab-item pending disabled nav-item';
                         if (ringEl)   ringEl.style.strokeDashoffset = String(CIRCUMFERENCE);
                         if (pctEl)    pctEl.textContent = '0%';
                         if (liquidEl) liquidEl.style.height = '0%';
                     }
                 });
 
-                // 3) Smoothly fill current Active Step node from 0% -> 100% while AI is working
-                const activeItemEl   = document.getElementById(`circle-node-${activeKey}`);
+                // Smoothly fill current Active Step node from 0% -> 100% while AI is working
+                const activeItemEl   = document.getElementById(`nav-${activeKey}`);
                 const activeRingEl   = document.getElementById(`ring-fill-${activeKey}`);
                 const activePctEl    = document.getElementById(`node-pct-${activeKey}`);
                 const activeLiquidEl = document.getElementById(`node-liquid-${activeKey}`);
 
                 if (activeItemEl) {
-                    activeItemEl.className = 'circle-step-item active';
+                    activeItemEl.className = 'circle-tab-item active nav-item';
+                    activeItemEl.classList.remove('disabled');
                 }
 
                 let stepPct = 0;
-                const activeSublabelEl = document.getElementById(`node-sublabel-${activeKey}`);
 
                 const updateActiveStepUI = (val) => {
                     const clampedVal = Math.min(99, Math.max(0, val));
@@ -4200,19 +4463,6 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
 
                     if (activeItemEl) {
                         activeItemEl.classList.add('organizing');
-                    }
-
-                    // Dynamic Pacing Sublabel Messages
-                    if (activeSublabelEl) {
-                        if (clampedVal < 35) {
-                            activeSublabelEl.textContent = '아이디어 및 데이터 분석 중...';
-                        } else if (clampedVal < 70) {
-                            activeSublabelEl.textContent = '프레임워크 기획안 도출 중...';
-                        } else if (clampedVal < 92) {
-                            activeSublabelEl.textContent = '생성된 내용을 정리하고 있습니다.';
-                        } else {
-                            activeSublabelEl.textContent = '최종 검수 및 렌더링 중...';
-                        }
                     }
                 };
 
@@ -4295,42 +4545,43 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 `;
             }
 
-            // Inject Upper 2/3 Centered Progress Container with Circular Step Node Tabs & Liquid Fill Animation
+            // Inject Live Agent Planning Stream Card into Main Viewer
             const targetArea = document.getElementById('viewer-main-content');
             targetArea.innerHTML = `
-                <div class="document-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 160px); padding: 40px 20px; text-align: center;">
-                    <div style="background: rgba(15, 18, 26, 0.85); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); padding: 30px 30px; width: 150%; max-width: 1500px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; margin-top: -6vh;">
+                <div class="document-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 200px); padding: 40px 20px; text-align: center;">
+                    <div style="background: rgba(15, 18, 26, 0.85); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 20px; padding: 48px 40px; width: 100%; max-width: 860px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; position: relative;">
                         
-                        <!-- Circular Step Node Tabs with SVG ring progress -->
-                        <div class="circle-steps-container">
+                        <!-- Top Glowing Orb Icon -->
+                        <div style="width: 72px; height: 72px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);">
+                            <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 32px; color: var(--accent-neon); animation: pulse 2s infinite ease-in-out;"></i>
+                        </div>
 
-                            <div class="circle-step-item active" id="circle-node-1pager" title="1-Pager 비즈니스 요약">
-                                <div class="circle-step-node">
-                                    <svg class="ring-svg" viewBox="0 0 95 95">
-                                        <circle class="ring-track" cx="47.5" cy="47.5" r="42.5"/>
-                                        <circle class="ring-fill" id="ring-fill-1pager" cx="47.5" cy="47.5" r="42.5"/>
-                                    </svg>
-                                    <div class="node-inner">
-                                        <i class="fa-solid fa-file-invoice node-icon"></i>
-                                        <span class="node-percent" id="node-pct-1pager">0%</span>
-                                    </div>
-                                </div>
-                                <span class="circle-step-label">1-Pager</span>
-                            </div>
+                        <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 800; color: #ffffff; margin-bottom: 12px; border: none; padding: 0;">
+                            ${t("DHK 5단계 기획 파이프라인 가동 중...", "DHK 5-Stage Agentic Pipeline Running...")}
+                        </h2>
+                        
+                        <p style="font-size: 14px; color: #94a3b8; line-height: 1.6; max-width: 600px; margin-bottom: 32px;">
+                            ${t("상단 원형 탭 노드에서 9개 단계별 실시간 생성 진행률을 확인하실 수 있습니다.<br>에이전트 완공 완료 시 해당 탭으로 다이렉트 이동 및 렌더링됩니다.", "Monitor real-time progress across 9 stages via the top circle progress tabs.<br>Deliverables will automatically render upon completion.")}
+                        </p>
 
-                            <div class="circle-step-item pending" id="circle-node-threec" title="3C 환경 분석">
-                                <div class="circle-step-node">
-                                    <svg class="ring-svg" viewBox="0 0 95 95">
-                                        <circle class="ring-track" cx="47.5" cy="47.5" r="42.5"/>
-                                        <circle class="ring-fill" id="ring-fill-threec" cx="47.5" cy="47.5" r="42.5"/>
-                                    </svg>
-                                    <div class="node-inner">
-                                        <i class="fa-solid fa-chart-pie node-icon"></i>
-                                        <span class="node-percent" id="node-pct-threec">0%</span>
-                                    </div>
-                                </div>
-                                <span class="circle-step-label">3C</span>
+                        <!-- Overall Pipeline Progress Bar Only -->
+                        <div style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 20px 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <span style="color: var(--text-secondary); display: flex; align-items: center; gap: 6px;">
+                                    <i class="fa-solid fa-arrows-spin fa-spin" style="color: var(--accent-neon); --fa-animation-duration: 3s;"></i>
+                                    ${t("전체 기획 파이프라인 진행률", "Overall Pipeline Progress")}
+                                </span>
+                                <span id="progress-percent-label" style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 800; color: var(--accent-neon);">0%</span>
                             </div>
+                            <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.06); border-radius: 5px; overflow: hidden; position: relative;">
+                                <div id="pipeline-progress-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-neon), var(--accent-blue)); border-radius: 5px; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+            /*
 
                             <div class="circle-step-item pending" id="circle-node-swot" title="SWOT 전략">
                                 <div class="circle-step-node">
@@ -4449,6 +4700,7 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                     </div>
                 </div>
             `;
+            */
 
             try {
                 safeUpdateProgress(0, '1pager');
@@ -6259,8 +6511,8 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
         function switchDocument(docKey) {
             if (!generatedDocs && docKey !== '1pager' && docKey !== 'dashboard') return;
             
-            // Clean active states of chrome tabs
-            document.querySelectorAll('.chrome-tab').forEach(el => el.classList.remove('active'));
+            // Clean active states of circle tabs
+            document.querySelectorAll('.circle-tab-item, .chrome-tab').forEach(el => el.classList.remove('active'));
             
             // Set active class on target browser tab
             const targetTab = document.getElementById(`nav-${docKey}`);
