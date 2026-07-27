@@ -1993,9 +1993,10 @@
         .viewer-canvas {
             flex: 1;
             overflow-y: auto;
-            padding: var(--sp-6) var(--sp-4);
+            padding: 32px 36px;
             background: linear-gradient(180deg, rgba(5, 5, 7, 0.0) 0%, rgba(5, 5, 7, 0.0) 100%), #050507;
             scroll-behavior: smooth;
+            box-sizing: border-box;
         }
 
         .viewer-header-title-hidden {
@@ -2003,12 +2004,13 @@
         }
 
         .document-wrapper {
-            /* Full-width — no column cap */
+            /* Full-width with comfortable inner text padding */
             max-width: 100%;
             width: 100%;
             margin: 0 auto;
             animation: fade-in 0.35s ease-out;
-            padding: var(--sp-4) 0; /* 32px = 4bl top/bottom */
+            padding: 28px 32px;
+            box-sizing: border-box;
         }
 
         @keyframes fade-in {
