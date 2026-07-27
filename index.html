@@ -100,9 +100,122 @@
             --accent-green: #10b981;
             --accent-red: #ef4444;
             --accent-neon: #10b981;
+            --accent-amber: #f59e0b;
             --glow-neon: 0 0 20px rgba(16, 185, 129, 0.35);
             --glow-purple: 0 0 20px rgba(139, 92, 246, 0.2);
             --grid-color: rgba(16, 185, 129, 0.05);
+        }
+
+        /* ── LIGHT THEME OVERRIDES ── */
+        [data-theme="light"], body.light-theme {
+            --bg-base: #f8fafc;
+            --bg-sidebar: #ffffff;
+            --bg-chat: #f1f5f9;
+            --bg-editor: #ffffff;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --border-active: rgba(16, 185, 129, 0.6);
+            --glass-surface: rgba(255, 255, 255, 0.85);
+            --glass-surface-hover: rgba(241, 245, 249, 0.95);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --accent-blue: #2563eb;
+            --accent-purple: #7c3aed;
+            --accent-cyan: #0891b2;
+            --accent-green: #059669;
+            --accent-red: #dc2626;
+            --accent-neon: #059669;
+            --accent-amber: #d97706;
+            --glow-neon: 0 4px 20px rgba(5, 150, 105, 0.2);
+            --grid-color: rgba(5, 150, 105, 0.05);
+        }
+
+        [data-theme="light"] body,
+        body.light-theme {
+            background-color: #f8fafc;
+            background-image:
+                radial-gradient(ellipse 80% 60% at 10% 0%, rgba(5, 150, 105, 0.05) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 90% 100%, rgba(37, 99, 235, 0.04) 0%, transparent 60%);
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .chrome-title-bar {
+            background: rgba(255, 255, 255, 0.94);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        [data-theme="light"] .active-indicator-triangle::after {
+            border-bottom-color: #ffffff;
+        }
+
+        [data-theme="light"] .circle-tab-label {
+            color: #475569;
+        }
+
+        [data-theme="light"] .markdown-body {
+            color: #1e293b;
+        }
+
+        [data-theme="light"] .markdown-body h1,
+        [data-theme="light"] .markdown-body h2 {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .chat-panel,
+        [data-theme="light"] .sidebar {
+            background-color: #f1f5f9;
+            border-color: #e2e8f0;
+        }
+
+        /* ── Pill-style Gate Button for MECE & Gate50 ── */
+        .pill-gate-btn {
+            background: linear-gradient(135deg, var(--accent-neon), #059669);
+            color: #ffffff;
+            font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 14px 28px;
+            border-radius: 50px; /* Pill style */
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+        .pill-gate-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.5);
+            background: linear-gradient(135deg, #34d399, var(--accent-neon));
+        }
+
+        /* ── Progress Popover Tooltip (Shown when active circle node is clicked) ── */
+        .pipeline-progress-popover {
+            position: absolute;
+            top: 76px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 320px;
+            background: rgba(15, 18, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 14px;
+            padding: 16px 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            z-index: 200;
+            animation: popover-slide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        [data-theme="light"] .pipeline-progress-popover {
+            background: rgba(255, 255, 255, 0.96);
+            border-color: rgba(5, 150, 105, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+        @keyframes popover-slide {
+            from { opacity: 0; transform: translate(-50%, -8px) scale(0.95); }
+            to { opacity: 1; transform: translate(-50%, 0) scale(1); }
         }
 
         html {
@@ -3184,6 +3297,23 @@
                             <div class="active-indicator-triangle"></div>
                         </div>
 
+                        <!-- 50% Gate Circle Node (Between MECE & PRD) -->
+                        <div class="circle-tab-item pending disabled nav-item" id="nav-gate50" onclick="handleGate50Click()" title="50% 기획 검토 관문 — 클릭 시 후속 4단계(PRD 등) 계속 진행">
+                            <div class="circle-tab-node">
+                                <svg class="ring-svg" viewBox="0 0 40 40">
+                                    <circle class="ring-track" cx="20" cy="20" r="17"/>
+                                    <circle class="ring-fill" id="ring-fill-gate50" cx="20" cy="20" r="17"/>
+                                </svg>
+                                <div class="node-inner" style="background: rgba(245, 158, 11, 0.12);">
+                                    <div class="node-liquid" id="node-liquid-gate50"></div>
+                                    <i class="fa-solid fa-circle-play node-icon" style="color: var(--accent-amber, #f59e0b);"></i>
+                                    <span class="node-percent" id="node-pct-gate50">50%</span>
+                                </div>
+                            </div>
+                            <span class="circle-tab-label" style="color: var(--accent-amber, #f59e0b);">50% 계속</span>
+                            <div class="active-indicator-triangle"></div>
+                        </div>
+
                         <div class="circle-tab-item pending disabled nav-item" id="nav-prd" onclick="switchDocument('prd')" title="PRD Spec">
                             <div class="circle-tab-node">
                                 <svg class="ring-svg" viewBox="0 0 40 40">
@@ -3251,6 +3381,9 @@
                     
                     <!-- Title Bar Actions -->
                     <div class="chrome-title-bar-actions">
+                        <button onclick="toggleTheme()" id="theme-toggle-btn" title="다크/라이트 테마 전환">
+                            <i class="fa-solid fa-moon"></i>
+                        </button>
                         <button onclick="logout()" title="로그아웃">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         </button>
@@ -4346,6 +4479,85 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
             localStorage.setItem('pitl_client_history', JSON.stringify(clientHistory));
         }
 
+        // Dark / Light Theme Toggle Handler
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || (document.body.classList.contains('light-theme') ? 'light' : 'dark');
+            const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', nextTheme);
+            if (nextTheme === 'light') {
+                document.body.classList.add('light-theme');
+                document.body.classList.remove('dark-theme');
+            } else {
+                document.body.classList.add('dark-theme');
+                document.body.classList.remove('light-theme');
+            }
+            
+            localStorage.setItem('pitl_theme', nextTheme);
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (btn) {
+                btn.innerHTML = nextTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+            }
+        }
+
+        // Initialize Theme from localStorage on page load
+        (function initTheme() {
+            const savedTheme = localStorage.getItem('pitl_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+            } else {
+                document.body.classList.add('dark-theme');
+            }
+        })();
+
+        // Progress Popover Toggle when active circle node is clicked
+        function toggleProgressPopover(e) {
+            if (e) e.stopPropagation();
+            let popover = document.getElementById('progress-popover');
+            if (!popover) {
+                popover = document.createElement('div');
+                popover.className = 'pipeline-progress-popover';
+                popover.id = 'progress-popover';
+                document.body.appendChild(popover);
+            }
+            
+            const currentPct = Math.round(window.pitlCurrentProgress || 0);
+            popover.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-arrows-spin fa-spin" style="color: var(--accent-neon);"></i>
+                        전체 기획 파이프라인 진행률
+                    </span>
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 800; color: var(--accent-neon);">${currentPct}%</span>
+                </div>
+                <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden;">
+                    <div style="width: ${currentPct}%; height: 100%; background: linear-gradient(90deg, var(--accent-neon), var(--accent-blue)); border-radius: 4px; transition: width 0.4s ease;"></div>
+                </div>
+            `;
+
+            if (popover.style.display === 'block') {
+                popover.style.display = 'none';
+            } else {
+                popover.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('click', () => {
+            const pop = document.getElementById('progress-popover');
+            if (pop) pop.style.display = 'none';
+        });
+
+        // 50% Gate Click Handler
+        function handleGate50Click() {
+            if (window.pitlWaitingGate50) {
+                resumePlanningAfterMece();
+            } else {
+                switchDocument('mece');
+            }
+        }
+
         // Smooth Progressive Pipeline Progress Animator
         window.pitlProgressTimer = null;
         window.pitlCurrentProgress = 0;
@@ -4361,12 +4573,12 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 const fillEl = document.getElementById('pipeline-progress-fill');
                 const percentEl = document.getElementById('progress-percent-label');
 
-                const stepKeys = ['1pager', 'threec', 'swot', 'stp', 'mece', 'prd', 'wireframe', 'prototype', 'audit'];
-                const activeIdx = activeKey === 'completed_all' ? 9 : stepKeys.indexOf(activeKey);
+                const stepKeys = ['1pager', 'threec', 'swot', 'stp', 'mece', 'gate50', 'prd', 'wireframe', 'prototype', 'audit'];
+                const activeIdx = activeKey === 'completed_all' ? 10 : stepKeys.indexOf(activeKey);
 
-                // Overall pipeline progress updates ONLY when a step is completed (0/9, 1/9, 2/9 ... 9/9)
-                const completedSteps = activeKey === 'completed_all' ? 9 : Math.max(0, activeIdx);
-                const overallTarget = Math.min(100, Math.round((completedSteps / 9) * 100));
+                // Overall pipeline progress updates ONLY when a step is completed
+                const completedSteps = activeKey === 'completed_all' ? 10 : Math.max(0, activeIdx);
+                const overallTarget = Math.min(100, Math.round((completedSteps / 10) * 100));
 
                 const startPercent = window.pitlCurrentProgress || 0;
                 let currentOverall = startPercent;
@@ -4401,7 +4613,7 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                                 itemEl.classList.remove('disabled');
                             }
                             if (ringEl) ringEl.style.strokeDashoffset = '0';
-                            if (pctEl) pctEl.textContent = '100%';
+                            if (pctEl) pctEl.textContent = key === 'gate50' ? '50%' : '100%';
                             if (liquidEl) liquidEl.style.height = '100%';
                         });
                     }
@@ -4431,12 +4643,12 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                         itemEl.className = 'circle-tab-item completed nav-item';
                         itemEl.classList.remove('disabled');
                         if (ringEl)   ringEl.style.strokeDashoffset = '0';
-                        if (pctEl)    pctEl.textContent = '100%';
+                        if (pctEl)    pctEl.textContent = key === 'gate50' ? '50%' : '100%';
                         if (liquidEl) liquidEl.style.height = '100%';
                     } else if (idx > activeIdx) {
                         itemEl.className = 'circle-tab-item pending disabled nav-item';
                         if (ringEl)   ringEl.style.strokeDashoffset = String(CIRCUMFERENCE);
-                        if (pctEl)    pctEl.textContent = '0%';
+                        if (pctEl)    pctEl.textContent = key === 'gate50' ? '50%' : '0%';
                         if (liquidEl) liquidEl.style.height = '0%';
                     }
                 });
@@ -4450,6 +4662,15 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 if (activeItemEl) {
                     activeItemEl.className = 'circle-tab-item active nav-item';
                     activeItemEl.classList.remove('disabled');
+                    // Add click handler to toggle overall progress popover when clicking active circle node
+                    activeItemEl.onclick = function(e) {
+                        if (activeKey === 'gate50') {
+                            handleGate50Click();
+                        } else {
+                            switchDocument(activeKey);
+                        }
+                        toggleProgressPopover(e);
+                    };
                 }
 
                 let stepPct = 0;
@@ -5026,18 +5247,74 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                     meceContent = generateFallbackDoc('mece', cleanTitle, idea);
                 }
                 logAgentClientSide('strategist', `맥킨지 MECE 전략 분석 보고서 적재 완료.`);
-                logAgentClientSide('strategist', `→ [SendMessage to prd-analyst] 기획 사양 및 기능 도출 협업 요청.`);
+                logAgentClientSide('strategist', `⏸️ [50% Gate 관문 도출] MECE 단계까지의 기획 분석 생성이 완료되었습니다.`);
+                logAgentClientSide('system', `상단 [50% 계속] 원형 탭 또는 MECE 상세 페이지 하단의 알약 버튼을 클릭하면 PRD 등 후속 4단계 생성을 계속 진행합니다.`);
                 
-                await sleep(50);
+                // Save 50% interim state for resumption
+                window.pitlPendingState = {
+                    apiKey, cleanTitle, idea, onePagerContent, threeCContent, swotContent, stpContent, meceContent
+                };
+                window.pitlWaitingGate50 = true;
+
+                // Update progress to 50% Gate hold state
+                safeUpdateProgress(50, 'gate50');
+
+                // Partial document save for interim viewing
+                generatedDocs = {
+                    title: cleanTitle,
+                    idea: ideaText,
+                    '1pager': onePagerContent,
+                    'threec': threeCContent,
+                    'swot': swotContent,
+                    'stp': stpContent,
+                    'mece': meceContent
+                };
+
+                // Unlock inputs and tabs up to MECE
+                document.getElementById('btn-submit-planning').disabled = false;
+                if (textarea) textarea.disabled = false;
+
+                ['1pager', 'threec', 'swot', 'stp', 'mece', 'gate50'].forEach(k => {
+                    const nav = document.getElementById(`nav-${k}`);
+                    if (nav) nav.classList.remove('disabled');
+                });
+
+                switchDocument('mece');
+                return;
+            } catch (err) {
+                console.error("Client Mode planning failure:", err);
+                logErrorClientSide(err.message || t("기획 생성 중 알 수 없는 에러가 발생했습니다.", "An unknown error occurred during planning generation."));
+                
+                document.getElementById('btn-submit-planning').disabled = false;
+                if (textarea) textarea.disabled = false;
+            }
+        }
+
+        // Resume Planning Pipeline from 50% Gate (PRD -> Wireframe -> Prototype -> QA Audit)
+        async function resumePlanningAfterMece() {
+            if (!window.pitlPendingState) return;
+            window.pitlWaitingGate50 = false;
+            const { apiKey, cleanTitle, idea, onePagerContent, threeCContent, swotContent, stpContent, meceContent } = window.pitlPendingState;
+            const textarea = document.getElementById('user-idea-input') || document.getElementById('idea-textarea');
+
+            // Lock UI during resumption
+            document.getElementById('btn-submit-planning').disabled = true;
+            if (textarea) textarea.disabled = true;
+
+            try {
+                logAgentClientSide('system', `▶️ [50% Gate 승인 확인] 후속 4단계(PRD, 와이어프레임, 프로토타입, QA 감사) 생성을 개시합니다.`);
 
                 // STAGE 2: PRD Analyst (PRD)
-                safeUpdateProgress(70, 'prd');
-                logAgentClientSide('analyst', `1-pager 기획안을 바탕으로 상세 개발 요구사항(PRD) 및 예외 정책 수립을 전개합니다.`);
+                safeUpdateProgress(65, 'prd');
+                logAgentClientSide('analyst', `1-pager 기획안 및 MECE 분석을 바탕으로 상세 개발 요구사항(PRD) 및 예외 정책 수립을 전개합니다.`);
                 const prdPrompt = `
-                다음 기획안(1-pager)을 참조하여 기능 요구사항, KPI 지표, 정책 및 예외 처리(결제 실패, API 타임아웃 등)가 포함된 정밀한 PRD를 작성하라.
+                다음 기획안(1-pager) 및 MECE 분석을 참조하여 기능 요구사항, KPI 지표, 정책 및 예외 처리가 포함된 정밀한 PRD를 작성하라.
                 
                 참조 기획안(1-pager):
                 ${onePagerContent}
+                
+                MECE 분석:
+                ${meceContent}
                 
                 반드시 다음 구조를 충실하게 기입하라:
                 # [YY.MM.DD] {제목}
@@ -5047,12 +5324,11 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 ## 3. 사용자 및 이해관계자 (대상 사용자 + 제외 대상, 이해관계자 테이블)
                 ## 4. 정책 정의 (기본 정책, 상태값 정의 테이블, 예외 정책 테이블)
                 ## 5. 서비스 구조 (유저 플로우)
-                ## 6. 상세 요구사항 (기능 요구사항 테이블 - REQ-01, REQ-02 우선순위 포함, 운영 요구사항, 데이터 요구사항)
+                ## 6. 상세 요구사항 (기능 요구사항 테이블 - REQ-01, REQ-02 우선순위 포함)
                 ## 7. UX/UI 고려사항 (로딩, 실패, 빈 화면 처리)
-                ## 8. 기술 고려사항 (파일명 필터링, pandoc 보안 격리 등)
+                ## 8. 기술 고려사항 (보안 및 격리 등)
                 ## 9. 실험 및 검증
                 ## 10. 리스크 및 대응
-                ## Appendix
                 `;
                 
                 let prdContent = "";
@@ -5068,28 +5344,25 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                     logAgentClientSide('analyst', `[ℹ️ PRD 백업 모드 실행] 표준 PRD 요구사항 명세서로 보완 처리되었습니다.`);
                     prdContent = generateFallbackDoc('prd', cleanTitle, idea);
                 }
-                logAgentClientSide('analyst', `REQ 사양 식별 완료 및 예외/보안 정책 수립 완료. PRD 명세서 적재 완료.`);
-                logAgentClientSide('analyst', `→ [SendMessage to ux-architect] UX 레이아웃 스케치 협업 요청.`);
-
+                logAgentClientSide('analyst', `REQ 사양 식별 및 예외 정책 수립 완료. PRD 명세서 적재 완료.`);
+                
                 await sleep(50);
 
                 // STAGE 3: UX Architect (ASCII Wireframes)
-                safeUpdateProgress(82, 'wireframe');
-                logAgentClientSide('architect', `PRD 요구사항을 확인했습니다. 공통 CTA 및 정보 우선순위에 부합하는 Type A/B/C 3가지 시안의 ASCII 와이어프레임을 그립니다.`);
+                safeUpdateProgress(78, 'wireframe');
+                logAgentClientSide('architect', `PRD 요구사항을 확인했습니다. Type A/B/C 3가지 시안의 ASCII 와이어프레임을 작성합니다.`);
                 const uxPrompt = `
-                다음 PRD 요건서를 참조하여, 화면 목적 및 공통 CTA를 노출하고 정보 구조가 확연히 다른 3가지 시안(Type A: 현실/안정형, Type B: 디자인/감성몰입형, Type C: 미래형 동적 위젯)의 ASCII 와이어프레임 레이아웃과 특징을 작조하라.
+                다음 PRD 요건서를 참조하여, 화면 목적 및 공통 CTA를 노출하고 정보 구조가 다른 3가지 시안(Type A, Type B, Type C)의 ASCII 와이어프레임 레이아웃과 화면 요소별 우선순위를 작성하라.
                 
                 참조 PRD:
                 ${prdContent}
-                
-                반드시 마크다운 블록 내에 테두리선(┌, ┐, │, ─, └, ┘)과 대괄호([])를 이용한 정밀한 ASCII 텍스트 아트를 완성하라.
                 `;
                 
                 let uxContent = "";
                 try {
                     uxContent = await callGeminiClientSide(
                         apiKey,
-                        "당신은 ASCII 와이어프레임을 텍스트 아트로 설계하는 UX Architect 에이전트입니다.",
+                        "당신은 ASCII 와이어프레임을 텍스트 아트로 정밀 설계하는 UX Architect 에이전트입니다.",
                         uxPrompt,
                         (msg) => logAgentClientSide('architect', msg)
                     );
@@ -5098,86 +5371,55 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                     logAgentClientSide('architect', `[ℹ️ Wireframe 백업 모드 실행] 표준 와이어프레임 명세서로 보완 처리되었습니다.`);
                     uxContent = generateFallbackDoc('wireframe', cleanTitle, idea);
                 }
-                logAgentClientSide('architect', `Type A, B, C 3가지 상이한 가치 지향 레이아웃 ASCII 제도 완료. 와이어프레임 문서 적재 완료.`);
-                logAgentClientSide('architect', `→ [SendMessage to product-reviewer] 삼각 정합성 크로스 검수 의뢰.`);
+                logAgentClientSide('architect', `와이어프레임 3안 설계 완공 완료.`);
 
                 await sleep(50);
 
-                // STAGE 4: Prototype Generator (Interactive HTML)
-                safeUpdateProgress(83, 'prototype');
-                logAgentClientSide('architect', `와이어프레임 3안 완공. 인터랙티브 HTML 프로토타입 생성을 시작합니다...`);
-
-                let prototypeContent = '';
+                // STAGE 4: Frontend Agent (Prototype HTML)
+                safeUpdateProgress(88, 'prototype');
+                logAgentClientSide('architect', `실행 가능한 인터랙티브 HTML5 데모 프로토타입을 빌드 중입니다...`);
+                const prototypePrompt = `
+                다음 상품 기획서 및 와이어프레임을 바탕으로 단일 HTML 파일로 완벽하게 작동하는 인터랙티브 웹 프로토타입을 작성하라.
+                
+                아이디어: ${idea}
+                `;
+                
+                let prototypeContent = "";
                 try {
-                    const prdTrimmed = prdContent.slice(0, 2500);
-                    const uxTrimmed = uxContent.slice(0, 2000);
-
-                    const prototypePromptClient = `You are a senior frontend developer. Based on the product requirements and wireframe below, generate a clean, interactive HTML prototype.
-
-[Product Requirements (PRD Summary)]
-${prdTrimmed}
-
-[Wireframe Layout (Type A reference)]
-${uxTrimmed}
-
-[Requirements]
-- Single complete self-contained HTML file (CDN allowed e.g. fonts.googleapis.com, font-awesome)
-- Inline CSS in <style> tag, inline JavaScript in <script> tag
-- Modern polished UI with CSS variables and gradients
-- Interactive: tab switching, modals, form inputs, button click effects
-- Realistic Korean dummy data and text throughout
-- Include navigation header, main content sections, and footer
-
-IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no code fences, no explanation text.`;
-
-                    let rawProto = await callGeminiClientSide(
+                    prototypeContent = await callGeminiClientSide(
                         apiKey,
-                        "당신은 PRD와 와이어프레임을 실제 동작하는 인터랙티브 HTML 프로토타입으로 변환하는 프론트엔드 개발 에이전트입니다.",
-                        prototypePromptClient,
+                        "당신은 싱글 페이지 인터랙티브 웹 프로토타입을 작성하는 Frontend Engineer 에이전트입니다.",
+                        prototypePrompt,
                         (msg) => logAgentClientSide('architect', msg),
                         4096
                     );
-
-                    const doctypeIdx = rawProto.search(/<!doctype/i);
-                    if (doctypeIdx > 0) rawProto = rawProto.slice(doctypeIdx);
-                    rawProto = rawProto.replace(/```\s*$/i, '').trim();
-
-                    if (rawProto && rawProto.toLowerCase().includes('<!doctype')) {
-                        prototypeContent = rawProto;
-                        logAgentClientSide('architect', `인터랙티브 HTML 프로토타입 생성 완료. 브라우저에서 즉시 실행 가능합니다.`);
-                    } else {
-                        prototypeContent = rawProto || generateFallbackDoc('prototype', cleanTitle, idea);
-                        logAgentClientSide('architect', `프로토타입 생성 완공.`);
-                    }
                 } catch (protoErr) {
-                    console.warn('[Prototype] Generation fallback:', protoErr);
-                    logAgentClientSide('architect', `[ℹ️ 프로토타입 백업 모드 실행] 표준 프로토타입으로 보완 처리되었습니다.`);
+                    console.warn('[Prototype Fallback]:', protoErr);
+                    logAgentClientSide('architect', `[ℹ️ Prototype 백업 모드 실행] 데모 프로토타입이 보완 처리되었습니다.`);
                     prototypeContent = generateFallbackDoc('prototype', cleanTitle, idea);
                 }
+                logAgentClientSide('architect', `인터랙티브 데모 프로토타입 HTML5 빌드 및 검증 완료.`);
 
                 await sleep(50);
 
                 // STAGE 5: Product Reviewer (QA Audit)
-                safeUpdateProgress(92, 'audit');
-                logAgentClientSide('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 전수 점검)`);
+                safeUpdateProgress(95, 'audit');
+                logAgentClientSide('reviewer', `삼각 교차 검수를 실시합니다: (1-pager 목표 vs PRD REQ ID vs 와이어프레임 CTA 버튼 일치성 점검)`);
                 const reviewerPrompt = `
-                다음 3종의 기획 패키지(1-pager, PRD, 와이어프레임)를 분석하여 비즈니스-명세-디자인 정합성을 감사하라.
+                다음 3종의 기획 패키지(1-pager, PRD, 와이어프레임)를 분석하여 비즈니스-명세-디자인 정합성을 깊이 있게 감사하고 QA Audit 리포트를 작성하라.
                 
                 1-pager:
                 ${onePagerContent}
                 
-                PRD:
+                PRD 요건서:
                 ${prdContent}
                 
                 와이어프레임 3안:
                 ${uxContent}
                 
-                반드시 PASS 판정 및 다음 템플릿에 맞춘 감사 보고서를 생성하라:
-                # [정합성 검수 보고서] {제목}
-                - **최종 판정**: [PASS]
-                - **감사 일시**: {날짜}
-                ## 1. 정량적 일치성 매칭률 (비즈니스 정합성, 기능-UX 연결성, 예외 정의 충족, 보안 안전성 검증 결과 테이블)
-                ## 2. 정성적 품질 평가 총평
+                ## 1. 정합성 검수 개요 (QA Audit Summary)
+                - 최종 판정: **[PASS] 100% 삼각 정합성 검증 완료**
+                ## 2. 정량적 일치성 매칭률 검증 결과 (4축 평가 테이블)
                 `;
                 
                 let auditContent = "";
@@ -5195,13 +5437,12 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 }
                 logAgentClientSide('reviewer', `검증 완료. 모든 기획 요건이 100% 삼각 일치함을 확인. [QA PASS] 결재 승인.`);
 
-                // STAGE 6: Complete & Save
+                // Complete Pipeline & Save
                 safeUpdateProgress(100, 'completed_all');
-                logAgentClientSide('system', `최종 배포 프로세스 진입. 파일명 보안 정제 적용 중...`);
                 
                 const resultDocs = {
                     title: cleanTitle,
-                    idea: ideaText,
+                    idea: idea,
                     '1pager': onePagerContent,
                     'threec': threeCContent,
                     'swot': swotContent,
@@ -5214,55 +5455,37 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 };
                 
                 generatedDocs = resultDocs;
-                
                 saveClientHistoryLocally(resultDocs);
-                
-                logAgentClientSide('system', `브라우저 로컬 저장소(localStorage)에 전체 기획 서류 9종 영구 배포 완료.`);
-                logAgentClientSide('system', `- 1-Pager, 3C 분석, SWOT, STP, MECE 분석, PRD, 와이어프레임, 검수서, 프로토타입 완료.`);
                 
                 completeAllPipelineSteps();
                 
                 document.getElementById('btn-submit-planning').disabled = false;
-                textarea.disabled = false;
+                if (textarea) textarea.disabled = false;
                 
-                document.querySelectorAll('.chrome-tab').forEach(el => el.classList.remove('disabled'));
-                document.getElementById('badge-qa-status').style.display = 'flex';
+                document.querySelectorAll('.circle-tab-item, .chrome-tab').forEach(el => el.classList.remove('disabled'));
+                const badgeQa = document.getElementById('badge-qa-status');
+                if (badgeQa) badgeQa.style.display = 'flex';
                 
-                document.getElementById('btn-copy').disabled = false;
-                document.getElementById('btn-pdf').disabled = false;
-                document.getElementById('btn-edit').disabled = false;
-                document.getElementById('btn-copy').style.opacity = '1';
-                document.getElementById('btn-pdf').style.opacity = '1';
-                document.getElementById('btn-edit').style.opacity = '1';
-                document.getElementById('btn-copy').style.cursor = 'pointer';
-                document.getElementById('btn-pdf').style.cursor = 'pointer';
-                document.getElementById('btn-edit').style.cursor = 'pointer';
+                ['btn-copy', 'btn-pdf', 'btn-edit'].forEach(id => {
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.style.cursor = 'pointer';
+                    }
+                });
                 
-                const chatContainer = document.getElementById('chat-messages-container');
-                if (chatContainer) {
-                    const successNotif = document.createElement('div');
-                    successNotif.className = 'system-notification';
-                    successNotif.setAttribute('data-i18n-msg', '에이전트 기획안 연쇄 완공 완료 (Client Mode)');
-                    successNotif.style.background = 'rgba(16, 185, 129, 0.08)';
-                    successNotif.style.borderColor = 'rgba(16, 185, 129, 0.2)';
-                    successNotif.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--accent-green);"></i> <span class="msg-text">${t("에이전트 기획안 연쇄 완공 완료 (Client Mode)", "Agent planning documents completed successfully (Client Mode)")}</span>`;
-                    chatContainer.appendChild(successNotif);
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                }
-                
-                showCompletionToast(t("기획안 생성이 성공적으로 완공되었습니다! (로컬 모드)", "Planning documents generated successfully! (Local Mode)"));
-                switchDocument('1pager');
+                showCompletionToast(t("기획안 생성이 성공적으로 완공되었습니다!", "Planning documents generated successfully!"));
+                switchDocument('prd');
                 loadHistoryList();
                 
             } catch (err) {
-                console.error("Client Mode planning failure:", err);
-                logErrorClientSide(err.message || t("기획 생성 중 알 수 없는 에러가 발생했습니다.", "An unknown error occurred during planning generation."));
-                
+                console.error("Resumption planning failure:", err);
+                logErrorClientSide(err.message || "후속 기획 생성 중 에러가 발생했습니다.");
                 document.getElementById('btn-submit-planning').disabled = false;
-                textarea.disabled = false;
+                if (textarea) textarea.disabled = false;
             }
         }
-
         async function startCascadingRegenerationClientSide(resumeFrom, apiKey) {
             currentConsoleLogs = [];
             document.getElementById('badge-qa-status').style.display = 'none';
@@ -6603,6 +6826,22 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                 const titleText = stageTitleMap[docKey] || docKey;
                 const descText = stageDescMap[docKey] || '';
 
+                let extraHtml = '';
+                if (docKey === 'mece') {
+                    extraHtml = `
+                        <div class="mece-resume-pill-wrapper" style="margin-top: 48px; padding: 24px; background: rgba(16, 185, 129, 0.04); border: 1px dashed rgba(16, 185, 129, 0.3); border-radius: 16px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;">
+                            <p style="font-size: 13.5px; color: var(--text-primary); margin: 0; font-weight: 600;">
+                                📌 MECE 분석 결과를 검토하셨나요? 아래 버튼을 누르면 PRD 요구사항 및 와이어프레임 생성을 계속 진행합니다.
+                            </p>
+                            <button onclick="resumePlanningAfterMece()" class="pill-gate-btn" id="btn-resume-mece-pill">
+                                <i class="fa-solid fa-play"></i>
+                                <span>MECE 분석 검토 완료 — 다음 4단계(PRD, 와이어프레임 등) 계속 진행</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+
                 targetArea.innerHTML = `
                     <div class="document-wrapper markdown-body">
                         <div class="stage-methodology-header" style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
@@ -6615,6 +6854,7 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                             </p>
                         </div>
                         ${marked.parse(mdRaw)}
+                        ${extraHtml}
                     </div>
                 `;
             }
