@@ -2053,13 +2053,15 @@
         .circle-tab-node .node-percent {
             position: absolute;
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 800;
             color: #ffffff;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease, color 0.3s ease;
             pointer-events: none;
-            z-index: 3;
+            z-index: 4;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 6px rgba(0, 0, 0, 0.8);
+            letter-spacing: -0.5px;
         }
 
         .circle-tab-label {
@@ -2082,42 +2084,16 @@
             box-shadow: 0 0 12px rgba(16, 185, 129, 0.5), inset 0 0 6px rgba(16, 185, 129, 0.2);
         }
         .circle-tab-item.active .node-icon { opacity: 0; }
-        .circle-tab-item.active .node-percent { opacity: 1; color: var(--accent-neon); }
+        .circle-tab-item.active .node-percent { 
+            opacity: 1; 
+            color: #34d399; 
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95), 0 0 8px rgba(52, 211, 153, 0.8);
+        }
         .circle-tab-item.active .circle-tab-label { color: var(--accent-neon); }
 
-        /* 첨부 이미지 화살표 지시침 (Indicator Notch) */
-        .active-indicator-triangle {
-            display: none;
-            position: absolute;
-            bottom: -1px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 7px solid transparent;
-            border-right: 7px solid transparent;
-            border-bottom: 8px solid rgba(255, 255, 255, 0.12);
-            z-index: 100;
-        }
-        .active-indicator-triangle::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: -6px;
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-bottom: 7px solid #0f121a;
-        }
-        .circle-tab-item.active .active-indicator-triangle {
-            display: block;
-            animation: indicator-bounce 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes indicator-bounce {
-            0% { transform: translate(-50%, -4px) scale(0.6); opacity: 0; }
-            100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+        [data-theme="light"] .circle-tab-item.active .node-percent {
+            color: #006241;
+            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9), 0 0 6px rgba(212, 233, 226, 0.9);
         }
 
         /* COMPLETED State */
@@ -2130,7 +2106,16 @@
             box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
         }
         .circle-tab-item.completed .node-icon { opacity: 0; }
-        .circle-tab-item.completed .node-percent { opacity: 1; color: #ffffff; }
+        .circle-tab-item.completed .node-percent { 
+            opacity: 1; 
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 6px rgba(0, 117, 74, 0.8);
+        }
+        [data-theme="light"] .circle-tab-item.completed .node-percent {
+            color: #004d33;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
         .circle-tab-item.completed .node-liquid { height: 100% !important; border-radius: 0; }
         .circle-tab-item.completed .circle-tab-label { color: var(--text-primary); }
 
