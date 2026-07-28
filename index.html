@@ -14,9 +14,20 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <style>
-        /* Müller-Brockmann Grid System + Design Tokens */
+        /* Starbucks Design System Tokens (Inspired by DESIGN-starbucks.md) */
         :root {
-            /* ── GRID SYSTEM (single source of truth) ── */
+            /* ── STARBUCKS BRAND PALETTE ── */
+            --sb-green: #006241;       /* Starbucks Historic Brand Green */
+            --sb-accent: #00754A;      /* Green Accent - Primary Filled CTAs & Floating Frap */
+            --sb-house: #1E3932;       /* House Green - Deep dark feature bands & footer */
+            --sb-uplift: #2b5148;      /* Green Uplift - Secondary dark green */
+            --sb-mint: #d4e9e2;        /* Green Light - Mint wash */
+            --sb-cream: #f2f0eb;       /* Neutral Warm Canvas */
+            --sb-ceramic: #edebe9;     /* Ceramic Cream Section Wash */
+            --sb-gold: #cba258;        /* Gold - Reserved for Rewards/Audit Ceremony */
+            --sb-gold-light: #faf6ee;  /* Gold Lightest Wash */
+
+            /* ── GRID & SPACING SYSTEM ── */
             --bl: 8px;
             --lh: 24px;
             --cols: 12;
@@ -25,153 +36,148 @@
             --maxw: 1280px;
 
             /* ── SPACING SCALE ── */
-            --sp-1: 8px;
-            --sp-2: 16px;
-            --sp-3: 24px;
-            --sp-4: 32px;
-            --sp-6: 48px;
-            --sp-8: 64px;
+            --sp-1: 4px;
+            --sp-2: 8px;
+            --sp-3: 16px;
+            --sp-4: 24px;
+            --sp-5: 32px;
+            --sp-6: 40px;
+            --sp-7: 48px;
+            --sp-8: 56px;
+            --sp-9: 64px;
 
-            /* ── TYPE SCALE ── */
-            --type-10: 12px;
-            --type-12: 14px;
-            --type-14: 16px;
-            --type-18: 20px;
-            --type-24: 26px;
-            --type-32: 36px;
-            --type-48: 54px;
+            /* ── STARBUCKS FORM & SHAPE TOKENS ── */
+            --buttonBorderRadius: 50px;   /* Full Pill Universal */
+            --cardBorderRadius: 12px;     /* 12px Rounded Rectangle */
+            --letterSpacingNormal: -0.01em; /* -0.16px Tight Universal Tracking */
+            --buttonActiveScale: scale(0.95);
 
-            /* ── BLACK GLASSMORPHISM — Base (Light fallback, forces dark via body) ── */
-            --bg-base: #050507;
-            --bg-sidebar: rgba(255, 255, 255, 0.03);
-            --bg-chat: rgba(255, 255, 255, 0.02);
-            --bg-editor: rgba(255, 255, 255, 0.02);
-            --bg-card: rgba(255, 255, 255, 0.05);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-active: rgba(16, 185, 129, 0.45);
-            --glass-blur: blur(24px);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
-            --glass-border-active: 1px solid rgba(16, 185, 129, 0.4);
-            --glass-surface: rgba(255, 255, 255, 0.04);
-            --glass-surface-hover: rgba(255, 255, 255, 0.07);
+            /* ── BASE DARK THEME (House Green Deep Blend) ── */
+            --bg-base: #0b1613;
+            --bg-sidebar: #122420;
+            --bg-chat: rgba(30, 57, 50, 0.4);
+            --bg-editor: #162a25;
+            --bg-card: #1e3932;
+            --border-color: rgba(212, 233, 226, 0.15);
+            --border-active: #00754A;
+            --glass-blur: blur(20px);
+            --glass-border: 1px solid rgba(212, 233, 226, 0.15);
+            --glass-border-active: 1px solid #00754A;
+            --glass-surface: rgba(30, 57, 50, 0.6);
+            --glass-surface-hover: rgba(30, 57, 50, 0.85);
 
-            /* ── TEXT COLORS ── */
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #475569;
+            /* ── TEXT COLORS (87% Ink Warm Opacity) ── */
+            --text-primary: #f8fafc;
+            --text-secondary: rgba(255, 255, 255, 0.70);
+            --text-muted: #64837a;
 
             /* ── ACCENT PALETTE ── */
             --accent-blue: #3b82f6;
             --accent-purple: #8b5cf6;
             --accent-cyan: #06b6d4;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
-            --accent-neon: #10b981;
-            --glow-neon: 0 0 20px rgba(16, 185, 129, 0.35);
-            --glow-neon-sm: 0 0 10px rgba(16, 185, 129, 0.2);
-            --glow-purple: 0 0 20px rgba(139, 92, 246, 0.2);
-            --glow-blue: 0 0 20px rgba(59, 130, 246, 0.2);
-            --grid-color: rgba(16, 185, 129, 0.05);
+            --accent-green: #00754A;
+            --accent-red: #c82014;
+            --accent-neon: #00754A;
+            --accent-amber: #cba258;
+            --glow-neon: 0 4px 20px rgba(0, 117, 74, 0.35);
+            --glow-neon-sm: 0 2px 10px rgba(0, 117, 74, 0.25);
+            --grid-color: rgba(0, 117, 74, 0.08);
 
-            /* ── BORDER RADIUS ── */
+            /* ── BORDER RADIUS SCALE ── */
             --radius-sm: 6px;
             --radius-md: 10px;
-            --radius-lg: 16px;
-            --radius-xl: 22px;
+            --radius-lg: 12px;
+            --radius-xl: 50px;
         }
 
-        /* Black Glassmorphism Dark Theme — always active */
+        /* Starbucks House Green Dark Theme — always active */
         body.dark-theme {
-            --bg-base: #050507;
-            --bg-sidebar: rgba(255, 255, 255, 0.03);
-            --bg-chat: rgba(255, 255, 255, 0.02);
-            --bg-editor: rgba(255, 255, 255, 0.02);
-            --bg-card: rgba(255, 255, 255, 0.05);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-active: rgba(16, 185, 129, 0.45);
-            --glass-surface: rgba(255, 255, 255, 0.04);
-            --glass-surface-hover: rgba(255, 255, 255, 0.07);
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #3f4f63;
-            --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
-            --accent-cyan: #06b6d4;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
-            --accent-neon: #10b981;
-            --accent-amber: #f59e0b;
-            --glow-neon: 0 0 20px rgba(16, 185, 129, 0.35);
-            --glow-purple: 0 0 20px rgba(139, 92, 246, 0.2);
-            --grid-color: rgba(16, 185, 129, 0.05);
+            --bg-base: #0b1613;
+            --bg-sidebar: #122420;
+            --bg-chat: rgba(30, 57, 50, 0.4);
+            --bg-editor: #162a25;
+            --bg-card: #1e3932;
+            --border-color: rgba(212, 233, 226, 0.15);
+            --border-active: #00754A;
+            --glass-surface: rgba(30, 57, 50, 0.6);
+            --glass-surface-hover: rgba(30, 57, 50, 0.85);
+            --text-primary: #f8fafc;
+            --text-secondary: rgba(255, 255, 255, 0.70);
+            --text-muted: #64837a;
+            --accent-green: #00754A;
+            --accent-neon: #00754A;
+            --accent-amber: #cba258;
+            --glow-neon: 0 4px 20px rgba(0, 117, 74, 0.35);
+            --grid-color: rgba(0, 117, 74, 0.08);
         }
 
-        /* ── LIGHT THEME COMPREHENSIVE OVERRIDES ── */
+        /* ── STARBUCKS NEUTRAL WARM LIGHT THEME (Café Cream & Ceramic Material) ── */
         [data-theme="light"], body.light-theme {
-            --bg-base: #f8fafc;
-            --bg-sidebar: #ffffff;
-            --bg-chat: #f1f5f9;
+            --bg-base: #f2f0eb;       /* Neutral Warm Canvas */
+            --bg-sidebar: #edebe9;    /* Ceramic Cream */
+            --bg-chat: #f8f6f2;
             --bg-editor: #ffffff;
-            --bg-card: #ffffff;
-            --border-color: #cbd5e1;
-            --border-active: rgba(5, 150, 105, 0.6);
+            --bg-card: #ffffff;       /* Pure White Card on Warm Canvas */
+            --border-color: #d4e9e2;   /* Mint Hairline */
+            --border-active: #006241;
             --glass-surface: #ffffff;
-            --glass-surface-hover: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #334155;
-            --text-muted: #64748b;
-            --accent-blue: #2563eb;
-            --accent-purple: #7c3aed;
-            --accent-cyan: #0891b2;
-            --accent-green: #059669;
-            --accent-red: #dc2626;
-            --accent-neon: #059669;
-            --accent-amber: #d97706;
-            --glow-neon: 0 4px 20px rgba(5, 150, 105, 0.25);
-            --grid-color: rgba(5, 150, 105, 0.06);
+            --glass-surface-hover: #f8f6f2;
+            --text-primary: rgba(0, 0, 0, 0.87);   /* Text Black 87% warm ink */
+            --text-secondary: rgba(0, 0, 0, 0.58); /* Text Black Soft */
+            --text-muted: #6b7c76;
+            --accent-blue: #00754A;
+            --accent-purple: #1E3932;
+            --accent-cyan: #006241;
+            --accent-green: #006241;
+            --accent-red: #c82014;
+            --accent-neon: #006241;
+            --accent-amber: #cba258;   /* Gold Ceremony */
+            --glow-neon: 0 4px 20px rgba(0, 98, 65, 0.25);
+            --grid-color: rgba(0, 98, 65, 0.05);
         }
 
         /* Smooth global theme transitions */
         body, .chrome-title-bar, .sidebar-panel, .chat-panel, .document-wrapper, .circle-tab-item, .history-card, .btn-minimal {
             transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease !important;
+            letter-spacing: -0.01em; /* Universal tight tracking for SoDoSans feel */
         }
 
         [data-theme="light"] body,
         body.light-theme {
-            background-color: #f8fafc;
+            background-color: #f2f0eb;
             background-image:
-                radial-gradient(ellipse 80% 60% at 10% 0%, rgba(5, 150, 105, 0.08) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 50% at 90% 100%, rgba(37, 99, 235, 0.06) 0%, transparent 60%);
-            color: #0f172a;
+                radial-gradient(ellipse 80% 60% at 10% 0%, rgba(212, 233, 226, 0.45) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 90% 100%, rgba(250, 246, 238, 0.6) 0%, transparent 60%);
+            color: rgba(0, 0, 0, 0.87);
         }
 
-        /* Title Bar & Circle Tabs */
+        /* Title Bar & Circle Tabs - Starbucks Warm Style */
         [data-theme="light"] .chrome-title-bar {
-            background: #ffffff;
-            border-bottom: 1px solid #cbd5e1;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            background: #edebe9;
+            border-bottom: 1px solid #d4e9e2;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
         }
 
         [data-theme="light"] .circle-tab-item .node-inner {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-            color: #334155;
+            background: #ffffff;
+            border-color: #d4e9e2;
+            color: rgba(0, 0, 0, 0.87);
         }
 
         [data-theme="light"] .circle-tab-item.active .node-inner {
             background: #ffffff;
-            border-color: #059669;
-            box-shadow: 0 0 16px rgba(5, 150, 105, 0.3);
-            color: #059669;
+            border-color: #006241;
+            box-shadow: 0 0 16px rgba(0, 98, 65, 0.3);
+            color: #006241;
         }
 
         [data-theme="light"] .circle-tab-label {
-            color: #334155;
+            color: rgba(0, 0, 0, 0.87);
             font-weight: 700;
         }
 
         [data-theme="light"] .circle-tab-item.active .circle-tab-label {
-            color: #059669;
+            color: #006241;
         }
 
         [data-theme="light"] .active-indicator-triangle::after {
@@ -640,9 +646,9 @@
             border: 1px solid rgba(255, 255, 255, 0.07);
             color: var(--text-secondary);
             padding: var(--sp-1) var(--sp-2);
-            border-radius: var(--radius-md);
+            border-radius: 50px;
             font-size: var(--type-12);
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -657,6 +663,43 @@
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.14);
             box-shadow: 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+
+        /* ── Starbucks Signature Floating Frap CTA Button ── */
+        .frap-floating-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--sb-accent, #00754A);
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 0 6px rgba(0,0,0,0.24), 0 8px 16px rgba(0,0,0,0.28);
+            z-index: 900;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        .frap-floating-btn:hover {
+            background: var(--sb-green, #006241);
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 0 8px rgba(0,0,0,0.28), 0 12px 24px rgba(0, 117, 74, 0.45);
+        }
+
+        .frap-floating-btn:active {
+            transform: scale(0.95) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Universal Starbucks Button Active Micro-Press Interaction */
+        button:active, .btn-minimal:active, .pill-gate-btn:active, .new-plan-btn:active, .prompt-submit-btn:active, .btn-quick-action:active {
+            transform: scale(0.95) !important;
         }
 
         .landing-content {
@@ -8565,6 +8608,24 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                     document.body.style.userSelect = '';
                 }
             });
+        }
+    </script>
+    <!-- Starbucks Signature Floating Frap Circular CTA Button -->
+    <button class="frap-floating-btn" id="starbucks-frap-btn" onclick="handleFrapBtnClick()" title="Starbucks Frap Quick Action — 새로운 기획 작성">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+    </button>
+
+    <script>
+        function handleFrapBtnClick() {
+            if (document.body.classList.contains('state-workspace')) {
+                resetToLanding();
+            } else {
+                const textarea = document.getElementById('idea-textarea');
+                if (textarea) {
+                    textarea.focus();
+                    textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
         }
     </script>
 </body>
