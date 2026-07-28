@@ -90,25 +90,47 @@
             --radius-xl: 50px;
         }
 
-        /* Starbucks House Green Dark Theme — always active */
+        /* Starbucks House Green & Dark Roasted Coffee Bean Blend Theme */
         body.dark-theme {
-            --bg-base: #0b1613;
-            --bg-sidebar: #122420;
-            --bg-chat: rgba(30, 57, 50, 0.4);
-            --bg-editor: #162a25;
-            --bg-card: #1e3932;
+            /* ── STARBUCKS ROASTED COFFEE BEAN PALETTE ── */
+            --sb-coffee-roast: #1a120e;      /* Espresso Dark Roast Base */
+            --sb-coffee-bean: #362219;       /* Roasted Coffee Bean Color */
+            --sb-coffee-glow: #4a2e21;       /* Warm Coffee Amber Glow */
+            --sb-gold-roast: #cba258;        /* Roasted Gold Accent */
+
+            --bg-base: #0b1411;              /* Deep House Green & Espresso Blend Base */
+            --bg-sidebar: #12221d;
+            --bg-chat: rgba(26, 18, 14, 0.45);/* Subtle Espresso Roast Wash */
+            --bg-editor: #152621;
+            --bg-card: #1d352e;
             --border-color: rgba(212, 233, 226, 0.15);
             --border-active: #00754A;
-            --glass-surface: rgba(30, 57, 50, 0.6);
-            --glass-surface-hover: rgba(30, 57, 50, 0.85);
+            --glass-surface: rgba(30, 54, 46, 0.65);
+            --glass-surface-hover: rgba(54, 34, 25, 0.4);
             --text-primary: #f8fafc;
-            --text-secondary: rgba(255, 255, 255, 0.70);
-            --text-muted: #64837a;
+            --text-secondary: rgba(255, 255, 255, 0.72);
+            --text-muted: #738b82;
             --accent-green: #00754A;
             --accent-neon: #00754A;
             --accent-amber: #cba258;
             --glow-neon: 0 4px 20px rgba(0, 117, 74, 0.35);
             --grid-color: rgba(0, 117, 74, 0.08);
+        }
+
+        /* Smooth global theme transitions */
+        body, .chrome-title-bar, .sidebar-panel, .chat-panel, .document-wrapper, .circle-tab-item, .history-card, .btn-minimal {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease !important;
+            letter-spacing: -0.01em; /* Universal tight tracking for SoDoSans feel */
+        }
+
+        /* Starbucks Dark Theme Ambient Background: House Green & Roasted Coffee Bean Fusion */
+        body.dark-theme {
+            background-color: #0b1411;
+            background-image:
+                radial-gradient(ellipse 80% 60% at 10% 0%, rgba(0, 117, 74, 0.22) 0%, transparent 60%),
+                radial-gradient(ellipse 65% 55% at 90% 100%, rgba(66, 43, 34, 0.38) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 50% 50%, rgba(26, 18, 14, 0.28) 0%, transparent 80%);
+            color: #f8fafc;
         }
 
         /* ── STARBUCKS NEUTRAL WARM LIGHT THEME (Café Cream & Ceramic Material) ── */
