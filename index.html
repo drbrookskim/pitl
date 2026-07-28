@@ -8233,6 +8233,11 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             const ideaTextarea = document.getElementById('idea-textarea');
             
             generatedDocs = data;
+
+            // Restore original idea prompt into textarea
+            if (ideaTextarea && data.idea) {
+                ideaTextarea.value = data.idea;
+            }
             
             if (btnSubmit) btnSubmit.disabled = false;
             if (ideaTextarea) ideaTextarea.disabled = false;
@@ -8241,26 +8246,32 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             document.querySelectorAll('.chrome-tab').forEach(el => el.classList.remove('disabled'));
             
             // Enable actions in header
-            document.getElementById('badge-qa-status').style.display = 'flex';
-            document.getElementById('btn-copy').disabled = false;
-            document.getElementById('btn-pdf').disabled = false;
-            document.getElementById('btn-edit').disabled = false;
-
-            document.getElementById('btn-copy').style.opacity = '1';
-            document.getElementById('btn-pdf').style.opacity = '1';
-            document.getElementById('btn-edit').style.opacity = '1';
-            document.getElementById('btn-copy').style.cursor = 'pointer';
-            document.getElementById('btn-pdf').style.cursor = 'pointer';
-            document.getElementById('btn-edit').style.cursor = 'pointer';
+            const badgeQa = document.getElementById('badge-qa-status');
+            if (badgeQa) badgeQa.style.display = 'flex';
             
+            ['btn-copy', 'btn-pdf', 'btn-edit'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                }
+            });
+            
+            // Activate all 10 circle progress tabs to 100% completed & bind click handlers to switch documents
+            if (typeof updatePipelineProgress === 'function') {
+                updatePipelineProgress(100, 'completed_all');
+            }
+
             // Complete all checklist items
             completeAllPipelineSteps();
 
             isEditing = false;
+            // Directly display the restored 1-Pager document in the right viewer
             switchDocument('1pager');
             
             const displayIdea = data.idea || title.replace(/_/g, ' ');
-            pitlAlert(t(`'<strong>${displayIdea}</strong>' 기획서 세션이 성공적으로 로드되었습니다.<br>기획안 수정 모드를 통해 연쇄 자동 갱신이 지원됩니다.`, `'<strong>${displayIdea}</strong>' planning session loaded successfully.<br>Cascade auto-updates supported via edit mode.`), 'success', t('히스토리 로드 완료', 'History Loaded'));
+            pitlAlert(t(`'<strong>${displayIdea}</strong>' 기획서 세션이 복원되었습니다.<br>상단 원형 탭을 누르면 각 단계별 분석 내용(1-Pager, 3C, SWOT, STP, MECE, PRD, 와이어프레임 등)을 확인하실 수 있습니다.`, `'<strong>${displayIdea}</strong>' planning session restored.<br>Click top circle tabs to review each stage analysis (1-Pager, 3C, SWOT, STP, MECE, PRD, Wireframes, etc.).`), 'success', t('히스토리 로드 완료', 'History Loaded'));
         }
 
         // Removed duplicate toggleTheme — master version lives above at initTheme block.
