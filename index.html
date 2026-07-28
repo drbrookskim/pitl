@@ -1070,8 +1070,117 @@
         .sidebar-logo-container {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 0 4px;
+            justify-content: flex-start;
+            padding: 6px 4px 2px 4px;
+        }
+
+        .sidebar-logo-container h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            margin: 0;
+        }
+
+        /* ── Sidebar Footer with Gear Settings Button ── */
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 12px 4px 4px 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sidebar-footer-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-gear-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar-gear-btn:hover {
+            background: var(--sb-accent, #00754A);
+            color: #ffffff;
+            border-color: var(--sb-accent, #00754A);
+            box-shadow: 0 4px 14px rgba(0, 117, 74, 0.35);
+        }
+
+        .sidebar-gear-btn:hover i {
+            transform: rotate(60deg);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-gear-btn:active {
+            transform: scale(0.92) !important;
+        }
+
+        /* ── Sidebar Settings Popover ── */
+        .sidebar-settings-popover {
+            position: absolute;
+            bottom: 46px;
+            right: 0;
+            width: 210px;
+            background: rgba(18, 22, 32, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 117, 74, 0.15);
+            border-radius: 14px;
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 999;
+            animation: popoverFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        [data-theme="light"] .sidebar-settings-popover {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: #d4e9e2;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        @keyframes popoverFadeIn {
+            from { opacity: 0; transform: translateY(6px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .settings-popover-item {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 50px; /* Starbucks full pill */
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .settings-popover-item:hover {
+            background: var(--sb-accent, #00754A);
+            color: #ffffff;
         }
 
         .sidebar-logo-icon {
@@ -3484,24 +3593,7 @@
         <!-- PANEL 1: LEFT SIDEBAR (History, Actions, Reset) -->
         <aside class="sidebar-panel" id="panel-sidebar">
             <div class="sidebar-logo-container" onclick="showPipelineProgressView()" style="cursor: pointer;" title="파이프라인 진행률 뷰로 이동">
-                <div class="sidebar-logo-icon">
-                    <i class="fa-solid fa-arrows-spin fa-spin" style="--fa-animation-duration: 3s;" id="brand-logo-icon"></i>
-                </div>
-                <div class="sidebar-logo-meta">
-                    <h3>PITL Workspace</h3>
-                    <span class="agent-status-tag">
-                        <span class="status-dot-pulse"></span> <span data-i18n="agent_status_active">AGENTS ACTIVE</span>
-                    </span>
-                </div>
-                
-                <button class="btn-quick-action" id="btn-theme-toggle-sidebar" onclick="toggleTheme()" title="테마 전환" style="margin-left: auto;">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-                
-                <button class="btn-quick-action" id="btn-api-settings-sidebar" onclick="openSettingsModal()" title="API 설정">
-                    <i class="fa-solid fa-key"></i>
-                    <span id="proxy-badge-sidebar" style="display:none;position:absolute;top:-3px;right:-3px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--bg-primary,#0a0a0f);"></span>
-                </button>
+                <h3>PITL Workspace</h3>
             </div>
             
             <button class="new-plan-btn" onclick="resetToLanding()" data-i18n="new_plan_btn">
@@ -3512,6 +3604,33 @@
                 <div class="sidebar-menu-title" data-i18n="history_sidebar_title">기획 히스토리 내역</div>
                 <div class="history-list-scroll" id="history-list">
                     <!-- History list items injected here -->
+                </div>
+            </div>
+
+            <!-- Sidebar Footer (Agent Status & Bottom-Right Gear Settings) -->
+            <div class="sidebar-footer">
+                <div class="sidebar-footer-left">
+                    <span class="status-dot-pulse"></span>
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px;">AGENTS ACTIVE</span>
+                </div>
+                
+                <div class="sidebar-settings-wrap" style="position: relative;">
+                    <button class="sidebar-gear-btn" id="btn-sidebar-gear" onclick="toggleSidebarSettingsPopover(event)" title="설정 (테마 / API Key)">
+                        <i class="fa-solid fa-gear"></i>
+                        <span id="proxy-badge-sidebar" style="display:none;position:absolute;top:-2px;right:-2px;width:10px;height:10px;background:var(--sb-accent,#00754A);border-radius:50%;border:2px solid var(--bg-base,#0b1613);"></span>
+                    </button>
+                    
+                    <!-- Settings Popover Menu -->
+                    <div class="sidebar-settings-popover" id="sidebar-settings-popover">
+                        <button class="settings-popover-item" onclick="toggleTheme(); hideSidebarSettingsPopover();">
+                            <i class="fa-solid fa-circle-half-stroke"></i>
+                            <span>테마 전환 (Light/Dark)</span>
+                        </button>
+                        <button class="settings-popover-item" onclick="openSettingsModal(); hideSidebarSettingsPopover();">
+                            <i class="fa-solid fa-key"></i>
+                            <span>Gemini API Key 설정</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -8547,6 +8666,32 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
         }
 
         // Removed duplicate toggleTheme — master version lives above at initTheme block.
+        // Sidebar Settings Popover Helpers
+        function toggleSidebarSettingsPopover(e) {
+            if (e) e.stopPropagation();
+            const popover = document.getElementById('sidebar-settings-popover');
+            if (!popover) return;
+            const isVisible = popover.style.display === 'flex';
+            popover.style.display = isVisible ? 'none' : 'flex';
+        }
+
+        function hideSidebarSettingsPopover() {
+            const popover = document.getElementById('sidebar-settings-popover');
+            if (popover) popover.style.display = 'none';
+        }
+
+        // Close popover when clicking outside
+        document.addEventListener('click', (e) => {
+            const popover = document.getElementById('sidebar-settings-popover');
+            const gearBtn = document.getElementById('btn-sidebar-gear');
+            if (popover && popover.style.display === 'flex') {
+                if (gearBtn && gearBtn.contains(e.target)) return;
+                if (!popover.contains(e.target)) {
+                    popover.style.display = 'none';
+                }
+            }
+        });
+
         // Initialize Resizable Column Panels on DOMContentLoaded
         window.addEventListener('DOMContentLoaded', () => {
             initResizablePanels();
