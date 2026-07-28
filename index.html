@@ -3496,7 +3496,7 @@
                         </div>
 
                         <!-- 50% Gate Circle Node (Between MECE & PRD) -->
-                        <div class="circle-tab-item pending disabled nav-item" id="nav-gate50" onclick="handleGate50Click()" title="50% 기획 검토 관문 — 클릭 시 후속 4단계(PRD 등) 계속 진행">
+                        <div class="circle-tab-item pending disabled nav-item" id="nav-gate50" onclick="handleGate50Click()" title="50% Gate: [1단계 구조화] 완료 ➔ [2단계 구체화] 계속 진행">
                             <div class="circle-tab-node">
                                 <svg class="ring-svg" viewBox="0 0 40 40">
                                     <circle class="ring-track" cx="20" cy="20" r="17"/>
@@ -3508,7 +3508,7 @@
                                     <span class="node-percent" id="node-pct-gate50">50%</span>
                                 </div>
                             </div>
-                            <span class="circle-tab-label" style="color: var(--accent-amber, #f59e0b);">50% 계속</span>
+                            <span class="circle-tab-label" style="color: var(--accent-amber, #f59e0b);">2단계 구체화</span>
                             <div class="active-indicator-triangle"></div>
                         </div>
 
@@ -7146,11 +7146,11 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                     extraHtml = `
                         <div class="mece-resume-pill-wrapper" style="margin-top: 48px; padding: 24px; background: rgba(16, 185, 129, 0.04); border: 1px dashed rgba(16, 185, 129, 0.3); border-radius: 16px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;">
                             <p style="font-size: 13.5px; color: var(--text-primary); margin: 0; font-weight: 600;">
-                                📌 MECE 분석 결과를 검토하셨나요? 아래 버튼을 누르면 PRD 요구사항 및 와이어프레임 생성을 계속 진행합니다.
+                                ${t("📌 [1단계: 구조화] 기획 분석이 완료되었습니다. 아래 버튼을 누르면 [2단계: 구체화] (PRD, 와이어프레임 3안, 프로토타입, QA 감사) 생성을 계속 진행합니다.", "📌 [Phase 1: Structuring] complete. Click below to proceed to [Phase 2: Realization] (PRD, Wireframes, Prototype, QA Audit).")}
                             </p>
                             <button onclick="resumePlanningAfterMece()" class="pill-gate-btn" id="btn-resume-mece-pill">
                                 <i class="fa-solid fa-play"></i>
-                                <span>MECE 분석 검토 완료 — 다음 4단계(PRD, 와이어프레임 등) 계속 진행</span>
+                                <span>${t("1단계 구조화 검토 완료 ➔ 2단계 구체화 계속 진행", "Phase 1 Complete ➔ Proceed to Phase 2 Realization")}</span>
                                 <i class="fa-solid fa-arrow-right"></i>
                             </button>
                         </div>
