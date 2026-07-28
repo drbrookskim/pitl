@@ -2358,15 +2358,48 @@
             line-height: var(--lh);
         }
 
-        /* Blockquote: structural accent rule, flush left */
+        /* ── Software Highlight (형광펜 효과) & Mark Styling ── */
+        .markdown-body mark,
+        .markdown-body .highlight-important {
+            background: linear-gradient(120deg, rgba(0, 117, 74, 0.28) 0%, rgba(203, 162, 88, 0.32) 100%);
+            color: #ffffff;
+            padding: 3px 8px;
+            margin: 0 2px;
+            border-radius: 4px;
+            font-weight: 700;
+            border-bottom: 2.5px solid var(--sb-accent, #00754A);
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+            display: inline;
+        }
+
+        [data-theme="light"] .markdown-body mark,
+        [data-theme="light"] .markdown-body .highlight-important {
+            background: linear-gradient(120deg, rgba(0, 117, 74, 0.16) 0%, rgba(203, 162, 88, 0.22) 100%);
+            border-bottom: 2.5px solid #006241;
+            color: #004d33;
+        }
+
+        /* ── GitHub & Starbucks Style Callout Cards ── */
         .markdown-body blockquote {
-            border-left: 2px solid var(--accent-neon);
-            padding: var(--sp-2) var(--sp-3); /* 16px 24px */
-            margin: var(--sp-3) 0;
-            font-size: var(--type-14);
-            color: var(--text-secondary);
-            line-height: var(--lh);
-            background: rgba(255, 255, 255, 0.01);
+            border-left: 4px solid var(--sb-accent, #00754A);
+            padding: 16px 20px;
+            margin: 20px 0;
+            font-size: 14.5px;
+            color: var(--text-primary);
+            line-height: 1.65;
+            background: rgba(0, 117, 74, 0.08);
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="light"] .markdown-body blockquote {
+            background: rgba(0, 117, 74, 0.06);
+            border-left-color: #006241;
+        }
+
+        .markdown-body blockquote p:last-child {
+            margin-bottom: 0;
         }
 
         /* Interactive Wireframe Tabs */
@@ -7573,11 +7606,35 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
                                 ${descText}
                             </p>
                         </div>
-                        ${marked.parse(mdRaw)}
+                        ${renderMarkdownEnhanced(mdRaw)}
                         ${extraHtml}
                     </div>
                 `;
             }
+        }
+
+        // Enhanced Markdown Parser with Soft Highlights (==text==) and Callout Cards
+        function renderMarkdownEnhanced(mdRaw) {
+            if (!mdRaw) return '';
+            
+            // 1. Convert ==text== to <mark>text</mark> soft highlight
+            let processed = mdRaw.replace(/==(.*?)==/g, '<mark>$1</mark>');
+            
+            // 2. Transform GitHub-style blockquote callouts (> [!NOTE], > [!IMPORTANT], etc.)
+            processed = processed.replace(/^>\s*\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(.*)$/gmi, (match, type, content) => {
+                const typeLower = type.toLowerCase();
+                const icons = {
+                    note: 'fa-circle-info',
+                    tip: 'fa-lightbulb',
+                    important: 'fa-star',
+                    warning: 'fa-triangle-exclamation',
+                    caution: 'fa-circle-exclamation'
+                };
+                const icon = icons[typeLower] || 'fa-circle-info';
+                return `> **<i class="fa-solid ${icon}"></i> ${type.toUpperCase()}**: ${content}`;
+            });
+
+            return marked.parse(processed);
         }
 
         // Render Tile UI Dashboard View
