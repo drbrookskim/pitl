@@ -737,18 +737,30 @@
         }
 
         .landing-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: var(--type-48);
-            font-weight: 700;
-            letter-spacing: -2px;
+            font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            letter-spacing: -2.5px;
             color: var(--text-primary);
-            /* ink-on-grid: line-height = 56px = 7×8px */
-            line-height: 56px;
+            line-height: 1.15;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
         .landing-title span {
-            /* accent neon — single color, no gradient degradation */
-            color: var(--accent-neon);
+            background: linear-gradient(135deg, var(--sb-accent, #00754A), #10b981, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Space Particle Network Canvas */
+        #space-particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
 
         .landing-subtitle {
@@ -3527,6 +3539,8 @@
        1. LANDING PAGE STATE VIEW
        ========================================================================== -->
     <div class="landing-view-container">
+        <!-- Interactive Space Particle Network Canvas -->
+        <canvas id="space-particle-canvas"></canvas>
         
         <!-- Minimal Top Navigation -->
         <div class="landing-top-bar">
@@ -8692,9 +8706,139 @@ IMPORTANT: Output ONLY valid HTML starting with <!DOCTYPE html>. No markdown, no
             }
         });
 
-        // Initialize Resizable Column Panels on DOMContentLoaded
+        // 🌌 Space Particle Network Background Animation Engine
+        function initSpaceParticleNetwork() {
+            const canvas = document.getElementById('space-particle-canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let width = (canvas.width = canvas.parentElement.clientWidth || window.innerWidth);
+            let height = (canvas.height = canvas.parentElement.clientHeight || window.innerHeight);
+
+            let mouse = { x: null, y: null, maxDist: 170 };
+
+            window.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+
+            window.addEventListener('mouseleave', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            const resizeCanvas = () => {
+                if (!canvas.parentElement) return;
+                width = canvas.width = canvas.parentElement.clientWidth || window.innerWidth;
+                height = canvas.height = canvas.parentElement.clientHeight || window.innerHeight;
+            };
+
+            window.addEventListener('resize', resizeCanvas);
+
+            const particleCount = Math.min(Math.floor((width * height) / 9500), 120);
+            const particles = [];
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.6;
+                    this.vy = (Math.random() - 0.5) * 0.6;
+                    this.radius = Math.random() * 2 + 1;
+                    this.baseAlpha = Math.random() * 0.5 + 0.3;
+                    this.alpha = this.baseAlpha;
+                    this.pulseSpeed = Math.random() * 0.02 + 0.005;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < 0) this.x = width;
+                    if (this.x > width) this.x = 0;
+                    if (this.y < 0) this.y = height;
+                    if (this.y > height) this.y = 0;
+
+                    this.alpha += Math.sin(Date.now() * this.pulseSpeed) * 0.006;
+                    if (this.alpha < 0.2) this.alpha = 0.2;
+                    if (this.alpha > 0.85) this.alpha = 0.85;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(16, 185, 129, ${this.alpha})`;
+                    ctx.shadowBlur = 6;
+                    ctx.shadowColor = '#10b981';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Draw network connection lines between nearby particles
+                const maxConnectDist = 135;
+                for (let a = 0; a < particles.length; a++) {
+                    for (let b = a + 1; b < particles.length; b++) {
+                        const dx = particles[a].x - particles[b].x;
+                        const dy = particles[a].y - particles[b].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < maxConnectDist) {
+                            const lineAlpha = (1 - dist / maxConnectDist) * 0.28;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[a].x, particles[a].y);
+                            ctx.lineTo(particles[b].x, particles[b].y);
+                            ctx.strokeStyle = `rgba(0, 117, 74, ${lineAlpha})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Draw interactive mouse connection lines
+                if (mouse.x !== null && mouse.y !== null) {
+                    for (let i = 0; i < particles.length; i++) {
+                        const dx = particles[i].x - mouse.x;
+                        const dy = particles[i].y - mouse.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < mouse.maxDist) {
+                            const lineAlpha = (1 - dist / mouse.maxDist) * 0.45;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.strokeStyle = `rgba(52, 211, 153, ${lineAlpha})`;
+                            ctx.lineWidth = 1.2;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Update and render particles
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        // Initialize Resizable Column Panels & Space Particle Canvas on DOMContentLoaded
         window.addEventListener('DOMContentLoaded', () => {
             initResizablePanels();
+            initSpaceParticleNetwork();
+
             // Sync theme icons after DOM is ready
             const savedTheme = localStorage.getItem('pitl_theme') || 'dark';
             const isLight = savedTheme === 'light';
