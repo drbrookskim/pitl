@@ -1664,13 +1664,13 @@
             box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 16px 40px rgba(0, 0, 0, 0.6);
         }
 
-        /* Chrome Top Title Bar & Circle Node Tabs (첨부 이미지 100% 반영) */
+        /* Chrome Top Title Bar & Circle Node Tabs */
         .chrome-title-bar {
-            height: 72px;
+            height: 80px;
             display: flex;
             align-items: center;
             padding: 0 16px;
-            justify-content: space-between;
+            justify-content: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             background: rgba(12, 14, 20, 0.92);
             backdrop-filter: blur(20px);
@@ -1731,11 +1731,11 @@
             justify-content: space-evenly;
             flex: 1;
             min-width: 0;
-            gap: 4px;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.035);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 36px;
-            padding: 4px 14px;
+            border-radius: 44px;
+            padding: 6px 16px 8px 18px;
             position: relative;
             box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.04);
             transition: all 0.25s ease;
@@ -1743,13 +1743,13 @@
 
         .step-pill-badge {
             align-self: center;
-            font-size: 10.5px;
-            font-weight: 700;
-            padding: 4px 9px;
-            border-radius: 14px;
+            font-size: 12.5px;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 16px;
             white-space: nowrap;
             letter-spacing: -0.2px;
-            margin-right: 4px;
+            margin-right: 6px;
             flex-shrink: 0;
         }
 
@@ -1791,7 +1791,7 @@
             align-items: center;
             justify-content: center;
             gap: 2px;
-            margin: 0 4px;
+            margin: 0 6px;
             flex-shrink: 0;
         }
 
@@ -1799,10 +1799,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
             cursor: pointer;
             position: relative;
-            padding: 6px 8px 8px 8px;
+            padding: 6px 10px 8px 10px;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             user-select: none;
             flex-shrink: 0;
@@ -1815,10 +1815,10 @@
             cursor: not-allowed;
         }
 
-        /* Circle Node styling for top bar */
+        /* Circle Node styling for top bar (Enlarged size: 46px node, 36px inner) */
         .circle-tab-node {
-            width: 38px;
-            height: 38px;
+            width: 46px;
+            height: 46px;
             position: relative;
             display: flex;
             align-items: center;
@@ -1849,8 +1849,8 @@
         }
 
         .circle-tab-node .node-inner {
-            width: 30px;
-            height: 30px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(8px);
@@ -1878,7 +1878,7 @@
         }
 
         .circle-tab-node .node-icon {
-            font-size: 13px;
+            font-size: 17px;
             color: #94a3b8;
             transition: color 0.3s ease, opacity 0.3s ease;
             position: absolute;
@@ -1888,7 +1888,7 @@
         .circle-tab-node .node-percent {
             position: absolute;
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 10px;
+            font-size: 11.5px;
             font-weight: 800;
             color: #ffffff;
             opacity: 0;
@@ -1898,10 +1898,10 @@
         }
 
         .circle-tab-label {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 700;
             color: #94a3b8;
-            letter-spacing: 0.2px;
+            letter-spacing: -0.1px;
             transition: color 0.3s ease;
             text-align: center;
             white-space: nowrap;
@@ -3483,9 +3483,6 @@
                 
                 <!-- Chrome top title bar with navigation controls & tabs -->
                 <div class="chrome-title-bar">
-                    <!-- Left spacer for balance -->
-                    <div style="width: 24px;"></div>
-                    
                     <!-- Circle Progress Node Tabs Bar (Categorized Stage Pill Groups) -->
                     <div class="circle-tab-bar-container" id="circle-tabs-bar">
                         <!-- Stage 1 Pill Group: 1단계 구조화 -->
@@ -3660,16 +3657,6 @@
                                 <div class="active-indicator-triangle"></div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Title Bar Actions -->
-                    <div class="chrome-title-bar-actions">
-                        <button onclick="toggleTheme()" id="theme-toggle-btn" title="다크/라이트 테마 전환">
-                            <i class="fa-solid fa-moon"></i>
-                        </button>
-                        <button onclick="logout()" title="로그아웃">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        </button>
                     </div>
                 </div>
 
