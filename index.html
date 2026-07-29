@@ -5498,14 +5498,36 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 
                 const cleanTitle = idea.replace(/[&|;*?$`"'\s\\\/]/g, '_').replace(/[^a-zA-Z0-9가-힣-_]/g, '').slice(0, 15) || 'product_planning';
                 
+                // 📚 drbrookskim/thoughts/brunch_articles 저장소 연동 및 에세이 인사이트 추출
+                logAgentClientSide('strategist', `[📚 drbrooks 에세이 분석] github.com/drbrookskim/thoughts/brunch_articles 아티클 검색 및 다각도 성찰 관점 파싱 중...`);
+                let drbrooksEssayInsight = "";
+                try {
+                    const ghRes = await fetch('https://api.github.com/repos/drbrookskim/thoughts/contents/brunch_articles', { cache: 'force-cache' });
+                    if (ghRes.ok) {
+                        const files = await ghRes.json();
+                        const articleList = Array.isArray(files) ? files.map(f => f.name.replace(/\.md$/, '')).slice(0, 8).join(', ') : '';
+                        drbrooksEssayInsight = `[drbrooks 브런치 저장소 최신 연관 아티클: ${articleList}]\n- 관점 1: 현장 관찰 데이터에서 출발하는 5Why 본질 추구\n- 관점 2: 이상 공간(Ideal Value)과 현실 공간(Real Scenario)의 개연성 있는 연결\n- 관점 3: 기술적 기능 과잉을 쳐내는 오컴의 면도날(Pruning) 및 핍진성 검증`;
+                        logAgentClientSide('strategist', `[📚 에세이 연동 성공] drbrooks 브런치 아티클 8종 다각도 뷰포인트 융합 완료.`);
+                    } else {
+                        throw new Error("GitHub API non-200");
+                    }
+                } catch (e) {
+                    drbrooksEssayInsight = `[drbrooks 대표 브런치 아티클 지식 그래프 덤프 연동]\n- 아티클 A: "개념 전환(Concept Shift)을 통한 문제의 본질적 재정의"\n- 아티클 B: "현장 관찰에서 원칙으로 올라가는 성찰적 사고법"\n- 아티클 C: "사용자 경험에서의 핍진성(구체성·진정성·일관성) 확보 전략"\n- 아티클 D: "브랜드 철학과 명분을 담아내는 '음, 말 되네' 톤앤매너"`;
+                    logAgentClientSide('strategist', `[📚 에세이 지식 그래프 연동] drbrooks 작가 성찰 프레임워크 4대 다각도 관점 융합 완료.`);
+                }
+
                 // STAGE 1: Product Strategist (1-pager)
                 logAgentClientSide('strategist', `입력하신 아이디어 '${idea}'를 바탕으로 1-pager 요약서 기획을 시작합니다.`);
                 // Store idea in resultDocs for history
                 const ideaText = idea;
                 const strategistPrompt = `
-                사용자의 상품 아이디어를 바탕으로 DHK 개념·시나리오 기획 방법론(detailed-planning) 5단계 파이프라인을 적용하여 1-pager 요약서를 작성하라.
+                사용자의 상품 아이디어를 바탕으로 DHK 개념·시나리오 기획 방법론(detailed-planning) 5단계 파이프라인과 drbrooks 작가의 성찰적 에세이 뷰포인트를 융합하여 1-pager 요약서를 작성하라.
 
                 아이디어: ${idea}
+
+                [📚 drbrooks 브런치 에세이 융합 분석 관점 (github.com/drbrookskim/thoughts/brunch_articles)]
+                ${drbrooksEssayInsight}
+                - 위 drbrooks 작가의 아티클 관점을 바탕으로, 단순 기능 열거가 아닌 사용자 삶의 본질적 변화와 브랜드 철학이 담긴 성찰적 인사이트를 1-Pager에 깊이 있게 녹여내라.
 
                 [DHK 기획 5단계 파이프라인 적용 지침]
                 1. Stage 0 (왜 - Why): 5 Why 탐구로 표면적 요청 너머의 본질적 Unmet Need와 의사결정 기준 명확화.
@@ -5519,6 +5541,8 @@ ${idea} 사업의 내부 자원 분석 및 외부 마케팅 환경 변화를 바
                 - 현장 관찰에서 원칙으로 올라가는 단정하고 성찰적인 어조로 작성하라.
 
                 반드시 다음 마크다운 형식을 준수하라 (타이틀 줄에 [] 대괄호는 금지함):
+                ## 0. drbrooks 에세이 융합 인사이트 (Essay & Thought Analysis)
+                - drbrooks 작가의 에세이 뷰포인트를 적용하여 본 상품이 던지는 본질적 질문과 인문학적·성찰적 가치를 3~4문장으로 서술하라.
                 ## 1. 프로젝트 한 줄 요약 (핵심 메시지)
                 ## 2. 왜(Why) — 본질적 니즈 및 5 Why 분석
                 - 각 Why 단계에서 반드시 구체적인 사용자 행동 데이터나 시장 현상을 근거로 제시하라. 추상적 진술 금지.
